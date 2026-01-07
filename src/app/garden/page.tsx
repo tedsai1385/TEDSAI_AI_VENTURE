@@ -39,22 +39,22 @@ const Garden = () => {
 
             {/* Production Section */}
             <section className="container" style={{ padding: '4rem 0' }}>
-                <h2 style={{ text- align: 'center', color: 'var(--color-garden-primary)', marginBottom: '3rem', fontSize: '2.5rem' }}>Notre Production</h2>
-            <div className="prod-grid">
-                {products.map((prod, idx) => (
-                    <div key={idx} className="prod-card">
-                        <div className="prod-icon">
-                            <i className={prod.icon}></i>
+                <h2 style={{ textAlign: 'center', color: 'var(--color-garden-primary)', marginBottom: '3rem', fontSize: '2.5rem' }}>Notre Production</h2>
+                <div className="prod-grid">
+                    {products.map((prod, idx) => (
+                        <div key={idx} className="prod-card">
+                            <div className="prod-icon">
+                                <i className={prod.icon}></i>
+                            </div>
+                            <h3 style={{ marginBottom: '1rem', color: 'var(--color-garden-primary)' }}>{prod.name}</h3>
+                            <p style={{ color: '#666' }}>{prod.desc}</p>
                         </div>
-                        <h3 style={{ marginBottom: '1rem', color: 'var(--color-garden-primary)' }}>{prod.name}</h3>
-                        <p style={{ color: '#666' }}>{prod.desc}</p>
-                    </div>
-                ))}
-            </div>
-        </section >
+                    ))}
+                </div>
+            </section>
 
-            {/* Traceability Section */ }
-            < section className = "traceability-section" >
+            {/* Traceability Section */}
+            <section className="traceability-section">
                 <div className="container">
                     <h2 style={{ fontSize: '2.2rem', marginBottom: '1.5rem', color: 'var(--color-garden-primary)' }}>Suivez le Parcours de Votre Ingrédient</h2>
                     <p style={{ marginBottom: '2rem', fontSize: '1.1rem' }}>Entrez le code produit présent sur votre ticket ou étiquette.</p>
@@ -81,59 +81,59 @@ const Garden = () => {
                     </div>
                 </div>
 
-    {
-        showResult && (
-            <div id="trace-result" className="trace-result-container">
-                <h3 style={{ color: 'var(--color-garden-primary)', textAlign: 'center', marginBottom: '2rem', fontSize: '1.8rem' }}>Résultat de la Traçabilité</h3>
-                <div style={{ borderBottom: '2px solid #eee', paddingBottom: '1rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>🍅 Tomate Cœur de Bœuf Bio</span>
-                    <span style={{ color: '#666' }}>Code: {traceCode}</span>
-                </div>
+                {
+                    showResult && (
+                        <div id="trace-result" className="trace-result-container">
+                            <h3 style={{ color: 'var(--color-garden-primary)', textAlign: 'center', marginBottom: '2rem', fontSize: '1.8rem' }}>Résultat de la Traçabilité</h3>
+                            <div style={{ borderBottom: '2px solid #eee', paddingBottom: '1rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>🍅 Tomate Cœur de Bœuf Bio</span>
+                                <span style={{ color: '#666' }}>Code: {traceCode}</span>
+                            </div>
 
-                <div style={{ display: 'grid', gap: '1.5rem' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr' }}>
-                        <span style={{ color: '#888', fontWeight: 600 }}>ORIGINE</span>
-                        <span><strong>Serre #2, Parcelle B3</strong></span>
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr' }}>
-                        <span style={{ color: '#888', fontWeight: 600 }}>PLANTATION</span>
-                        <span>15 Septembre 2024 (Semences BioDom)</span>
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr' }}>
-                        <span style={{ color: '#888', fontWeight: 600 }}>RÉCOLTE</span>
-                        <span>13 Décembre 2024 (Jean K.)</span>
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr' }}>
-                        <span style={{ color: '#888', fontWeight: 600 }}>LIVRAISON</span>
-                        <span style={{ color: 'green', font_weight: 'bold' }}>50 mètres vers viTEDia</span>
-                    </div>
-                </div>
+                            <div style={{ display: 'grid', gap: '1.5rem' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr' }}>
+                                    <span style={{ color: '#888', fontWeight: 600 }}>ORIGINE</span>
+                                    <span><strong>Serre #2, Parcelle B3</strong></span>
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr' }}>
+                                    <span style={{ color: '#888', fontWeight: 600 }}>PLANTATION</span>
+                                    <span>15 Septembre 2024 (Semences BioDom)</span>
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr' }}>
+                                    <span style={{ color: '#888', fontWeight: 600 }}>RÉCOLTE</span>
+                                    <span>13 Décembre 2024 (Jean K.)</span>
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr' }}>
+                                    <span style={{ color: '#888', fontWeight: 600 }}>LIVRAISON</span>
+                                    <span style={{ color: 'green', fontWeight: 'bold' }}>50 mètres vers viTEDia</span>
+                                </div>
+                            </div>
 
-                <div style={{ marginTop: '2.5rem', textAlign: 'center' }}>
-                    <button
-                        className="btn btn-secondary"
-                        onClick={() => alert('Génération du PDF... (Simulation)')}
-                    >
-                        Télécharger Certificat
-                    </button>
-                </div>
-            </div>
-        )
-    }
-      </section >
+                            <div style={{ marginTop: '2.5rem', textAlign: 'center' }}>
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={() => alert('Génération du PDF... (Simulation)')}
+                                >
+                                    Télécharger Certificat
+                                </button>
+                            </div>
+                        </div>
+                    )
+                }
+            </section>
 
-    {/* Sustainable Section */ }
-    < section className = "container" style = {{ padding: '5rem 0', textAlign: 'center' }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-            <i className="fa-solid fa-recycle" style={{ fontSize: '3rem', color: 'var(--color-garden-primary)', marginBottom: '1.5rem' }}></i>
-            <h2 style={{ marginBottom: '1.5rem' }}>Économie Circulaire</h2>
-            <p style={{ fontSize: '1.1rem', color: '#555', lineHeight: 1.6 }}>
-                Rien ne se perd, tout se transforme. Les biodéchets du restaurant viTEDia sont compostés pour enrichir les sols du SelecTED Garden. L'eau de pluie est collectée et filtrée par IA pour optimiser l'irrigation goutte-à-goutte.
-            </p>
-        </div>
-      </section >
-    </>
-  );
+            {/* Sustainable Section */}
+            <section className="container" style={{ padding: '5rem 0', textAlign: 'center' }}>
+                <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+                    <i className="fa-solid fa-recycle" style={{ fontSize: '3rem', color: 'var(--color-garden-primary)', marginBottom: '1.5rem' }}></i>
+                    <h2 style={{ marginBottom: '1.5rem' }}>Économie Circulaire</h2>
+                    <p style={{ fontSize: '1.1rem', color: '#555', lineHeight: 1.6 }}>
+                        Rien ne se perd, tout se transforme. Les biodéchets du restaurant viTEDia sont compostés pour enrichir les sols du SelecTED Garden. L'eau de pluie est collectée et filtrée par IA pour optimiser l'irrigation goutte-à-goutte.
+                    </p>
+                </div>
+            </section>
+        </>
+    );
 };
 
 export default Garden;
