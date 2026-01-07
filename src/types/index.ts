@@ -26,7 +26,7 @@ export interface GardenProduct {
     unit?: 'kg' | 'piece' | 'botte' | 'unité';
     stock: number;
     inStock: boolean;
-    category: 'legume' | 'fruit' | 'epice' | 'aromate' | 'elevage' | 'autre';
+    category: 'Légumes' | 'Fruits' | 'Épices' | 'Aromates' | 'Élevage' | 'Épicerie Fine' | 'Autre' | string;
     image?: string;
 }
 
