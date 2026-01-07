@@ -5,12 +5,28 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-    const { user, signInWithGoogle } = useAuth();
+    const { user, signInWithGoogle, signInWithEmail } = useAuth();
     const router = useRouter();
     const [error, setError] = React.useState<string | null>(null);
     const [loading, setLoading] = React.useState(false);
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
 
-    const handleLogin = async () => {
+    const handleEmailLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+        try {
+            await signInWithEmail(email, password);
+        } catch (err: any) {
+            console.error(err);
+            setError("Identifiants incorrects ou erreur serveur : " + err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleGoogleLogin = async () => {
         setLoading(true);
         setError(null);
         try {
@@ -22,7 +38,7 @@ export default function LoginPage() {
             } else if (err.code === 'auth/popup-closed-by-user') {
                 setError("La fenêtre de connexion a été fermée.");
             } else {
-                setError("Connexion échouée : " + err.message);
+                setError("Connexion Google échouée : " + err.message);
             }
         } finally {
             setLoading(false);
@@ -62,10 +78,51 @@ export default function LoginPage() {
                     </div>
                 )}
 
+                <form onSubmit={handleEmailLogin} className="w-full mb-6 text-left space-y-4">
+                    <div>
+                        <label className="block text-blue-100 text-sm font-medium mb-1">Email</label>
+                        <input
+                            type="email"
+                            required
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full bg-white/20 border border-white/30 rounded-lg px-4 py-3 text-white placeholder-blue-200/50 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+                            placeholder="admin@tedsai.com"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-blue-100 text-sm font-medium mb-1">Mot de passe</label>
+                        <input
+                            type="password"
+                            required
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full bg-white/20 border border-white/30 rounded-lg px-4 py-3 text-white placeholder-blue-200/50 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+                            placeholder="••••••••"
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg disabled:opacity-50"
+                    >
+                        {loading ? 'Connexion...' : 'Se connecter'}
+                    </button>
+                </form>
+
+                <div className="relative mb-6">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-blue-200/30"></div>
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                        <span className="px-2 text-blue-100 bg-transparent">OU</span>
+                    </div>
+                </div>
+
                 <button
-                    onClick={handleLogin}
+                    onClick={handleGoogleLogin}
                     disabled={loading}
-                    className="group w-full flex items-center justify-center gap-3 bg-white hover:bg-blue-50 text-[#0A2463] font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+                    className="group w-full flex items-center justify-center gap-3 bg-white hover:bg-blue-50 text-[#0A2463] font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
                 >
                     {loading ? (
                         <>

@@ -6,6 +6,7 @@ import {
     User,
     signInWithPopup,
     GoogleAuthProvider,
+    signInWithEmailAndPassword,
     signOut as firebaseSignOut
 } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase/config';
@@ -25,6 +26,7 @@ interface AuthContextType {
     profile: UserProfile | null;
     loading: boolean;
     signInWithGoogle: () => Promise<void>;
+    signInWithEmail: (email: string, pass: string) => Promise<void>;
     logout: () => Promise<void>;
 }
 
@@ -79,6 +81,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
+    const signInWithEmail = async (email: string, pass: string) => {
+        try {
+            await signInWithEmailAndPassword(auth, email, pass);
+        } catch (error) {
+            console.error('Error signing in with Email', error);
+            throw error;
+        }
+    };
+
     const logout = async () => {
         try {
             await firebaseSignOut(auth);
@@ -89,7 +100,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <AuthContext.Provider value={{ user, profile, loading, signInWithGoogle, logout }}>
+        <AuthContext.Provider value={{ user, profile, loading, signInWithGoogle, signInWithEmail, logout }}>
             {children}
         </AuthContext.Provider>
     );
