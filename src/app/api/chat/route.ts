@@ -56,8 +56,8 @@ export async function POST(req: NextRequest) {
         const response = await result.response;
         const aiText = response.text();
 
-        // 4. Persistence Firestore (si sessionId présent)
-        if (sessionId) {
+        // 4. Persistence Firestore (si sessionId présent et adminDb disponible)
+        if (sessionId && adminDb) {
             const sessionRef = adminDb.collection('chatSessions').doc(sessionId);
 
             await sessionRef.set({
@@ -70,6 +70,8 @@ export async function POST(req: NextRequest) {
                     { role: 'assistant', content: aiText, timestamp: new Date().toISOString() }
                 )
             }, { merge: true });
+        } else if (sessionId && !adminDb) {
+            console.warn('⚠️ Chat logs not saved: Firebase Admin not initialized.');
         }
 
         return NextResponse.json({ response: aiText });
