@@ -25,7 +25,7 @@ const Ecosystem = () => {
             icon: 'fa-solid fa-drumstick-bite',
             color: '#D35400',
             desc: "Poulet et poisson élevés dans des conditions optimales. Traçabilité complète de la naissance à l'assiette pour viTEDia et l'épicerie.",
-            link: '/garden'
+            link: '/elevage'
         },
         {
             title: 'Restaurant viTEDia',
@@ -39,7 +39,7 @@ const Ecosystem = () => {
             icon: 'fa-solid fa-pepper-hot',
             color: '#B68D40',
             desc: "Épices des principaux mets locaux (piment, gingembre, ail, oignon pays...) et produits frais non cuits issus de notre élevage. Circuit court, fraîcheur garantie, prix justes.",
-            link: '/garden'
+            link: '/shop'
         }
     ];
 

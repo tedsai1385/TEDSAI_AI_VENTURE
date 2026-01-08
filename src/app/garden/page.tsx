@@ -21,10 +21,10 @@ const Garden = () => {
     };
 
     const products = [
-        { icon: 'fa-solid fa-pepper-hot', name: 'Épices Rares', desc: 'Poivre de Penja, Gingembre, Curcuma bio.' },
-        { icon: 'fa-solid fa-leaf', name: 'Légumes Feuilles', desc: 'Ndolé, Biteskout, Basilic frais.' },
-        { icon: 'fa-solid fa-carrot', name: 'Maraîchage', desc: 'Tomates, Carottes, Poivrons sans pesticides.' },
-        { icon: 'fa-solid fa-egg', name: 'Élevage Local', desc: 'Poulets fermiers et œufs du jour.' }
+        { icon: 'fa-solid fa-pepper-hot', name: 'Épices Rares', desc: 'Poivre de Penja, Gingembre, Curcuma bio.', link: '/shop' },
+        { icon: 'fa-solid fa-leaf', name: 'Légumes Feuilles', desc: 'Ndolé, Biteskout, Basilic frais.', link: null },
+        { icon: 'fa-solid fa-carrot', name: 'Maraîchage', desc: 'Tomates, Carottes, Poivrons sans pesticides.', link: null },
+        { icon: 'fa-solid fa-egg', name: 'Élevage Local', desc: 'Poulets fermiers et œufs du jour.', link: '/elevage' }
     ];
 
     return (
@@ -42,13 +42,23 @@ const Garden = () => {
                 <h2 style={{ textAlign: 'center', color: 'var(--color-garden-primary)', marginBottom: '3rem', fontSize: '2.5rem' }}>Notre Production</h2>
                 <div className="prod-grid">
                     {products.map((prod, idx) => (
-                        <div key={idx} className="prod-card">
-                            <div className="prod-icon">
-                                <i className={prod.icon}></i>
+                        prod.link ? (
+                            <Link key={idx} href={prod.link} className="prod-card block hover:shadow-xl transition-shadow cursor-pointer">
+                                <div className="prod-icon">
+                                    <i className={prod.icon}></i>
+                                </div>
+                                <h3 style={{ marginBottom: '1rem', color: 'var(--color-garden-primary)' }}>{prod.name} <i className="fa-solid fa-arrow-right text-sm ml-2"></i></h3>
+                                <p style={{ color: '#666' }}>{prod.desc}</p>
+                            </Link>
+                        ) : (
+                            <div key={idx} className="prod-card">
+                                <div className="prod-icon">
+                                    <i className={prod.icon}></i>
+                                </div>
+                                <h3 style={{ marginBottom: '1rem', color: 'var(--color-garden-primary)' }}>{prod.name}</h3>
+                                <p style={{ color: '#666' }}>{prod.desc}</p>
                             </div>
-                            <h3 style={{ marginBottom: '1rem', color: 'var(--color-garden-primary)' }}>{prod.name}</h3>
-                            <p style={{ color: '#666' }}>{prod.desc}</p>
-                        </div>
+                        )
                     ))}
                 </div>
             </section>
