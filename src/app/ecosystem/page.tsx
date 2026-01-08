@@ -38,7 +38,7 @@ const Ecosystem = () => {
             title: 'Épicerie SelecTED',
             icon: 'fa-solid fa-pepper-hot',
             color: '#B68D40',
-            desc: "Épices locales et produits frais issus de notre élevage. Circuit court, fraîcheur garantie et prix justes pour tous.",
+            desc: "Épices des principaux mets locaux (piment, gingembre, ail, oignon pays...) et produits frais non cuits issus de notre élevage. Circuit court, fraîcheur garantie, prix justes.",
             link: '/garden'
         }
     ];
@@ -54,7 +54,7 @@ const Ecosystem = () => {
         <>
             {/* Hero */}
             <section className="hero" style={{
-                backgroundImage: 'linear-gradient(rgba(10,36,99,0.8), rgba(10,36,99,0.5)), url("https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80")',
+                backgroundImage: 'linear-gradient(rgba(10,36,99,0.8), rgba(10,36,99,0.5)), url("https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80")'
             }}>
                 <div className="hero-content container fade-in-up">
                     <h1 className="hero-title">Notre Vision</h1>
