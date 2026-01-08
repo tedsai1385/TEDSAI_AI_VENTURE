@@ -4,14 +4,14 @@
    =================================== */
 
 /* Page Container */
-.container {
+.shopContainer {
     min-height: 100vh;
     background: #FFFFFF;
     padding-top: 100px;
 }
 
-/* Header */
-.header {
+/* Shop Header */
+.shopHeader {
     background: #F8F8F8;
     padding: 2rem 0;
     margin-bottom: 2rem;

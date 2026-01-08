@@ -143,9 +143,9 @@ function ShopContent() {
     const cartCount = cart.reduce((sum, item) => sum + item.cartQuantity, 0);
 
     return (
-        <div className={styles.container}>
+        <div className={styles.shopContainer}>
             {/* Header */}
-            <header className={styles.header}>
+            <header className={styles.shopHeader}>
                 <div style={{ maxWidth: '1320px', margin: '0 auto', padding: '0 1.5rem' }}>
                     <h1 className={styles.title}>Shop</h1>
                     <div className={styles.breadcrumbs}>
