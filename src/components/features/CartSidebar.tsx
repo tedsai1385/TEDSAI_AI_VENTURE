@@ -2,6 +2,8 @@
 
 import { GardenProduct } from '@/types';
 import Image from 'next/image';
+import styles from './CartSidebar.module.css';
+import { loadStripe } from '@stripe/stripe-js';
 
 interface CartItem extends GardenProduct {
     cartQuantity: number;
@@ -14,8 +16,6 @@ interface CartSidebarProps {
     onUpdateQuantity: (id: string, delta: number) => void;
     onRemove: (id: string) => void;
 }
-
-import { loadStripe } from '@stripe/stripe-js';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -52,79 +52,78 @@ export default function CartSidebar({ isOpen, onClose, items, onUpdateQuantity, 
         <>
             {/* Backdrop */}
             <div
-                className={`fixed inset-0 bg-black/50 z-[1000] transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                className={`${styles.overlay} ${isOpen ? styles.overlayOpen : ''}`}
                 onClick={onClose}
             />
 
             {/* Sidebar */}
-            <div className={`fixed right-0 top-0 h-full w-full max-w-md bg-white z-[1001] shadow-2xl transition-transform duration-500 transform ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+            <div className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ''}`}>
                 <div className="flex flex-col h-full">
                     {/* Header */}
-                    <div className="p-6 border-b flex justify-between items-center bg-gray-50">
-                        <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
-                            <i className="fa-solid fa-cart-shopping text-green-600"></i>
-                            Votre Panier
+                    <div className={styles.header}>
+                        <h2 className={styles.title}>
+                            <i className="fa-solid fa-bag-shopping" style={{ color: '#00B207' }}></i>
+                            Shopping Cart ({items.length})
                         </h2>
-                        <button onClick={onClose} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
-                            <i className="fa-solid fa-times text-xl"></i>
+                        <button onClick={onClose} className={styles.closeBtn}>
+                            <i className="fa-solid fa-times"></i>
                         </button>
                     </div>
 
                     {/* Items List */}
-                    <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                    <div className={styles.itemsList}>
                         {items.length === 0 ? (
-                            <div className="h-full flex flex-col items-center justify-center text-center opacity-60">
-                                <i className="fa-solid fa-basket-shopping text-6xl mb-4"></i>
-                                <p className="text-xl">Votre panier est vide</p>
-                                <button
-                                    onClick={onClose}
-                                    className="mt-4 text-green-600 font-bold hover:underline"
-                                >
-                                    Continuer vos achats
+                            <div className={styles.emptyState}>
+                                <div className={styles.emptyIcon}>
+                                    <i className="fa-solid fa-basket-shopping"></i>
+                                </div>
+                                <p className="text-xl font-medium">Your cart is empty</p>
+                                <button onClick={onClose} className={styles.continueBtn}>
+                                    Continue Shopping
                                 </button>
                             </div>
                         ) : (
                             items.map((item) => (
-                                <div key={item.id} className="flex gap-4 group">
-                                    <div className="relative h-20 w-20 rounded-lg overflow-hidden flex-shrink-0 border">
+                                <div key={item.id} className={styles.item}>
+                                    <div className={styles.imageContainer}>
                                         <Image
                                             src={item.image || 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?q=80&w=800'}
                                             alt={item.name}
                                             fill
-                                            className="object-cover"
+                                            className={styles.itemImage}
                                         />
                                     </div>
 
-                                    <div className="flex-1">
-                                        <div className="flex justify-between items-start">
-                                            <h4 className="font-bold text-gray-900">{item.name}</h4>
+                                    <div className={styles.itemDetails}>
+                                        <div className={styles.itemHeader}>
+                                            <h4 className={styles.itemName}>{item.name}</h4>
                                             <button
                                                 onClick={() => onRemove(item.id)}
-                                                className="text-gray-400 hover:text-red-500 transition-colors"
+                                                className={styles.removeBtn}
                                             >
-                                                <i className="fa-solid fa-trash-can"></i>
+                                                <i className="fa-solid fa-times-circle text-lg"></i>
                                             </button>
                                         </div>
-                                        <p className="text-sm text-gray-500 mb-2">{item.variety}</p>
+                                        <p className={styles.itemVariety}>{item.variety}</p>
 
-                                        <div className="flex justify-between items-center">
-                                            <div className="flex items-center border rounded-lg bg-gray-50">
+                                        <div className={styles.itemControls}>
+                                            <div className={styles.quantityControl}>
                                                 <button
                                                     onClick={() => onUpdateQuantity(item.id, -1)}
-                                                    className="px-3 py-1 hover:bg-gray-200 transition-colors disabled:opacity-30"
+                                                    className={styles.qtyBtn}
                                                     disabled={item.cartQuantity <= 1}
                                                 >
                                                     -
                                                 </button>
-                                                <span className="px-3 font-semibold">{item.cartQuantity}</span>
+                                                <span className={styles.qtyValue}>{item.cartQuantity}</span>
                                                 <button
                                                     onClick={() => onUpdateQuantity(item.id, 1)}
-                                                    className="px-3 py-1 hover:bg-gray-200 transition-colors"
+                                                    className={styles.qtyBtn}
                                                 >
                                                     +
                                                 </button>
                                             </div>
-                                            <span className="font-bold text-green-700">
+                                            <span className={styles.itemPrice}>
                                                 {((item.price || 0) * item.cartQuantity).toLocaleString()} XAF
                                             </span>
                                         </div>
@@ -136,20 +135,16 @@ export default function CartSidebar({ isOpen, onClose, items, onUpdateQuantity, 
 
                     {/* Footer */}
                     {items.length > 0 && (
-                        <div className="p-6 border-t bg-gray-50 space-y-4">
-                            <div className="flex justify-between text-xl font-bold">
-                                <span>Total</span>
-                                <span className="text-green-700">{total.toLocaleString()} XAF</span>
+                        <div className={styles.footer}>
+                            <div className={styles.totalRow}>
+                                <span>Subtotal:</span>
+                                <span>{total.toLocaleString()} XAF</span>
                             </div>
-                            <p className="text-xs text-gray-500 text-center">
-                                Livraison gratuite dans tout Yaoundé pour les commandes &gt; 10,000 XAF.
-                            </p>
                             <button
                                 onClick={handleCheckout}
-                                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-3"
+                                className={styles.checkoutBtn}
                             >
-                                Passer la commande
-                                <i className="fa-solid fa-arrow-right"></i>
+                                Checkout
                             </button>
                         </div>
                     )}
