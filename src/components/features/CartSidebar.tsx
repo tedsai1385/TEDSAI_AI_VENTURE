@@ -15,8 +15,38 @@ interface CartSidebarProps {
     onRemove: (id: string) => void;
 }
 
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+
 export default function CartSidebar({ isOpen, onClose, items, onUpdateQuantity, onRemove }: CartSidebarProps) {
     const total = items.reduce((sum, item) => sum + (item.price || 0) * item.cartQuantity, 0);
+
+    const handleCheckout = async () => {
+        try {
+            const stripe = await stripePromise;
+            if (!stripe) throw new Error('Stripe failed to initialize.');
+
+            const response = await fetch('/api/checkout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ items }),
+            });
+
+            if (!response.ok) {
+                const err = await response.text();
+                throw new Error(err);
+            }
+
+            const { url } = await response.json();
+            window.location.href = url;
+        } catch (error) {
+            console.error('Checkout Error:', error);
+            alert('Une erreur est survenue lors de la redirection vers le paiement.');
+        }
+    };
 
     return (
         <>
@@ -115,7 +145,7 @@ export default function CartSidebar({ isOpen, onClose, items, onUpdateQuantity, 
                                 Livraison gratuite dans tout Yaoundé pour les commandes &gt; 10,000 XAF.
                             </p>
                             <button
-                                onClick={() => alert('Vers le checkout Stripe... (Simulation)')}
+                                onClick={handleCheckout}
                                 className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-3"
                             >
                                 Passer la commande
