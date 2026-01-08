@@ -7,17 +7,34 @@ import { GardenProduct } from '@/types';
 import { db } from '@/lib/firebase/config';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import styles from './shop.module.css';
+import { useSearchParams } from 'next/navigation';
 
 interface CartItem extends GardenProduct {
     cartQuantity: number;
 }
 
 export default function ShopPage() {
+    const searchParams = useSearchParams();
     const [products, setProducts] = useState<GardenProduct[]>([]);
     const [cart, setCart] = useState<CartItem[]>([]);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState('Tout');
+    const [feedback, setFeedback] = useState<{ type: 'success' | 'error' | null, message: string }>({ type: null, message: '' });
+
+    // Handle Stripe redirect status
+    useEffect(() => {
+        const success = searchParams.get('success');
+        const canceled = searchParams.get('canceled');
+
+        if (success) {
+            setFeedback({ type: 'success', message: 'Merci pour votre commande ! Votre paiement a été validé avec succès.' });
+            setCart([]); // Clear cart on success
+            localStorage.removeItem('cart');
+        } else if (canceled) {
+            setFeedback({ type: 'error', message: 'Le paiement a été annulé. Vous pouvez réessayer quand vous le souhaitez.' });
+        }
+    }, [searchParams]);
 
     // Filters Simulation state
     const [priceRange, setPriceRange] = useState([500, 10000]);
@@ -106,6 +123,22 @@ export default function ShopPage() {
                     </div>
                 </div>
             </header>
+
+            {/* Feedback Message */}
+            {feedback.type && (
+                <div className="container" style={{ maxWidth: '1320px', margin: '1rem auto' }}>
+                    <div className={`p-4 rounded-lg flex items-center justify-between ${feedback.type === 'success' ? 'bg-green-100 text-green-800 border-green-200' : 'bg-red-100 text-red-800 border-red-200'
+                        } border`}>
+                        <div className="flex items-center gap-3">
+                            <i className={`fa-solid ${feedback.type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}`}></i>
+                            <span className="font-medium">{feedback.message}</span>
+                        </div>
+                        <button onClick={() => setFeedback({ type: null, message: '' })} className="hover:opacity-70">
+                            <i className="fa-solid fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <div className={styles.mainContainer}>
                 {/* Sidebar Filters */}
