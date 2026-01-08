@@ -124,23 +124,6 @@ export default function ShopPage() {
                             </div>
                         </div>
                     </div>
-
-                    <div className={styles.filterSection}>
-                        <h3 className={styles.filterTitle}>Rating</h3>
-                        <div className={styles.checkboxList}>
-                            {[5, 4, 3, 2, 1].map(stars => (
-                                <label key={stars} className={styles.checkboxItem}>
-                                    <input type="checkbox" className={styles.checkboxInput} />
-                                    <span className="flex text-[#FF8A00] gap-1 text-xs">
-                                        {[...Array(5)].map((_, i) => (
-                                            <i key={i} className={`fa-solid fa-star ${i >= stars ? 'text-gray-300' : ''}`}></i>
-                                        ))}
-                                    </span>
-                                    <span style={{ marginLeft: 'auto', color: '#999' }}>{stars}.0</span>
-                                </label>
-                            ))}
-                        </div>
-                    </div>
                 </aside>
 
                 {/* Main Content */}
@@ -210,75 +193,11 @@ export default function ShopPage() {
                 </div>
             </div>
 
-            {/* Features Section */}
-            <section className={styles.featuresSection}>
-                <div className={styles.featuresContainer}>
-                    <div className={styles.featureCard}>
-                        <div className={styles.featureIcon}>
-                            <i className="fa-solid fa-truck-fast"></i>
-                        </div>
-                        <div className={styles.featureText}>
-                            <h4>Free Shipping</h4>
-                            <p>Free shipping on all your order</p>
-                        </div>
-                    </div>
-
-                    <div className={styles.featureCard}>
-                        <div className={styles.featureIcon}>
-                            <i className="fa-solid fa-headset"></i>
-                        </div>
-                        <div className={styles.featureText}>
-                            <h4>Customer Support 24/7</h4>
-                            <p>Instant access to Support</p>
-                        </div>
-                    </div>
-
-                    <div className={styles.featureCard}>
-                        <div className={styles.featureIcon}>
-                            <i className="fa-solid fa-bag-shopping"></i>
-                        </div>
-                        <div className={styles.featureText}>
-                            <h4>100% Secure Payment</h4>
-                            <p>We ensure your money is save</p>
-                        </div>
-                    </div>
-
-                    <div className={styles.featureCard}>
-                        <div className={styles.featureIcon}>
-                            <i className="fa-solid fa-box-open"></i>
-                        </div>
-                        <div className={styles.featureText}>
-                            <h4>Money-Back Guarantee</h4>
-                            <p>30 Days Money-Back Guarantee</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Newsletter Section */}
-            <section className={styles.newsletterSection}>
-                <div className={styles.newsletterContent}>
-                    <h2 className={styles.newsletterTitle}>Subscribe to our Newsletter</h2>
-                    <p className={styles.newsletterSubtitle}>Pellentesque eu nibh eget malesuada cursus ex turpis o.</p>
-                    <div className={styles.newsletterForm}>
-                        <input type="email" placeholder="Your email address" className={styles.emailInput} />
-                        <button className="subscribeBtn" style={{
-                            background: '#00B207',
-                            color: 'white',
-                            padding: '1rem 2.5rem',
-                            borderRadius: '50px',
-                            fontWeight: '600',
-                            border: 'none',
-                            cursor: 'pointer'
-                        }}>Subscribe</button>
-                    </div>
-                </div>
-            </section>
-
             {/* Fab Cart Button (Sticky) */}
             <button
                 onClick={() => setIsSidebarOpen(true)}
                 className="fixed bottom-8 right-8 bg-[#00B207] text-white p-4 rounded-full shadow-2xl z-50 hover:scale-110 transition-transform flex items-center gap-2"
+                style={{ marginBottom: '20px', marginRight: '20px' }}
             >
                 <i className="fa-solid fa-basket-shopping fa-lg"></i>
                 {cartCount > 0 && (
@@ -287,7 +206,6 @@ export default function ShopPage() {
                     </span>
                 )}
             </button>
-
 
             <CartSidebar
                 isOpen={isSidebarOpen}
