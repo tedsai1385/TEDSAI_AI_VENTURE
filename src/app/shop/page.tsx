@@ -107,12 +107,11 @@ export default function ShopPage() {
         ? products
         : products.filter(p => p.category === activeCategory);
 
-    return (
     // Calculate dynamic category counts
     const getCategoryCount = (categoryName: string) => {
-            if (categoryName === 'Tout') return products.length;
-            return products.filter(p => p.category === categoryName).length;
-        };
+        if (categoryName === 'Tout') return products.length;
+        return products.filter(p => p.category === categoryName).length;
+    };
 
     return (
         <div className={styles.pageContainer}>
