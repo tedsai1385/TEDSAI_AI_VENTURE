@@ -12,7 +12,7 @@ const SolutionsIA = () => {
   };
 
   return (
-    <>
+    <div style={{ paddingBottom: '100px' }}>
       {/* Hero Section */}
       <section className="hero hero-ia">
         <div className="hero-content container fade-in-up" style={{ textAlign: 'center' }}>
@@ -143,7 +143,7 @@ const SolutionsIA = () => {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 };
 

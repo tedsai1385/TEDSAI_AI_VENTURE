@@ -50,7 +50,7 @@ const Observatoire = () => {
     };
 
     return (
-        <>
+        <div style={{ paddingBottom: '100px' }}>
             {/* Hero */}
             <section className="obs-hero-v2">
                 <div className="hero-container container">
@@ -113,7 +113,7 @@ const Observatoire = () => {
             <button className="fab-submit" onClick={() => alert("Ouverture de l'éditeur... (Simulation)")} title="Proposer un article">
                 <i className="fa-solid fa-plus fa-xl"></i>
             </button>
-        </>
+        </div>
     );
 };
 
