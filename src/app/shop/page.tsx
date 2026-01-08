@@ -77,15 +77,17 @@ export default function ShopPage() {
     }, []);
 
     const addToCart = (product: GardenProduct) => {
-        setCart(prev => {
-            const existing = prev.find(item => item.id === product.id);
-            if (existing) {
-                return prev.map(item =>
-                    item.id === product.id ? { ...item, cartQuantity: item.cartQuantity + 1 } : item
-                );
-            }
-            return [...prev, { ...product, cartQuantity: 1 }];
-        });
+        const itemIndex = cart.findIndex(item => item.id === product.id);
+        let newCart;
+        if (itemIndex > -1) {
+            newCart = [...cart];
+            newCart[itemIndex].cartQuantity += 1;
+        } else {
+            newCart = [...cart, { ...product, cartQuantity: 1 }];
+        }
+        setCart(newCart);
+        localStorage.setItem('cart', JSON.stringify(newCart));
+        showToast(`${product.name} ajouté au panier !`);
         setIsSidebarOpen(true);
     };
 
@@ -264,6 +266,14 @@ export default function ShopPage() {
                     )}
                 </div>
             </button>
+
+            {/* Toast Notification */}
+            {toast.visible && (
+                <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-[#333] text-white px-6 py-3 rounded-full shadow-2xl z-[10000] flex items-center gap-3 animate-bounce">
+                    <i className="fa-solid fa-cart-plus text-[#00B207]"></i>
+                    <span className="text-sm font-medium">{toast.message}</span>
+                </div>
+            )}
 
             <CartSidebar
                 isOpen={isSidebarOpen}
