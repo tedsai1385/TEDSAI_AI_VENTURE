@@ -89,14 +89,31 @@ export default function ShopPage() {
         : products.filter(p => p.category === activeCategory);
 
     return (
+    // Calculate dynamic category counts
+    const getCategoryCount = (categoryName: string) => {
+            if (categoryName === 'Tout') return products.length;
+            return products.filter(p => p.category === categoryName).length;
+        };
+
+    return (
         <div className={styles.pageContainer}>
+            {/* Shop Header (Breadcrumbs) */}
+            <header className={styles.shopHeader}>
+                <div className="container" style={{ maxWidth: '1320px', margin: '0 auto', padding: '0 1.5rem' }}>
+                    <h1 className={styles.shopTitle}>Shop</h1>
+                    <div className={styles.breadcrumbs}>
+                        Home <span>&gt;</span> <span className={styles.activeBreadcrumb}>Shop</span>
+                    </div>
+                </div>
+            </header>
+
             <div className={styles.mainContainer}>
                 {/* Sidebar Filters */}
                 <aside className={styles.sidebar}>
                     <div className={styles.filterSection}>
                         <h3 className={styles.filterTitle}>Category</h3>
                         <div className={styles.checkboxList}>
-                            {categories.filter(c => c !== 'Tout').map(cat => (
+                            {categories.map(cat => (
                                 <label key={cat} className={styles.checkboxItem}>
                                     <input
                                         type="checkbox"
@@ -104,7 +121,7 @@ export default function ShopPage() {
                                         checked={activeCategory === cat}
                                         onChange={() => setActiveCategory(activeCategory === cat ? 'Tout' : cat)}
                                     />
-                                    {cat} <span style={{ marginLeft: 'auto', color: '#999' }}>(12)</span>
+                                    {cat} <span style={{ marginLeft: 'auto', color: '#999' }}>({getCategoryCount(cat)})</span>
                                 </label>
                             ))}
                         </div>
@@ -138,7 +155,7 @@ export default function ShopPage() {
                         </button>
 
                         <div className={styles.resultsCount}>
-                            Showing 1-{filteredProducts.length} of {products.length} results
+                            Showing {filteredProducts.length} results
                         </div>
 
                         <div className={styles.sortDropdown}>
@@ -196,15 +213,23 @@ export default function ShopPage() {
             {/* Fab Cart Button (Sticky) */}
             <button
                 onClick={() => setIsSidebarOpen(true)}
-                className="fixed bottom-8 right-8 bg-[#00B207] text-white p-4 rounded-full shadow-2xl z-50 hover:scale-110 transition-transform flex items-center gap-2"
-                style={{ marginBottom: '20px', marginRight: '20px' }}
+                className="fixed bg-[#00B207] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center justify-center gap-2"
+                style={{
+                    bottom: '80px', /* Raised to avoid Footer overlap */
+                    right: '30px',
+                    zIndex: 9999, /* High z-index */
+                    width: '60px',
+                    height: '60px'
+                }}
             >
-                <i className="fa-solid fa-basket-shopping fa-lg"></i>
-                {cartCount > 0 && (
-                    <span className="bg-red-500 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full absolute -top-2 -right-2 border-2 border-white">
-                        {cartCount}
-                    </span>
-                )}
+                <div className="relative">
+                    <i className="fa-solid fa-basket-shopping fa-xl"></i>
+                    {cartCount > 0 && (
+                        <span className="absolute -top-3 -right-3 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border border-white">
+                            {cartCount}
+                        </span>
+                    )}
+                </div>
             </button>
 
             <CartSidebar
