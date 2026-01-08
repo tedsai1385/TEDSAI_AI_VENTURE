@@ -3,6 +3,7 @@
 import React from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import styles from './login.module.css';
 
 export default function LoginPage() {
     const { user, signInWithGoogle, signInWithEmail } = useAuth();
@@ -52,72 +53,79 @@ export default function LoginPage() {
     }, [user, router]);
 
     return (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-            <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center">
-                <div className="mb-6">
-                    <i className="fa-solid fa-cube text-4xl text-blue-600"></i>
+        <div className={styles.loginPage}>
+            {/* Background Effects */}
+            <div className={`${styles.blob} ${styles.blob1}`}></div>
+            <div className={`${styles.blob} ${styles.blob2}`}></div>
+
+            <div className={styles.glassCard}>
+                <div className={styles.iconWrapper}>
+                    <div className={styles.iconGlow}></div>
+                    <i className={`fa-solid fa-cube ${styles.icon}`}></i>
                 </div>
-                <h1 className="text-2xl font-bold text-gray-800 mb-2">TEDSAI Admin</h1>
-                <p className="text-gray-500 mb-8">Connectez-vous pour accéder au tableau de bord</p>
+
+                <h1 className={styles.title}>TEDSAI Admin</h1>
+                <p className={styles.subtitle}>Portail de gestion unifié pour l'écosystème.</p>
 
                 {error && (
-                    <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-lg border border-red-100 flex items-start gap-2 text-left">
-                        <i className="fa-solid fa-circle-exclamation mt-1"></i>
+                    <div className={styles.errorAlert}>
+                        <i className={`fa-solid fa-triangle-exclamation ${styles.errorIcon}`}></i>
                         <div>
-                            <strong>Erreur :</strong> {error}
+                            <span className={styles.errorTitle}>Erreur de connexion</span>
+                            <span className={styles.errorMessage}>{error}</span>
                         </div>
                     </div>
                 )}
 
-                <form onSubmit={handleEmailLogin} className="w-full mb-6 text-left space-y-4">
-                    <div>
-                        <label className="block text-gray-700 text-sm font-medium mb-1">Email</label>
+                <form onSubmit={handleEmailLogin} className={styles.form}>
+                    <div className={styles.inputGroup}>
+                        <label className={styles.label}>Email</label>
                         <input
                             type="email"
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                            className={styles.input}
                             placeholder="admin@tedsai.com"
                         />
                     </div>
-                    <div>
-                        <label className="block text-gray-700 text-sm font-medium mb-1">Mot de passe</label>
+                    <div className={styles.inputGroup}>
+                        <label className={styles.label}>Mot de passe</label>
                         <input
                             type="password"
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                            className={styles.input}
                             placeholder="••••••••"
                         />
                     </div>
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-md disabled:opacity-50"
+                        className={styles.submitBtn}
                     >
                         {loading ? 'Connexion...' : 'Se connecter'}
                     </button>
                 </form>
 
-                <div className="relative mb-6">
-                    <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-gray-300"></div>
-                    </div>
-                    <div className="relative flex justify-center text-sm">
-                        <span className="px-2 text-gray-500 bg-white">OU</span>
-                    </div>
+                <div className={styles.divider}>
+                    <div className={styles.dividerLine}></div>
+                    <span className={styles.dividerText}>OU</span>
                 </div>
 
                 <button
                     onClick={handleGoogleLogin}
                     disabled={loading}
-                    className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-all"
+                    className={styles.googleBtn}
                 >
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
-                    Continuer avec Google
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style={{ width: '20px', height: '20px' }} />
+                    <span>Continuer avec Google</span>
                 </button>
+
+                <p className={styles.footer}>
+                    &copy; {new Date().getFullYear()} TEDSAI AI Venture. <br /> Accès sécurisé réservé au personnel.
+                </p>
             </div>
         </div>
     );

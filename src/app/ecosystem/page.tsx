@@ -55,38 +55,32 @@ const Ecosystem = () => {
             {/* Hero */}
             <section className="hero" style={{
                 backgroundImage: 'linear-gradient(rgba(10,36,99,0.8), rgba(10,36,99,0.5)), url("https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80")',
-                height: '50vh',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                textAlign: 'center',
-                color: 'white'
             }}>
                 <div className="hero-content container fade-in-up">
-                    <h1 style={{ fontSize: '3.5rem', fontWeight: 800 }}>Notre Vision</h1>
-                    <p style={{ fontSize: '1.2rem', marginTop: '1rem' }}>Où l'Intelligence Artificielle Rencontre la Nature et la Gastronomie.</p>
+                    <h1 className="hero-title">Notre Vision</h1>
+                    <p className="hero-desc">Où l'Intelligence Artificielle Rencontre la Nature et la Gastronomie.</p>
                 </div>
             </section>
 
             {/* Narrative Section */}
-            <section className="container" style={{ padding: '5rem 0', textAlign: 'center' }}>
-                <h2 style={{ fontSize: '2.5rem', color: 'var(--color-ecosystem-primary)', marginBottom: '2rem' }}>Une Boucle Vertueuse</h2>
-                <p style={{ maxWidth: '800px', margin: '0 auto', fontSize: '1.15rem', color: '#444', lineHeight: 1.8, textAlign: 'left' }}>
+            <section className="container section-padding text-center">
+                <h2 className="section-title text-primary">Une Boucle Vertueuse</h2>
+                <p className="section-desc">
                     TEDSAI Complex n'est pas une simple entreprise, c'est un laboratoire vivant où cinq mondes fusionnent. L'Intelligence Artificielle optimise la production de notre Jardin Urbain et de notre Élevage. Le Jardin et l'Élevage nourrissent notre Restaurant viTEDia et notre Épicerie. Le Restaurant génère des données et des déchets organiques qui retournent alimenter l'IA, le Jardin et l'Élevage. C'est l'économie circulaire à l'ère du numérique.
                 </p>
             </section>
 
             {/* Poles Section */}
-            <section style={{ background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', padding: '5rem 0' }}>
+            <section style={{ background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' }} className="section-padding">
                 <div className="container">
-                    <h2 style={{ textAlign: 'center', marginBottom: '4rem', color: 'var(--color-ecosystem-primary)', fontSize: '2.2rem' }}>5 Pôles Interconnectés</h2>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+                    <h2 className="section-title text-primary text-center mb-4">5 Pôles Interconnectés</h2>
+                    <div className="poles-grid">
                         {poles.map((pole, idx) => (
-                            <div key={idx} className="value-card" style={{ borderTop: `5px solid ${pole.color}`, textAlign: 'left' }}>
+                            <div key={idx} className="value-card pole-card" style={{ borderTop: `5px solid ${pole.color}` }}>
                                 <i className={`${pole.icon} value-icon`} style={{ color: pole.color }}></i>
-                                <h3 style={{ color: 'var(--color-ecosystem-primary)', marginBottom: '1rem' }}>{pole.title}</h3>
-                                <p style={{ fontSize: '0.95rem', color: '#555', marginBottom: '1.5rem' }}>{pole.desc}</p>
-                                <Link href={pole.link} className="btn-text" style={{ color: pole.color, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                                <h3 className="card-title text-primary">{pole.title}</h3>
+                                <p className="card-desc">{pole.desc}</p>
+                                <Link href={pole.link} className="btn-text" style={{ color: pole.color }}>
                                     En savoir plus <i className="fa-solid fa-arrow-right"></i>
                                 </Link>
                             </div>
@@ -96,15 +90,15 @@ const Ecosystem = () => {
             </section>
 
             {/* History Timeline */}
-            <section style={{ background: '#fff', padding: '5rem 0' }}>
+            <section style={{ background: '#fff' }} className="section-padding">
                 <div className="container">
-                    <h2 style={{ textAlign: 'center', marginBottom: '3rem', fontSize: '2.5rem' }}>Notre Histoire</h2>
+                    <h2 className="section-title text-center mb-3">Notre Histoire</h2>
                     <div className="timeline">
                         {history.map((item, idx) => (
                             <div key={idx} className={`timeline-item ${idx % 2 === 0 ? 'left' : 'right'}`}>
                                 <div className="content">
-                                    <h3 style={{ color: 'var(--color-ecosystem-primary)', marginBottom: '0.5rem' }}>{item.year}</h3>
-                                    <p style={{ color: '#666' }}>{item.text}</p>
+                                    <h3 className="card-title text-primary">{item.year}</h3>
+                                    <p className="card-desc">{item.text}</p>
                                 </div>
                             </div>
                         ))}
@@ -113,23 +107,23 @@ const Ecosystem = () => {
             </section>
 
             {/* Values Section */}
-            <section className="container" style={{ padding: '5rem 0' }}>
-                <h2 style={{ textAlign: 'center', marginBottom: '4rem', fontSize: '2.5rem' }}>Nos Valeurs</h2>
+            <section className="container section-padding">
+                <h2 className="section-title text-center mb-4">Nos Valeurs</h2>
                 <div className="values-grid">
                     <div className="value-card">
                         <i className="fa-solid fa-lightbulb value-icon"></i>
                         <h3>Innovation Pragmatique</h3>
-                        <p style={{ color: '#666' }}>L'IA doit résoudre de vrais problèmes du quotidien.</p>
+                        <p className="card-desc">L'IA doit résoudre de vrais problèmes du quotidien.</p>
                     </div>
                     <div className="value-card">
                         <i className="fa-solid fa-recycle value-icon"></i>
                         <h3>Durabilité</h3>
-                        <p style={{ color: '#666' }}>Zéro déchet, zéro pesticide, circuit 100% court.</p>
+                        <p className="card-desc">Zéro déchet, zéro pesticide, circuit 100% court.</p>
                     </div>
                     <div className="value-card">
                         <i className="fa-solid fa-hand-holding-heart value-icon"></i>
                         <h3>Humain d'Abord</h3>
-                        <p style={{ color: '#666' }}>La technologie au service de l'épanouissement humain.</p>
+                        <p className="card-desc">La technologie au service de l'épanouissement humain.</p>
                     </div>
                 </div>
             </section>
