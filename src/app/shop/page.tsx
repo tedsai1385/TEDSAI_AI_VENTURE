@@ -8,12 +8,13 @@ import { db } from '@/lib/firebase/config';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import styles from './shop.module.css';
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
 interface CartItem extends GardenProduct {
     cartQuantity: number;
 }
 
-export default function ShopPage() {
+function ShopContent() {
     const searchParams = useSearchParams();
     const [products, setProducts] = useState<GardenProduct[]>([]);
     const [cart, setCart] = useState<CartItem[]>([]);
@@ -24,6 +25,8 @@ export default function ShopPage() {
 
     // Handle Stripe redirect status
     useEffect(() => {
+        if (!searchParams) return;
+
         const success = searchParams.get('success');
         const canceled = searchParams.get('canceled');
 
@@ -282,5 +285,13 @@ export default function ShopPage() {
                 onRemove={removeFromCart}
             />
         </div>
+    );
+}
+
+export default function ShopPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Chargement...</div>}>
+            <ShopContent />
+        </Suspense>
     );
 }
