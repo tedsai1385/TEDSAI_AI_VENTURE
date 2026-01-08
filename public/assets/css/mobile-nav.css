@@ -18,7 +18,7 @@
     /* Effet Glassmorphism */
     box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
     /* Ombre plus douce */
-    z-index: 1000;
+    z-index: 9999;
     padding: 0.5rem 0 0.25rem 0;
     /* Padding ajusté */
     border-top: 1px solid rgba(0, 0, 0, 0.05);
