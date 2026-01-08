@@ -8,10 +8,7 @@
 
 /* Shop Header (Breadcrumbs) */
 .shopHeader {
-    background-image: url('https://img.freepik.com/free-vector/white-background-with-wavy-lines_23-2149150151.jpg');
-    /* Subtle pattern */
-    background-size: cover;
-    background-position: center;
+    background-color: #F8F8F8;
     padding: 3rem 0;
     margin-bottom: 3rem;
     text-align: center;
@@ -307,11 +304,7 @@
     background: #f7f7f7;
     padding: 5rem 1.5rem;
     text-align: center;
-    background-image: url('https://img.freepik.com/free-vector/hand-drawn-delivery-concept_23-2149156711.jpg?w=1380');
-    background-size: cover;
-    background-blend-mode: overlay;
     margin-bottom: -70px;
-    /* Overlap nicely with Footer if needed */
 }
 
 .newsletterContent {
