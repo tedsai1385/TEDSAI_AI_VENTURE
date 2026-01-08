@@ -22,6 +22,12 @@ function ShopContent() {
     const [loading, setLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState('Tout');
     const [feedback, setFeedback] = useState<{ type: 'success' | 'error' | null, message: string }>({ type: null, message: '' });
+    const [toast, setToast] = useState<{ visible: boolean, message: string }>({ visible: false, message: '' });
+
+    const showToast = (message: string) => {
+        setToast({ visible: true, message });
+        setTimeout(() => setToast({ visible: false, message: '' }), 3000);
+    };
 
     // Handle Stripe redirect status
     useEffect(() => {
