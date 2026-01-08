@@ -35,6 +35,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
                         src={product.image || 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?q=80&w=800'}
                         alt={product.name}
                         fill
+                        unoptimized
                         className="object-contain hover:scale-105 transition-transform duration-500"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                     />

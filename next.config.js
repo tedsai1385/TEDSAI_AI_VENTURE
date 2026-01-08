@@ -8,6 +8,10 @@ const nextConfig = {
         hostname: 'storage.googleapis.com',
         pathname: '/tedsai-media/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
     ],
   },
 };
