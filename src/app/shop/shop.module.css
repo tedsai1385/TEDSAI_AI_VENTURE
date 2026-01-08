@@ -3,6 +3,15 @@
    No decorative images, performance-first
    =================================== */
 
+/* Reset global styles that might interfere */
+.shopContainer,
+.shopContainer *,
+.shopHeader,
+.shopHeader * {
+    background-image: none !important;
+    background-attachment: initial !important;
+}
+
 /* Page Container */
 .shopContainer {
     min-height: 100vh;
