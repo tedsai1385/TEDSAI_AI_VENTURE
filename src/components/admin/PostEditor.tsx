@@ -8,9 +8,10 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 interface PostEditorProps {
     onClose: () => void;
     onSuccess: () => void;
+    defaultStatus?: 'published' | 'pending';
 }
 
-export default function PostEditor({ onClose, onSuccess }: PostEditorProps) {
+export default function PostEditor({ onClose, onSuccess, defaultStatus = 'published' }: PostEditorProps) {
     const [title, setTitle] = useState('');
     const [category, setCategory] = useState('IA');
     const [summary, setSummary] = useState('');
@@ -50,7 +51,8 @@ export default function PostEditor({ onClose, onSuccess }: PostEditorProps) {
                 author,
                 image: imageUrl || 'https://via.placeholder.com/800x400',
                 createdAt: new Date().toISOString(),
-                likes: 0
+                likes: 0,
+                status: defaultStatus
             });
 
             onSuccess();

@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 // @ts-ignore
-import data from '../../../../assets/data/epicerie.json';
+import data from '../../../assets/data/epicerie.json';
 
 export const metadata = {
     title: 'TEDSAI Épicerie - Épices & Produits Frais',

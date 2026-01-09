@@ -105,6 +105,12 @@ export default function AdminDashboardPage() {
                         >
                             <i className="fa-solid fa-users w-6"></i> Utilisateurs
                         </button>
+                        <button
+                            onClick={() => setActiveView('settings')}
+                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'settings' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
+                        >
+                            <i className="fa-solid fa-cog w-6"></i> Paramètres
+                        </button>
                     </nav>
                 </aside>
 
@@ -113,7 +119,7 @@ export default function AdminDashboardPage() {
                     {/* Header */}
                     <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shadow-sm">
                         <h2 className="text-xl font-bold text-gray-800 capitalize">
-                            {activeView === 'dashboard' ? 'Vue d\'ensemble' : activeView === 'shop' ? 'Gestion Boutique' : activeView === 'blog' ? 'Blog & Analyses' : 'Utilisateurs'}
+                            {activeView === 'dashboard' ? 'Vue d\'ensemble' : activeView === 'shop' ? 'Gestion Boutique' : activeView === 'blog' ? 'Blog & Analyses' : activeView === 'users' ? 'Utilisateurs' : 'Paramètres Globaux'}
                         </h2>
                         <div className="flex items-center gap-4">
                             <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold flex items-center gap-2">
@@ -290,6 +296,49 @@ export default function AdminDashboardPage() {
                                 <i className="fa-solid fa-users-gear text-6xl mb-4"></i>
                                 <h3 className="text-xl font-semibold text-gray-600">Module Utilisateurs</h3>
                                 <p>Gestion des rôles et accès bientôt disponible.</p>
+                            </div>
+                        )}
+
+                        {/* SETTINGS VIEW */}
+                        {activeView === 'settings' && (
+                            <div className="space-y-6 max-w-2xl">
+                                <div className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm">
+                                    <h3 className="text-lg font-bold text-gray-800 mb-6 border-b pb-4">Configuration Générale</h3>
+                                    <form onSubmit={(e) => { e.preventDefault(); alert("✅ Paramètres sauvegardés (Simulation)"); }}>
+                                        <div className="mb-6">
+                                            <label className="block text-sm font-semibold text-gray-700 mb-2">Nom du Site</label>
+                                            <input type="text" defaultValue="TEDSAI Complex" className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50" />
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-6 mb-6">
+                                            <div>
+                                                <label className="block text-sm font-semibold text-gray-700 mb-2">Email Contact</label>
+                                                <input type="email" defaultValue="contact@tedsai.cm" className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50" />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-semibold text-gray-700 mb-2">Téléphone</label>
+                                                <input type="text" defaultValue="+237 000 000 000" className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50" />
+                                            </div>
+                                        </div>
+
+                                        <div className="mb-6">
+                                            <label className="block text-sm font-semibold text-gray-700 mb-2">Adresse</label>
+                                            <input type="text" defaultValue="Yaoundé, Cameroun" className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50" />
+                                        </div>
+
+                                        <div className="mb-8 p-4 bg-red-50 rounded-lg border border-red-100">
+                                            <label className="flex items-center gap-3 cursor-pointer">
+                                                <input type="checkbox" className="w-5 h-5 text-red-600" />
+                                                <span className="font-semibold text-red-700">Mode Maintenance</span>
+                                            </label>
+                                            <p className="text-xs text-red-500 mt-2 ml-8">Si activé, le site public affichera une page de maintenance.</p>
+                                        </div>
+
+                                        <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors">
+                                            Enregistrer les modifications
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         )}
 

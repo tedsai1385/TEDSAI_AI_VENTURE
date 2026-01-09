@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 // @ts-ignore
-import data from '../../../../assets/data/case-studies.json';
+import data from '../../../assets/data/case-studies.json';
 
 export const metadata = {
     title: 'Études de Cas - TEDSAI Complex',

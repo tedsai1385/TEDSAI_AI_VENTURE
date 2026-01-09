@@ -2,7 +2,7 @@
 
 import React from 'react';
 // @ts-ignore
-import data from '../../../../assets/data/resources.json';
+import data from '../../../assets/data/resources.json';
 
 export default function RessourcesPage() {
     const resources = data.resources;

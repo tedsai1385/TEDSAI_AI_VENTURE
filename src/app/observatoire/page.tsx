@@ -5,11 +5,13 @@ import './observatoire.css';
 import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import Link from 'next/link';
+import PostEditor from '@/components/admin/PostEditor';
 
 const Observatoire = () => {
     const [filter, setFilter] = useState('all');
     const [posts, setPosts] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isSubmitOpen, setIsSubmitOpen] = useState(false);
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -134,7 +136,44 @@ const Observatoire = () => {
                     </div>
                 )}
             </div>
-            {/* FAB hidden for public view unless we implement public suggestion */}
+            {/* FAB for Public Submission */}
+            <button
+                className="fab-submit"
+                onClick={() => setIsSubmitOpen(true)}
+                title="Proposer un article"
+                style={{
+                    position: 'fixed',
+                    bottom: '100px', // Adjusted to be above mobile nav
+                    right: '2rem',
+                    background: '#0A2463', // obs-primary
+                    color: 'white',
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 10px 25px rgba(10, 36, 99, 0.4)',
+                    cursor: 'pointer',
+                    zIndex: 100,
+                    border: 'none',
+                    fontSize: '1.5rem'
+                }}
+            >
+                <i className="fa-solid fa-plus"></i>
+            </button>
+
+            {/* Submission Modal */}
+            {isSubmitOpen && (
+                <PostEditor
+                    onClose={() => setIsSubmitOpen(false)}
+                    onSuccess={() => {
+                        setIsSubmitOpen(false);
+                        alert("Votre article a été soumis pour modération. Merci !");
+                    }}
+                    defaultStatus="pending"
+                />
+            )}
         </div>
     );
 };
