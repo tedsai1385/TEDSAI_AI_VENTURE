@@ -1,7 +1,5 @@
 'use client';
 
-import React from 'react';
-import AdminGuard from '@/components/admin/AdminGuard';
 import React, { useState, useEffect } from 'react';
 import AdminGuard from '@/components/admin/AdminGuard';
 import ProductForm from '@/components/admin/ProductForm';
