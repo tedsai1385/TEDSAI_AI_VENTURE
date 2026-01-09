@@ -39,7 +39,7 @@ const Ecosystem = () => {
             icon: 'fa-solid fa-pepper-hot',
             color: '#B68D40',
             desc: "Épices des principaux mets locaux (piment, gingembre, ail, oignon pays...) et produits frais non cuits issus de notre élevage. Circuit court, fraîcheur garantie, prix justes.",
-            link: '/shop'
+            link: '/epicerie'
         }
     ];
 

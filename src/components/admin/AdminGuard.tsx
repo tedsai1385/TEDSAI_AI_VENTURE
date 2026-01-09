@@ -14,24 +14,33 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (!user) {
-                router.push('/login?redirect=/admin');
+                router.push('/admin/login');
                 return;
             }
 
             try {
-                // Check if user is in 'admin_users' whitelist
-                const adminDoc = await getDoc(doc(db, 'admin_users', user.email!));
+                // Check user profile in 'users' collection
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
 
-                if (adminDoc.exists()) {
-                    setAuthorized(true);
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    // Check for admin roles
+                    const validRoles = ['super_admin', 'admin_resto', 'admin_garden', 'admin_ia'];
+                    if (validRoles.includes(userData.role)) {
+                        setAuthorized(true);
+                    } else {
+                        alert("Accès refusé : Rôle insuffisant.");
+                        await auth.signOut();
+                        router.push('/admin/login');
+                    }
                 } else {
-                    alert("Accès refusé : Votre email n'est pas autorisé.");
+                    alert("Compte non configuré.");
                     await auth.signOut();
-                    router.push('/login');
+                    router.push('/admin/login');
                 }
             } catch (error) {
                 console.error("Auth Guard Error:", error);
-                router.push('/login');
+                router.push('/admin/login');
             } finally {
                 setLoading(false);
             }
