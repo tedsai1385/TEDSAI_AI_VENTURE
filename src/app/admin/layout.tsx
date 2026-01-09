@@ -14,7 +14,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     React.useEffect(() => {
         if (!loading && !user && !isPublicAdminRoute) {
-            router.push('/admin/login');
+            router.push('/login');
         }
     }, [user, loading, router, isPublicAdminRoute, pathname]); // Added pathname dependency
 

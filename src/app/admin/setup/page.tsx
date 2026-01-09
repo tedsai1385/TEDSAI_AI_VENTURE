@@ -103,7 +103,7 @@ export default function AdminSetupPage() {
             </div>
 
             <div style={{ marginTop: '2rem', textAlign: 'center' }}>
-                <a href="/admin/login" style={{ color: '#2563eb', textDecoration: 'none', fontWeight: 'bold' }}>
+                <a href="/login" style={{ color: '#2563eb', textDecoration: 'none', fontWeight: 'bold' }}>
                     ← Retour à la Connexion
                 </a>
             </div>

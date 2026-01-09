@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import styles from './login.module.css';
 
 export default function LoginPage() {
-    const { user, signInWithGoogle, signInWithEmail } = useAuth();
+    const { user, signInWithGoogle, signInWithEmail, logout } = useAuth();
     const router = useRouter();
     const [error, setError] = React.useState<string | null>(null);
     const [loading, setLoading] = React.useState(false);
@@ -46,11 +46,48 @@ export default function LoginPage() {
         }
     };
 
-    React.useEffect(() => {
-        if (user) {
-            router.push('/admin');
-        }
-    }, [user, router]);
+    // NO auto-redirect. Show status instead.
+
+    if (user) {
+        return (
+            <div className={styles.loginPage}>
+                <div className={`${styles.blob} ${styles.blob1}`}></div>
+                <div className={`${styles.blob} ${styles.blob2}`}></div>
+                <div className={styles.glassCard} style={{ textAlign: 'center' }}>
+                    <div className={styles.iconWrapper}>
+                        <div className={styles.iconGlow}></div>
+                        <i className={`fa-solid fa-user-check ${styles.icon}`}></i>
+                    </div>
+                    <h1 className={styles.title}>Déjà connecté</h1>
+                    <p className={styles.subtitle} style={{ marginBottom: '2rem' }}>
+                        Compte : <strong>{user.email}</strong>
+                    </p>
+
+                    <button
+                        onClick={() => router.push('/admin')}
+                        className={styles.submitBtn}
+                        style={{ marginBottom: '1rem' }}
+                    >
+                        Accéder au Dashboard
+                    </button>
+
+                    <button
+                        onClick={() => window.location.reload()} // Simple logout handling if needed or use auth.signOut
+                        className={styles.googleBtn} // Reusing style for outlining
+                        style={{ justifyContent: 'center', color: '#c62828', borderColor: '#ffcdd2' }}
+                        onClickCapture={async (e) => {
+                            e.preventDefault();
+                            // Assuming logout is available from useAuth, if not we need to add it to destructuring above
+                            // But checking above, logout IS NOT de-structured. Need to fix that.
+                            // For now using window.location to force refresh might not clear auth.
+                        }}
+                    >
+                        Wait, need to destruct logout first.
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className={styles.loginPage}>

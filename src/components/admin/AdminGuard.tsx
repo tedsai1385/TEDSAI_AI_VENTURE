@@ -14,7 +14,7 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (!user) {
-                router.push('/admin/login');
+                router.push('/login');
                 return;
             }
 
@@ -31,16 +31,16 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
                     } else {
                         alert("Accès refusé : Rôle insuffisant.");
                         await auth.signOut();
-                        router.push('/admin/login');
+                        router.push('/login');
                     }
                 } else {
                     alert("Compte non configuré.");
                     await auth.signOut();
-                    router.push('/admin/login');
+                    router.push('/login');
                 }
             } catch (error) {
                 console.error("Auth Guard Error:", error);
-                router.push('/admin/login');
+                router.push('/login');
             } finally {
                 setLoading(false);
             }
