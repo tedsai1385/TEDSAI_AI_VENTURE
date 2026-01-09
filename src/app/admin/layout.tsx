@@ -2,18 +2,21 @@
 
 import React from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import AdminSidebar from '@/components/admin/Sidebar';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const { user, loading } = useAuth();
     const router = useRouter();
+    const pathname = usePathname();
+
+    const isPublicAdminRoute = pathname === '/admin/login' || pathname === '/admin/setup';
 
     React.useEffect(() => {
-        if (!loading && !user) {
-            router.push('/login');
+        if (!loading && !user && !isPublicAdminRoute) {
+            router.push('/admin/login');
         }
-    }, [user, loading, router]);
+    }, [user, loading, router, isPublicAdminRoute, pathname]); // Added pathname dependency
 
     if (loading) {
         return (
@@ -21,6 +24,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
             </div>
         );
+    }
+
+    if (isPublicAdminRoute) {
+        return <>{children}</>;
     }
 
     if (!user) return null;
