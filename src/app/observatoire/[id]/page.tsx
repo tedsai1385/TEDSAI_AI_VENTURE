@@ -7,7 +7,8 @@ import { db } from '@/lib/firebase/config';
 import Link from 'next/link';
 
 export default function BlogPostPage() {
-    const { id } = useParams();
+    const params = useParams();
+    const id = params?.id as string;
     const router = useRouter();
     const [post, setPost] = useState<any>(null);
     const [loading, setLoading] = useState(true);
