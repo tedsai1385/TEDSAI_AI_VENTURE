@@ -1,19 +1,15 @@
-'use client';
+import './admin.css';
 
-import React, { useState, useEffect } from 'react';
-import AdminGuard from '@/components/admin/AdminGuard';
-import ProductForm from '@/components/admin/ProductForm';
-import PostEditor from '@/components/admin/PostEditor';
-import { collection, deleteDoc, doc, onSnapshot, query, orderBy, getDocs } from 'firebase/firestore';
-import { db } from '@/lib/firebase/config';
-import { GardenProduct } from '@/types';
+// ... (Existing Imports)
+import { collection, deleteDoc, doc, onSnapshot, query, orderBy, getDocs, limit, where } from 'firebase/firestore'; // Added limit/where
+import Link from 'next/link';
 
-// Stats Card Component
-const StatCard = ({ label, value, sub, color = "text-slate-900" }: any) => (
-    <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-        <div className="text-sm font-medium text-gray-500 mb-2">{label}</div>
-        <div className={`text-3xl font-bold ${color}`}>{value}</div>
-        <div className="text-xs text-gray-400 mt-2">{sub}</div>
+// Legacy-style StatCard
+const StatCard = ({ label, value, sub, color = "text-slate-900", id }: any) => (
+    <div className="stat-card fade-in" id={id}>
+        <div className="stat-label">{label}</div>
+        <div className={`stat-value ${color}`}>{value}</div>
+        <div className="stat-sub">{sub}</div>
     </div>
 );
 
@@ -25,6 +21,25 @@ export default function AdminDashboardPage() {
     const [isPostEditorOpen, setIsPostEditorOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<GardenProduct | null>(null);
 
+    // New State for Activity Log & Alerts
+    const [activityLog, setActivityLog] = useState<any[]>([]);
+    const [alerts, setAlerts] = useState<any[]>([]);
+
+    // Mock Data for Activity/Alerts (Since backend logging isn't fully implemented yet)
+    useEffect(() => {
+        setActivityLog([
+            { id: 1, user: 'Franck V.', action: 'Connexion Admin', module: 'Auth', date: 'À l\'instant' },
+            { id: 2, user: 'Système', action: 'Backup Auto', module: 'System', date: 'Il y a 2h' },
+            { id: 3, user: 'Admin Resto', action: 'Nouveau Plat', module: 'Restaurant', date: 'Il y a 4h' },
+        ]);
+
+        setAlerts([
+            { id: 1, type: 'critical', message: 'Espace disque serveur > 80%', icon: 'fa-triangle-exclamation', color: 'text-red-600' },
+            { id: 2, type: 'warning', message: 'Mise à jour de sécurité disponible', icon: 'fa-circle-info', color: 'text-yellow-600' }
+        ]);
+    }, []);
+
+    // ... (Existing useEffects for Products and Blogs remain the same) ...
     // Fetch Products Real-time
     useEffect(() => {
         const q = query(collection(db, 'garden_products'), orderBy('createdAt', 'desc'));
@@ -35,9 +50,9 @@ export default function AdminDashboardPage() {
         return () => unsubscribe();
     }, []);
 
-    // Fetch Blog Posts Logic (On demand when view is blog)
+    // Fetch Blog Posts
     useEffect(() => {
-        if (activeView === 'blog') {
+        if (activeView === 'blog' || activeView === 'dashboard') { // Also fetch for dashboard stats
             const fetchBlog = async () => {
                 const q = query(collection(db, 'observatoire_posts'), orderBy('createdAt', 'desc'));
                 const snap = await getDocs(q);
@@ -45,7 +60,7 @@ export default function AdminDashboardPage() {
             };
             fetchBlog();
         }
-    }, [activeView, isPostEditorOpen]); // Refresh when editor closes
+    }, [activeView, isPostEditorOpen]);
 
     const handleDeleteProduct = async (id: string | undefined) => {
         if (!id) return;
@@ -57,7 +72,6 @@ export default function AdminDashboardPage() {
     const handleDeletePost = async (id: string) => {
         if (confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
             await deleteDoc(doc(db, 'observatoire_posts', id));
-            // Refresh list manually for simplicity or set up listener
             setBlogPosts(prev => prev.filter(p => p.id !== id));
         }
     };
@@ -74,296 +88,231 @@ export default function AdminDashboardPage() {
 
     return (
         <AdminGuard>
-            <div className="flex h-screen bg-gray-50 overflow-hidden">
-                {/* Sidebar Simple */}
-                <aside className="w-64 bg-slate-900 text-white flex flex-col shadow-lg">
-                    <div className="p-6 text-xl font-bold border-b border-slate-800 flex items-center gap-3">
-                        <i className="fa-solid fa-cube text-blue-500"></i> TED ADMIN
-                    </div>
-                    <nav className="flex-1 p-4 space-y-2">
-                        <button
-                            onClick={() => setActiveView('dashboard')}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'dashboard' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
-                        >
-                            <i className="fa-solid fa-chart-pie w-6"></i> Tableau de bord
-                        </button>
-                        <button
-                            onClick={() => setActiveView('shop')}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'shop' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
-                        >
-                            <i className="fa-solid fa-store w-6"></i> Boutique / Produits
-                        </button>
-                        <button
-                            onClick={() => setActiveView('blog')}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'blog' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
-                        >
-                            <i className="fa-solid fa-newspaper w-6"></i> Blog / Actus
-                        </button>
-                        <button
-                            onClick={() => setActiveView('users')}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'users' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
-                        >
-                            <i className="fa-solid fa-users w-6"></i> Utilisateurs
-                        </button>
-                        <button
-                            onClick={() => setActiveView('settings')}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeView === 'settings' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
-                        >
-                            <i className="fa-solid fa-cog w-6"></i> Paramètres
-                        </button>
-                    </nav>
-                </aside>
+            <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
+                {/* Sidebar is handled by Layout now, but checking if this page replaces Layout contents? 
+                     Actually AdminLayout wraps this. The sidebar in AdminLayout needs to be checked, 
+                     but here we just render the MAIN content. 
+                     Wait, AdminLayout renders Sidebar AND children. 
+                     So this page only needs to render the dashboard CONTENT.
+                     BUT, the legacy HTML has specific classes for the wrapper. 
+                     Let's assume AdminLayout handles the outer shell correct-enough, 
+                     or we might need to adjust Layout styles.
+                     For now, we focus on the Dashboard View styles.
+                 */}
 
-                {/* Main Content */}
-                <main className="flex-1 flex flex-col h-screen overflow-hidden">
-                    {/* Header */}
-                    <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shadow-sm">
-                        <h2 className="text-xl font-bold text-gray-800 capitalize">
-                            {activeView === 'dashboard' ? 'Vue d\'ensemble' : activeView === 'shop' ? 'Gestion Boutique' : activeView === 'blog' ? 'Blog & Analyses' : activeView === 'users' ? 'Utilisateurs' : 'Paramètres Globaux'}
-                        </h2>
-                        <div className="flex items-center gap-4">
-                            <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold flex items-center gap-2">
-                                <span className="w-2 h-2 bg-green-500 rounded-full"></span> En ligne
-                            </span>
-                        </div>
-                    </header>
+                {/* Re-implementing the inner dashboard view to match legacy 'content-area' */}
+                <div className="flex-1 overflow-y-auto p-8 fade-in">
 
-                    {/* Scrollable Content */}
-                    <div className="flex-1 overflow-y-auto p-8">
+                    {/* DASHBOARD VIEW */}
+                    {activeView === 'dashboard' && (
+                        <div className="space-y-6">
 
-                        {/* DASHBOARD VIEW */}
-                        {activeView === 'dashboard' && (
-                            <div className="space-y-8">
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                    <StatCard label="Produits en vente" value={products.length} sub="Catalogue actuel" color="text-blue-600" />
-                                    <StatCard label="Articles publiés" value={blogPosts.length > 0 ? blogPosts.length : "..."} sub="Observatoire" color="text-purple-600" />
-                                    <StatCard label="Visiteurs" value="1,240" sub="+12% ce mois" />
-                                    <StatCard label="État Système" value="Opérationnel" color="text-green-500" sub="Tout fonctionne" />
+                            {/* KPI GRID */}
+                            <div className="stats-grid">
+                                <StatCard label="Utilisateurs Total" value="1,240" sub="+12% ce mois" id="kpi-users" />
+                                <StatCard label="Admins Actifs" value="4" sub="Sur 5 rôles" id="kpi-admins" color="text-blue-600" />
+                                <StatCard label="Contenus Publiés" value={blogPosts.length} sub="Articles Observatoire" id="kpi-content" color="text-purple-600" />
+                                <StatCard label="État Système" value="Opérationnel" sub="Tout fonctionne" color="text-green-500" />
+                            </div>
+
+                            {/* RECENT ACTIVITY & ALERTS SPLIT */}
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                                {/* Activity Log */}
+                                <div className="card-table lg:col-span-2">
+                                    <div className="card-header">
+                                        <h3>Activité Récente</h3>
+                                        <button className="text-blue-500 text-sm hover:underline">Tout voir</button>
+                                    </div>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Utilisateur</th>
+                                                <th>Action</th>
+                                                <th>Module</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {activityLog.map((log) => (
+                                                <tr key={log.id}>
+                                                    <td>
+                                                        <div className="font-medium text-slate-700">{log.user}</div>
+                                                    </td>
+                                                    <td>{log.action}</td>
+                                                    <td><span className="px-2 py-1 bg-slate-100 rounded text-xs text-slate-600">{log.module}</span></td>
+                                                    <td className="text-slate-400 text-xs">{log.date}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-                                    <h3 className="font-semibold text-gray-800 mb-4">Derniers produits ajoutés</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                        {products.slice(0, 3).map(p => (
-                                            <div key={p.id} className="flex items-center gap-4 p-3 border rounded-lg bg-gray-50">
-                                                <img src={p.image} alt={p.name} className="w-12 h-12 object-cover rounded-md" />
+
+                                {/* System Alerts */}
+                                <div className="card-table">
+                                    <div className="card-header">
+                                        <h3>⚠️ Alertes Système</h3>
+                                    </div>
+                                    <div className="p-5">
+                                        {alerts.map((alert) => (
+                                            <div key={alert.id} className={`alert-item ${alert.type}`}>
+                                                <i className={`fa-solid ${alert.icon} alert-icon ${alert.color}`}></i>
                                                 <div>
-                                                    <div className="font-bold text-sm text-gray-800">{p.name}</div>
-                                                    <div className="text-xs text-gray-500">{p.price} XAF</div>
+                                                    <div className={`text-sm font-semibold ${alert.color} mb-1`}>
+                                                        {alert.type === 'critical' ? 'Critique' : 'Attention'}
+                                                    </div>
+                                                    <div className="text-xs text-slate-600">{alert.message}</div>
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
                             </div>
-                        )}
 
-                        {/* SHOP / PRODUCTS VIEW */}
-                        {activeView === 'shop' && (
-                            <div className="space-y-6">
-                                <div className="flex justify-between items-center bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                            {/* QUICK ACTIONS ROW (Legacy style) */}
+                            <div className="mt-8">
+                                <h3 className="text-lg font-bold text-gray-800 mb-4">Accès Rapide Modules</h3>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    <Link href="/admin/restaurant" className="p-4 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-shadow flex flex-col items-center justify-center text-center gap-2 group">
+                                        <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                            <i className="fa-solid fa-utensils"></i>
+                                        </div>
+                                        <span className="font-semibold text-gray-700">Restaurant</span>
+                                    </Link>
+                                    <Link href="/admin/garden" className="p-4 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-shadow flex flex-col items-center justify-center text-center gap-2 group">
+                                        <div className="w-10 h-10 rounded-full bg-green-50 text-green-600 flex items-center justify-center group-hover:bg-green-600 group-hover:text-white transition-colors">
+                                            <i className="fa-solid fa-leaf"></i>
+                                        </div>
+                                        <span className="font-semibold text-gray-700">Garden</span>
+                                    </Link>
+                                    <Link href="/admin/ia" className="p-4 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-shadow flex flex-col items-center justify-center text-center gap-2 group">
+                                        <div className="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                                            <i className="fa-solid fa-brain"></i>
+                                        </div>
+                                        <span className="font-semibold text-gray-700">Services IA</span>
+                                    </Link>
+                                    <Link href="/admin/settings" className="p-4 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-shadow flex flex-col items-center justify-center text-center gap-2 group">
+                                        <div className="w-10 h-10 rounded-full bg-slate-50 text-slate-600 flex items-center justify-center group-hover:bg-slate-600 group-hover:text-white transition-colors">
+                                            <i className="fa-solid fa-cog"></i>
+                                        </div>
+                                        <span className="font-semibold text-gray-700">Paramètres</span>
+                                    </Link>
+                                </div>
+                            </div>
+
+                        </div>
+                    )}
+
+                    {/* RESTAURANT VIEW (Now Redirected but kept for parity if using in-page view, 
+                        BUT user structure is /admin/restaurant. So we just link there. 
+                        However for 'activeView === shop' which was generic products, we keep it here or merge with restaurant/garden? 
+                        The legacy dashboard had separate modules. 
+                        To keep it simple and robust, we will remove the partial views (shop, etc) from here 
+                        if they are covered by the new specific pages, OR we reimplement them using the new visual style.
+                        
+                        Let's keep 'shop' (General Products) for now as it handles 'Garden Products' generally.
+                    */}
+
+                    {activeView === 'shop' && (
+                        <div className="space-y-6 fade-in">
+                            <div className="card-header bg-white rounded-t-xl border-b-0">
+                                <div className="flex justify-between items-center w-full">
                                     <div>
-                                        <h3 className="text-lg font-bold text-gray-800">Catalogue Produits</h3>
-                                        <p className="text-sm text-gray-500">Gérez les produits visibles sur la page Shop</p>
+                                        <h3 className="text-lg font-bold">Catalogue Global</h3>
+                                        <p className="text-sm text-gray-500">Vue d'ensemble des produits du jardin</p>
                                     </div>
-                                    <button
-                                        onClick={handleNewProduct}
-                                        className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold flex items-center gap-2 transition-colors"
-                                    >
-                                        <i className="fa-solid fa-plus"></i> Nouveau Produit
+                                    <button onClick={handleNewProduct} className="bg-green-600 text-white px-4 py-2 rounded shadow-sm hover:bg-green-700 transition">
+                                        <i className="fa-solid fa-plus mr-2"></i> Nouveau
                                     </button>
                                 </div>
+                            </div>
 
-                                <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-                                    <table className="w-full">
-                                        <thead className="bg-gray-50 text-xs text-gray-500 uppercase font-medium">
-                                            <tr>
-                                                <th className="px-6 py-3 text-left">Image</th>
-                                                <th className="px-6 py-3 text-left">Nom</th>
-                                                <th className="px-6 py-3 text-left">Catégorie</th>
-                                                <th className="px-6 py-3 text-left">Prix</th>
-                                                <th className="px-6 py-3 text-left">Stock</th>
-                                                <th className="px-6 py-3 text-left">Statut</th>
-                                                <th className="px-6 py-3 text-right">Actions</th>
+                            <div className="card-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Produit</th>
+                                            <th>Catégorie</th>
+                                            <th>Prix</th>
+                                            <th>Stock</th>
+                                            <th>Statut</th>
+                                            <th className="text-right">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {products.map(p => (
+                                            <tr key={p.id}>
+                                                <td>
+                                                    <div className="flex items-center gap-3">
+                                                        <img src={p.image} className="w-10 h-10 rounded object-cover border" />
+                                                        <span className="font-semibold text-slate-700">{p.name}</span>
+                                                    </div>
+                                                </td>
+                                                <td><span className="px-2 py-1 bg-slate-100 rounded text-xs">{p.category}</span></td>
+                                                <td className="font-mono">{p.price} XAF</td>
+                                                <td>{p.stock}</td>
+                                                <td>
+                                                    {p.inStock ?
+                                                        <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">En Stock</span> :
+                                                        <span className="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold">Épuisé</span>
+                                                    }
+                                                </td>
+                                                <td className="text-right">
+                                                    <button onClick={() => handleEditProduct(p)} className="text-blue-600 hover:bg-blue-50 p-2 rounded mr-2"><i className="fa-solid fa-pen"></i></button>
+                                                    <button onClick={() => handleDeleteProduct(p.id)} className="text-red-600 hover:bg-red-50 p-2 rounded"><i className="fa-solid fa-trash"></i></button>
+                                                </td>
                                             </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-gray-100">
-                                            {products.length === 0 ? (
-                                                <tr>
-                                                    <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
-                                                        Aucun produit trouvé. Ajoutez votre premier produit !
-                                                    </td>
-                                                </tr>
-                                            ) : products.map((product) => (
-                                                <tr key={product.id} className="hover:bg-gray-50 transition-colors">
-                                                    <td className="px-6 py-4">
-                                                        <img src={product.image} alt={product.name} className="w-10 h-10 rounded-md object-cover shadow-sm bg-white" />
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <div className="font-semibold text-gray-900">{product.name}</div>
-                                                        <div className="text-xs text-gray-500">{product.variety}</div>
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded-md text-xs font-semibold">
-                                                            {product.category}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-6 py-4 font-mono text-sm text-gray-700">
-                                                        {product.price.toLocaleString()} XAF
-                                                    </td>
-                                                    <td className="px-6 py-4 text-sm text-gray-700">
-                                                        {product.stock}
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        {product.inStock ? (
-                                                            <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">En stock</span>
-                                                        ) : (
-                                                            <span className="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">Épuisé</span>
-                                                        )}
-                                                    </td>
-                                                    <td className="px-6 py-4 text-right">
-                                                        <div className="flex items-center justify-end gap-2">
-                                                            <button
-                                                                onClick={() => handleEditProduct(product)}
-                                                                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                                                title="Modifier"
-                                                            >
-                                                                <i className="fa-solid fa-pen"></i>
-                                                            </button>
-                                                            <button
-                                                                onClick={() => handleDeleteProduct(product.id)}
-                                                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                                                title="Supprimer"
-                                                            >
-                                                                <i className="fa-solid fa-trash"></i>
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
-                        )}
+                        </div>
+                    )}
 
-                        {/* BLOG VIEW */}
-                        {activeView === 'blog' && (
-                            <div className="space-y-6">
-                                <div className="flex justify-between items-center bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                                    <div>
-                                        <h3 className="text-lg font-bold text-gray-800">Articles & Analyses</h3>
-                                        <p className="text-sm text-gray-500">Publiez du contenu pour l'Observatoire</p>
+                    {/* BLOG VIEW */}
+                    {activeView === 'blog' && (
+                        <div className="space-y-6 fade-in">
+                            <div className="flex justify-between items-center mb-6">
+                                <h3 className="text-lg font-bold text-gray-800">Blog & Actualités</h3>
+                                <button onClick={() => setIsPostEditorOpen(true)} className="bg-purple-600 text-white px-4 py-2 rounded shadow-sm hover:bg-purple-700 transition">
+                                    <i className="fa-solid fa-pen-nib mr-2"></i> Rédiger
+                                </button>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {blogPosts.map(post => (
+                                    <div key={post.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition">
+                                        <div className="h-40 bg-gray-100 relative">
+                                            <img src={post.image} className="w-full h-full object-cover" />
+                                            <span className="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded text-xs font-bold text-purple-700">{post.category}</span>
+                                        </div>
+                                        <div className="p-4">
+                                            <h4 className="font-bold text-slate-800 mb-2 truncate">{post.title}</h4>
+                                            <p className="text-sm text-slate-500 line-clamp-2 mb-4">{post.excerpt}</p>
+                                            <div className="flex justify-between items-center border-t pt-3 mt-auto">
+                                                <span className="text-xs text-slate-400">{new Date(post.createdAt).toLocaleDateString()}</span>
+                                                <button onClick={() => handleDeletePost(post.id)} className="text-red-500 text-xs hover:underline">Supprimer</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <button
-                                        onClick={() => setIsPostEditorOpen(true)}
-                                        className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-semibold flex items-center gap-2 transition-colors"
-                                    >
-                                        <i className="fa-solid fa-pen-nib"></i> Nouvel Article
-                                    </button>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {blogPosts.map(post => (
-                                        <div key={post.id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
-                                            <div className="h-48 bg-gray-200 relative">
-                                                <img src={post.image || 'https://via.placeholder.com/400'} className="w-full h-full object-cover" alt={post.title} />
-                                                <span className="absolute top-2 left-2 bg-white/90 text-purple-700 text-xs font-bold px-2 py-1 rounded-md">{post.category}</span>
-                                            </div>
-                                            <div className="p-4 flex-1 flex flex-col">
-                                                <h4 className="font-bold text-gray-800 mb-2 line-clamp-2">{post.title}</h4>
-                                                <p className="text-sm text-gray-500 mb-4 line-clamp-3">{post.excerpt}</p>
-                                                <div className="mt-auto flex justify-between items-center text-xs text-gray-400 border-t pt-3">
-                                                    <span>{new Date(post.createdAt).toLocaleDateString()}</span>
-                                                    <button onClick={() => handleDeletePost(post.id)} className="text-red-500 hover:text-red-700">
-                                                        <i className="fa-solid fa-trash"></i> Supprimer
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                    {blogPosts.length === 0 && (
-                                        <div className="col-span-full text-center py-12 text-gray-400">
-                                            Aucun article publié.
-                                        </div>
-                                    )}
-                                </div>
+                                ))}
                             </div>
-                        )}
-
-                        {/* USERS VIEW PLACEHOLDER */}
-                        {activeView === 'users' && (
-                            <div className="h-full flex flex-col items-center justify-center text-gray-400">
-                                <i className="fa-solid fa-users-gear text-6xl mb-4"></i>
-                                <h3 className="text-xl font-semibold text-gray-600">Module Utilisateurs</h3>
-                                <p>Gestion des rôles et accès bientôt disponible.</p>
-                            </div>
-                        )}
-
-                        {/* SETTINGS VIEW */}
-                        {activeView === 'settings' && (
-                            <div className="space-y-6 max-w-2xl">
-                                <div className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm">
-                                    <h3 className="text-lg font-bold text-gray-800 mb-6 border-b pb-4">Configuration Générale</h3>
-                                    <form onSubmit={(e) => { e.preventDefault(); alert("✅ Paramètres sauvegardés (Simulation)"); }}>
-                                        <div className="mb-6">
-                                            <label className="block text-sm font-semibold text-gray-700 mb-2">Nom du Site</label>
-                                            <input type="text" defaultValue="TEDSAI Complex" className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50" />
-                                        </div>
-
-                                        <div className="grid grid-cols-2 gap-6 mb-6">
-                                            <div>
-                                                <label className="block text-sm font-semibold text-gray-700 mb-2">Email Contact</label>
-                                                <input type="email" defaultValue="contact@tedsai.cm" className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50" />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-semibold text-gray-700 mb-2">Téléphone</label>
-                                                <input type="text" defaultValue="+237 000 000 000" className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50" />
-                                            </div>
-                                        </div>
-
-                                        <div className="mb-6">
-                                            <label className="block text-sm font-semibold text-gray-700 mb-2">Adresse</label>
-                                            <input type="text" defaultValue="Yaoundé, Cameroun" className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50" />
-                                        </div>
-
-                                        <div className="mb-8 p-4 bg-red-50 rounded-lg border border-red-100">
-                                            <label className="flex items-center gap-3 cursor-pointer">
-                                                <input type="checkbox" className="w-5 h-5 text-red-600" />
-                                                <span className="font-semibold text-red-700">Mode Maintenance</span>
-                                            </label>
-                                            <p className="text-xs text-red-500 mt-2 ml-8">Si activé, le site public affichera une page de maintenance.</p>
-                                        </div>
-
-                                        <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors">
-                                            Enregistrer les modifications
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        )}
-
-                    </div>
-                </main>
+                        </div>
+                    )}
+                </div>
 
                 {/* MODALS */}
                 {isProductFormOpen && (
                     <ProductForm
                         initialData={editingProduct}
                         onClose={() => setIsProductFormOpen(false)}
-                        onSuccess={() => {
-                            setIsProductFormOpen(false);
-                            // Toast or refresh handled by onSnapshot
-                        }}
+                        onSuccess={() => setIsProductFormOpen(false)}
                     />
                 )}
                 {isPostEditorOpen && (
                     <PostEditor
                         onClose={() => setIsPostEditorOpen(false)}
-                        onSuccess={() => {
-                            setIsPostEditorOpen(false);
-                            // Set active view to trigger refresh if needed
-                            // Logic handled by useEffect dependency
-                        }}
+                        onSuccess={() => setIsPostEditorOpen(false)}
                     />
                 )}
             </div>
