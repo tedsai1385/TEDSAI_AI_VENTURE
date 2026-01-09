@@ -20,9 +20,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: url('/assets/images/hero_bg.png');
-    background-size: cover;
-    background-position: center;
+    /* Background image removed - was causing watermelon to appear on Shop page */
     opacity: 0.15;
     z-index: 0;
 }
