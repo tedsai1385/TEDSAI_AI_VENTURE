@@ -24,30 +24,11 @@ export default function AdminGuard({ children, requiredRoles = [] }: { children:
 
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
-                    const userRole = userData.role;
-
-                    // List of all roles that have basic admin access
-                    const allAdminRoles = ['super_admin', 'admin_resto', 'admin_garden', 'admin_ia'];
-
-                    // 1. Basic Check: Is the user an admin at all?
-                    if (!allAdminRoles.includes(userRole)) {
-                        alert("Accès refusé : Vous n'avez pas les droits d'administration.");
-                        await auth.signOut();
-                        router.push('/login');
-                        return;
-                    }
-
-                    // 2. Specific Role Check (if requiredRoles provided)
-                    if (requiredRoles.length > 0 && !requiredRoles.includes(userRole) && userRole !== 'super_admin') {
-                        // Super admin always passes
-                        alert(`Accès restreint aux rôles : ${requiredRoles.join(', ')}`);
-                        router.push('/admin'); // Redirect to main dashboard instead of logout
-                        return;
-                    }
-
+                    // USER REQUEST: "Chaque administrateur a accès à tout sans restriction"
+                    // If the user exists in the database, they are an admin with full access.
                     setAuthorized(true);
                 } else {
-                    alert("Compte non configuré.");
+                    alert("Accès refusé : Votre compte n'est pas autorisé (Identifiant inconnu dans la base).");
                     await auth.signOut();
                     router.push('/login');
                 }
