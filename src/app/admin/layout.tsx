@@ -1,154 +1,148 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import './admin.css'; // Import the CSS globally for the Admin Layout
+import './admin.css';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const { user, profile, loading, logout } = useAuth();
     const router = useRouter();
     const pathname = usePathname() ?? '';
+    const [isSidebarOpen, setSidebarOpen] = useState(true);
 
     const isPublicAdminRoute = pathname === '/admin/login' || pathname === '/admin/setup';
 
-    React.useEffect(() => {
+    // Protect Route
+    useEffect(() => {
         if (!loading && !user && !isPublicAdminRoute) {
             router.push('/login');
         }
     }, [user, loading, router, isPublicAdminRoute]);
 
-    // Safe Accessors
-    const getUserInitials = () => {
-        if (user?.email) return user.email.charAt(0).toUpperCase();
-        return 'U';
-    };
+    // --- RENDER HELPERS ---
+    const getInitials = () => (user?.email ? user.email.charAt(0).toUpperCase() : 'U');
+    const getDisplayName = () => user?.displayName || user?.email?.split('@')[0] || 'Admin';
+    const isActive = (path: string) => pathname === path || pathname?.startsWith(path + '/');
 
-    const getUserName = () => {
-        if (user?.displayName) return user.displayName;
-        if (user?.email) return user.email.split('@')[0];
-        return 'Admin';
-    };
-
+    // Loading State
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-100">
-                <div className="loader"></div>
+            <div className="flex h-screen items-center justify-center bg-slate-50">
+                <div className="text-center">
+                    <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-slate-500 font-medium">Chargement du Dashboard...</p>
+                </div>
             </div>
         );
     }
 
+    // Public Routes (Login)
     if (isPublicAdminRoute) {
         return <>{children}</>;
     }
 
+    // Unauthenticated Fallback (Should redirect)
     if (!user) {
-        // Fallback if redirect is slow
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-100">
-                <p className="text-slate-500">Redirection vers la connexion...</p>
+            <div className="flex h-screen items-center justify-center bg-slate-50">
+                <p>Redirection sécurisée...</p>
             </div>
         );
     }
 
-    // Helper to check active link
-    const isActive = (path: string) => pathname === path || pathname?.startsWith(path + '/');
-
     return (
-        // BODY WRAPPER
-        <div style={{ display: 'flex', height: '100vh', width: '100vw', background: '#f3f4f6', fontFamily: "'Inter', sans-serif" }}>
+        <div id="admin-root" style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden', backgroundColor: '#f3f4f6' }}>
 
-            {/* 2️⃣ BARRE LATÉRALE GAUCHE (Replicated from HTML) */}
-            <aside className="sidebar" id="sidebar">
+            {/* SIDEBAR */}
+            <aside className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`} id="sidebar">
                 <div className="sidebar-brand">
-                    <div><i className="fa-solid fa-cube"></i> <span>TED ADMIN</span></div>
+                    <div className="flex items-center gap-3">
+                        <i className="fa-solid fa-cube text-blue-400 text-xl"></i>
+                        <span className="font-bold text-lg tracking-wide">TED ADMIN</span>
+                    </div>
                 </div>
 
-                <div id="sidebar-content" style={{ overflowY: 'auto' }}>
+                <div className="flex-1 overflow-y-auto py-4 px-3 custom-scrollbar">
 
-                    {/* MENU STRUCTURE */}
-                    <div className="menu-category">Principal</div>
+                    <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 mt-2 px-3">Principal</div>
                     <Link href="/admin" className={`nav-item ${pathname === '/admin' ? 'active' : ''}`}>
-                        <i className="fa-solid fa-chart-pie"></i> Tableau de bord
+                        <i className="fa-solid fa-chart-pie w-6"></i>
+                        <span>Tableau de bord</span>
                     </Link>
 
-                    <div className="menu-category">Gestion Modules</div>
+                    <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 mt-6 px-3">Gestion Modules</div>
                     <Link href="/admin/users" className={`nav-item ${isActive('/admin/users') ? 'active' : ''}`}>
-                        <i className="fa-solid fa-users-gear"></i> Utilisateurs & Rôles
+                        <i className="fa-solid fa-users w-6"></i>
+                        <span>Utilisateurs</span>
                     </Link>
                     <Link href="/admin/restaurant" className={`nav-item ${isActive('/admin/restaurant') ? 'active' : ''}`}>
-                        <i className="fa-solid fa-utensils"></i> Restaurant
+                        <i className="fa-solid fa-utensils w-6"></i>
+                        <span>Restaurant</span>
                     </Link>
                     <Link href="/admin/garden" className={`nav-item ${isActive('/admin/garden') ? 'active' : ''}`}>
-                        <i className="fa-solid fa-leaf"></i> SelecTED Gardens
+                        <i className="fa-solid fa-leaf w-6"></i>
+                        <span>Jardin</span>
                     </Link>
                     <Link href="/admin/ia" className={`nav-item ${isActive('/admin/ia') ? 'active' : ''}`}>
-                        <i className="fa-solid fa-brain"></i> IA / Services
+                        <i className="fa-solid fa-brain w-6"></i>
+                        <span>Services IA</span>
                     </Link>
 
-                    <div className="menu-category">Contenu Site</div>
-                    <Link href="/admin/pages" className={`nav-item ${isActive('/admin/pages') ? 'active' : ''}`}>
-                        <i className="fa-solid fa-file-lines"></i> Pages du site
-                    </Link>
+                    <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 mt-6 px-3">Système</div>
                     <Link href="/admin/settings" className={`nav-item ${isActive('/admin/settings') ? 'active' : ''}`}>
-                        <i className="fa-solid fa-sliders"></i> Paramètres
+                        <i className="fa-solid fa-sliders w-6"></i>
+                        <span>Paramètres</span>
                     </Link>
                 </div>
 
-                {/* User Footer in Sidebar */}
-                <div style={{ padding: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: 'auto' }}>
+                {/* User Profile Footer */}
+                <div className="p-4 border-t border-slate-700 bg-slate-900">
                     <div className="flex items-center gap-3">
-                        <div className="user-avatar" style={{ width: 32, height: 32, fontSize: '0.8rem' }}>
-                            {getUserInitials()}
+                        <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xs ring-2 ring-blue-500/30">
+                            {getInitials()}
                         </div>
-                        <div style={{ overflow: 'hidden' }}>
-                            <div style={{ fontSize: '0.85rem', fontWeight: 600, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                                {getUserName()}
-                            </div>
-                            <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>{profile?.role || 'user'}</div>
+                        <div className="flex-1 min-w-0">
+                            <div className="text-sm font-semibold text-white truncate">{getDisplayName()}</div>
+                            <div className="text-xs text-slate-400 truncate capitalize">{profile?.role || 'Admin'}</div>
                         </div>
                     </div>
                 </div>
             </aside>
 
-            {/* MAIN WRAPPER */}
-            <div className="wrapper">
-                {/* 1️⃣ EN-TÊTE */}
-                <header className="top-header">
-                    <div className="header-left" style={{ display: 'flex', alignItems: 'center' }}>
-                        <h2 id="page-title">
-                            {pathname === '/admin' ? 'Tableau de bord' :
-                                pathname.includes('restaurant') ? 'Restaurant' :
-                                    pathname.includes('garden') ? 'Jardin' :
-                                        'Administration'}
+            {/* MAIN CONTENT WRAPPER */}
+            <div className="flex-1 flex flex-col h-full overflow-hidden relative w-full">
+
+                {/* TOP HEADER */}
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shadow-sm z-10 flex-shrink-0">
+                    <div className="flex items-center gap-4">
+                        <button onClick={() => setSidebarOpen(!isSidebarOpen)} className="p-2 text-slate-400 hover:text-slate-600 md:hidden">
+                            <i className="fa-solid fa-bars text-xl"></i>
+                        </button>
+                        <h2 className="text-lg font-bold text-slate-800">
+                            {pathname === '/admin' ? "Vue d'ensemble" : pathname.split('/').pop()?.charAt(0).toUpperCase() + pathname.split('/').pop()?.slice(1)}
                         </h2>
                     </div>
-                    <div className="header-right">
-                        <div className="status-indicator">
-                            <span className="dot"></span> En ligne
-                        </div>
 
-                        <div className="user-profile">
-                            <div className="user-info">
-                                <div>{getUserName()}</div>
-                                <span>{profile?.role || 'Authentifié'}</span>
-                            </div>
-                            <div className="user-avatar">
-                                {getUserInitials()}
-                            </div>
-                            <button onClick={() => logout()} title="Déconnexion"
-                                style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', marginLeft: '10px' }}>
-                                <i className="fa-solid fa-power-off fa-lg"></i>
-                            </button>
+                    <div className="flex items-center gap-6">
+                        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium border border-emerald-100">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            Système Connecté
                         </div>
+                        <div className="h-8 w-[1px] bg-slate-200"></div>
+                        <button onClick={logout} className="flex items-center gap-2 text-slate-500 hover:text-red-600 transition-colors text-sm font-medium group">
+                            <span>Déconnexion</span>
+                            <i className="fa-solid fa-arrow-right-from-bracket group-hover:translate-x-1 transition-transform"></i>
+                        </button>
                     </div>
                 </header>
 
-                {/* CONTENT AREA */}
-                <main className="content-area">
+                {/* DYNAMIC PAGE CONTENT */}
+                <main className="flex-1 overflow-y-auto p-6 bg-slate-50 scroll-smooth">
                     {children}
                 </main>
+
             </div>
         </div>
     );
