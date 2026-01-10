@@ -9,7 +9,7 @@ import './admin.css'; // Import the CSS globally for the Admin Layout
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const { user, profile, loading, logout } = useAuth();
     const router = useRouter();
-    const pathname = usePathname();
+    const pathname = usePathname() ?? '';
 
     const isPublicAdminRoute = pathname === '/admin/login' || pathname === '/admin/setup';
 
