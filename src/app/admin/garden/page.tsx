@@ -18,7 +18,11 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 export default function AdminGardenPage() {
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => { setMounted(true); }, []);
+
     const [products, setProducts] = useState([
+
         { id: '1', name: 'Tomate Cerise', stock: '45kg', parcel: 'Parcelle A1', cert: 'Bio', status: 'optimal' },
         { id: '2', name: 'Basilic Grand Vert', stock: '12kg', parcel: 'Serre 2', cert: 'AB', status: 'recolte_urgente' },
         { id: '3', name: 'Piment de Cayenne', stock: '8kg', parcel: 'Parcelle C4', cert: 'Bio', status: 'optimal' },
@@ -31,7 +35,10 @@ export default function AdminGardenPage() {
         { label: 'Indice Qualité', value: '98%', icon: ShieldCheck, color: 'green' },
     ];
 
+    if (!mounted) return null;
+
     return (
+
         <AdminGuard>
 
             <PageHeader

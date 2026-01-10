@@ -17,7 +17,11 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 export default function AdminRestaurantPage() {
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => { setMounted(true); }, []);
+
     const [reservations, setReservations] = useState([
+
         { id: '1', name: 'Dupont Jean', time: '19:30', guestCount: 4, status: 'confirmed' },
         { id: '2', name: 'Sarah Miller', time: '20:00', guestCount: 2, status: 'pending' },
         { id: '3', name: 'Robert Chen', time: '12:30', guestCount: 6, status: 'completed' },
@@ -30,7 +34,10 @@ export default function AdminRestaurantPage() {
         { label: 'Satisfaction', value: '4.8/5', icon: TrendingUp, color: 'indigo', sub: 'Basé sur 89 avis' },
     ];
 
+    if (!mounted) return null;
+
     return (
+
         <AdminGuard>
 
             <PageHeader

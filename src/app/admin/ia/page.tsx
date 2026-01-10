@@ -20,7 +20,11 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 export default function AdminIAPage() {
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => { setMounted(true); }, []);
+
     const [leads, setLeads] = useState([
+
         { id: '1', company: 'TechNova', contact: 'Alice Martin', status: 'Nouveau', value: '1,500€', priority: 'high' },
         { id: '2', company: 'Global Solutions', contact: 'Marc Dubois', status: 'En Cours', value: '4,200€', priority: 'medium' },
         { id: '3', company: 'EcoBâtiment', contact: 'Sarah J.', status: 'Gagné', value: '850€', priority: 'low' },
@@ -35,7 +39,10 @@ export default function AdminIAPage() {
 
     const kanbanColumns = ['Nouveau', 'En Cours', 'Négociation', 'Gagné'];
 
+    if (!mounted) return null;
+
     return (
+
         <AdminGuard>
 
             <PageHeader

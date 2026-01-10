@@ -6,12 +6,11 @@ import { useAuth } from '@/context/AuthContext';
 import { checkPermission } from '@/lib/dashboard/roles';
 
 export default function AdminGuard({
-    children,
-    permission
+    children
 }: {
-    children: React.ReactNode,
-    permission?: string
+    children: React.ReactNode
 }) {
+
     const router = useRouter();
     const { user, profile, loading } = useAuth();
     const [authorized, setAuthorized] = useState(false);
