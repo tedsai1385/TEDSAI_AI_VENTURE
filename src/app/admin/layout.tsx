@@ -19,6 +19,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         }
     }, [user, loading, router, isPublicAdminRoute]);
 
+    // Safe Accessors
+    const getUserInitials = () => {
+        if (user?.email) return user.email.charAt(0).toUpperCase();
+        return 'U';
+    };
+
+    const getUserName = () => {
+        if (user?.displayName) return user.displayName;
+        if (user?.email) return user.email.split('@')[0];
+        return 'Admin';
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -31,7 +43,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         return <>{children}</>;
     }
 
-    if (!user) return null;
+    if (!user) {
+        // Fallback if redirect is slow
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-100">
+                <p className="text-slate-500">Redirection vers la connexion...</p>
+            </div>
+        );
+    }
 
     // Helper to check active link
     const isActive = (path: string) => pathname === path || pathname?.startsWith(path + '/');
@@ -81,11 +100,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <div style={{ padding: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: 'auto' }}>
                     <div className="flex items-center gap-3">
                         <div className="user-avatar" style={{ width: 32, height: 32, fontSize: '0.8rem' }}>
-                            {user.email?.charAt(0).toUpperCase()}
+                            {getUserInitials()}
                         </div>
                         <div style={{ overflow: 'hidden' }}>
                             <div style={{ fontSize: '0.85rem', fontWeight: 600, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                                {user.displayName || 'Admin'}
+                                {getUserName()}
                             </div>
                             <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>{profile?.role || 'user'}</div>
                         </div>
@@ -112,11 +131,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
                         <div className="user-profile">
                             <div className="user-info">
-                                <div>{user.displayName || user.email?.split('@')[0]}</div>
+                                <div>{getUserName()}</div>
                                 <span>{profile?.role || 'Authentifié'}</span>
                             </div>
                             <div className="user-avatar">
-                                {user.email?.charAt(0).toUpperCase()}
+                                {getUserInitials()}
                             </div>
                             <button onClick={() => logout()} title="Déconnexion"
                                 style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', marginLeft: '10px' }}>
