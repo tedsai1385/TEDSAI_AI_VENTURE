@@ -60,12 +60,14 @@ export default function LoginPage() {
                     // If creation fails (e.g. permission rules), show specific error
                     setError("Erreur de création de profil : " + createErr.message);
                     await auth.signOut();
+                    setLoading(false); // Fix stuck loading
                 }
             }
         } catch (err: any) {
             console.error(err);
             // Show full error to user for debugging
             setError(`Erreur système : ${err.message}`);
+            setLoading(false); // Fix stuck loading
         }
     };
 
@@ -80,6 +82,8 @@ export default function LoginPage() {
             const loggedInUser = userCredential.user;
 
             // 2. Check Database Presence
+            // checkUserInDb will handle success/redirect or error display
+            // It is now responsible for setLoading(false) on error.
             await checkUserInDb(loggedInUser);
 
         } catch (err: any) {
@@ -98,11 +102,13 @@ export default function LoginPage() {
 
     const handleGoogleLogin = async () => {
         setError('');
+        setLoading(true); // Add loading feedback for Google too
         try {
             await signInWithGoogle();
             // The useEffect will catch the user update and trigger checkUserInDb
         } catch (err: any) {
             setError("Erreur Google : " + err.message);
+            setLoading(false);
         }
     };
 
@@ -185,20 +191,6 @@ export default function LoginPage() {
                         )}
                     </button>
 
-                    <div style={{ display: 'flex', alignItems: 'center', margin: '1.5rem 0' }}>
-                        <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.2)' }}></div>
-                        <span style={{ padding: '0 10px', color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem' }}>OU</span>
-                        <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.2)' }}></div>
-                    </div>
-
-                    <button
-                        type="button"
-                        onClick={handleGoogleLogin}
-                        className={styles.googleBtn}
-                    >
-                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20" />
-                        Continuer avec Google
-                    </button>
                 </form>
             </div>
         </div>
