@@ -148,8 +148,9 @@ tr:last-child td {
     border-color: #fde68a;
 }
 
-font-size: 1.1rem;
-margin-top: 2px;
+.alert-icon {
+    font-size: 1.1rem;
+    margin-top: 2px;
 }
 
 /* BUTTONS & BADGES */
