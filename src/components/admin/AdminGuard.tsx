@@ -23,19 +23,10 @@ export default function AdminGuard({
                 return;
             }
 
-            // RBAC Check
-            if (permission) {
-                const hasAccess = profile?.role === 'super_admin' || checkPermission(profile?.role, permission);
-                if (!hasAccess) {
-                    console.warn(`Access denied for permission: ${permission}`);
-                    router.push('/admin'); // Redirect to dashboard home if unauthorized
-                    return;
-                }
-            }
-
             setAuthorized(true);
         }
-    }, [user, profile, loading, permission, router]);
+    }, [user, profile, loading, router]);
+
 
     if (loading) {
         return (

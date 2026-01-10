@@ -36,7 +36,8 @@ export default function AdminIAPage() {
     const kanbanColumns = ['Nouveau', 'En Cours', 'Négociation', 'Gagné'];
 
     return (
-        <AdminGuard permission="leads:read">
+        <AdminGuard>
+
             <PageHeader
                 title="IA Solutions & Leads"
                 subtitle="Optimisez votre business avec l'IA et gérez vos opportunités B2B."

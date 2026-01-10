@@ -31,7 +31,8 @@ export default function AdminRestaurantPage() {
     ];
 
     return (
-        <AdminGuard permission="menu:read">
+        <AdminGuard>
+
             <PageHeader
                 title="Restaurant viTEDia"
                 subtitle="Gérez vos menus, réservations et performance en temps réel."

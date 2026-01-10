@@ -32,7 +32,8 @@ export default function AdminGardenPage() {
     ];
 
     return (
-        <AdminGuard permission="garden:products:read">
+        <AdminGuard>
+
             <PageHeader
                 title="SelecTED Gardens"
                 subtitle="Gestion de l'inventaire agricole et traçabilité QR Code."

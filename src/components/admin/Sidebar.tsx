@@ -17,7 +17,7 @@ import {
     LayoutDashboard
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { ROLES, Role, checkPermission } from '@/lib/dashboard/roles';
+import { ROLES, Role } from '@/lib/dashboard/roles';
 
 export default function AdminSidebar() {
     const pathname = usePathname();
@@ -27,35 +27,30 @@ export default function AdminSidebar() {
         {
             header: "Principal",
             items: [
-                { href: '/admin', icon: LayoutDashboard, label: 'Tableau de bord', permission: null }
+                { href: '/admin', icon: LayoutDashboard, label: 'Tableau de bord' }
             ]
         },
         {
             header: "Gestion Modules",
             items: [
-                { href: '/admin/restaurant', icon: UtensilsCrossed, label: 'Restaurant', permission: 'menu:read' },
-                { href: '/admin/garden', icon: Leaf, label: 'SelecTED Gardens', permission: 'garden:products:read' },
-                { href: '/admin/ia', icon: BrainCircuit, label: 'IA / Services', permission: 'leads:read' }
+                { href: '/admin/restaurant', icon: UtensilsCrossed, label: 'Restaurant' },
+                { href: '/admin/garden', icon: Leaf, label: 'SelecTED Gardens' },
+                { href: '/admin/ia', icon: BrainCircuit, label: 'IA / Services' }
             ]
         },
         {
             header: "Système",
             items: [
-                { href: '/admin/users', icon: Users, label: 'Utilisateurs', permission: 'super_admin' },
-                { href: '/admin/settings', icon: Settings, label: 'Paramètres', permission: null }
+                { href: '/admin/users', icon: Users, label: 'Utilisateurs' },
+                { href: '/admin/settings', icon: Settings, label: 'Paramètres' }
             ]
         }
     ];
 
+
     const isPathActive = (href: string) => {
         if (href === '/admin') return pathname === '/admin';
         return pathname?.startsWith(href);
-    };
-
-    const hasAccess = (permission: string | null) => {
-        if (!permission) return true;
-        if (permission === 'super_admin') return profile?.role === 'super_admin';
-        return checkPermission(profile?.role, permission);
     };
 
     return (
@@ -86,7 +81,7 @@ export default function AdminSidebar() {
                             {group.header}
                         </motion.div>
                         <div className="space-y-1">
-                            {group.items.filter(item => hasAccess(item.permission)).map((item, itemIdx) => {
+                            {group.items.map((item, itemIdx) => {
                                 const active = isPathActive(item.href);
                                 return (
                                     <Link key={item.href} href={item.href}>

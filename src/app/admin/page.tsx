@@ -50,8 +50,10 @@ export default function DashboardHome() {
     const [stats, setStats] = useState({ users: 124, products: 45, posts: 12 });
     const [recentUsers, setRecentUsers] = useState<any[]>([]);
     const [isHovered, setIsHovered] = useState<string | null>(null);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        setMounted(true);
         const unsubUsers = onSnapshot(collection(db, 'users'), (snap) => {
             setStats(prev => ({ ...prev, users: snap.size || 124 }));
         });
@@ -73,6 +75,9 @@ export default function DashboardHome() {
             unsubRecent();
         };
     }, []);
+
+    if (!mounted) return null;
+
 
     const kpis = [
         { id: 'u', title: 'Utilisateurs', value: stats.users, sub: '+12.5%', icon: Users, color: 'blue' },
