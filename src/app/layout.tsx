@@ -6,10 +6,7 @@ export const metadata: Metadata = {
     description: "TEDSAI Complex : Un écosystème intelligent unifiant Intelligence Artificielle, Gastronomie Durable et Agriculture Urbaine.",
 };
 
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import MobileNav from "@/components/layout/MobileNav";
-import ChatWidget from "@/components/features/ChatWidget";
+import LayoutWrapper from "@/components/layout/LayoutWrapper";
 import { AuthProvider } from "@/context/AuthContext";
 
 export default function RootLayout({
@@ -24,11 +21,9 @@ export default function RootLayout({
             </head>
             <body>
                 <AuthProvider>
-                    <Header />
-                    <main>{children}</main>
-                    <Footer />
-                    <MobileNav />
-                    <ChatWidget />
+                    <LayoutWrapper>
+                        {children}
+                    </LayoutWrapper>
                 </AuthProvider>
             </body>
         </html>

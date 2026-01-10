@@ -94,19 +94,7 @@ export default function AdminDashboardPage() {
 
     return (
         <AdminGuard>
-            <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
-                {/* Sidebar is handled by Layout now, but checking if this page replaces Layout contents? 
-                     Actually AdminLayout wraps this. The sidebar in AdminLayout needs to be checked, 
-                     but here we just render the MAIN content. 
-                     Wait, AdminLayout renders Sidebar AND children. 
-                     So this page only needs to render the dashboard CONTENT.
-                     BUT, the legacy HTML has specific classes for the wrapper. 
-                     Let's assume AdminLayout handles the outer shell correct-enough, 
-                     or we might need to adjust Layout styles.
-                     For now, we focus on the Dashboard View styles.
-                 */}
-
-                {/* Re-implementing the inner dashboard view to match legacy 'content-area' */}
+            <div className="fade-in space-y-6">
                 <div className="flex-1 overflow-y-auto p-8 fade-in">
 
                     {/* DASHBOARD VIEW */}
