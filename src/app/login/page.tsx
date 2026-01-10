@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { auth, db } from '@/lib/firebase/config';
 import { getDoc, doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth'; // Direct use for granular error handling
 import styles from './login.module.css';
 
 export default function LoginPage() {
@@ -13,105 +13,116 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const [welcomeMessage, setWelcomeMessage] = useState('');
+    const [statusMessage, setStatusMessage] = useState(''); // Info (e.g. "Creating account...")
+    const [welcomeMessage, setWelcomeMessage] = useState(''); // Success (e.g. "Welcome!")
+
+    // We use low-level auth here for precise control, but we sync with context
     const { user, signInWithGoogle, logout } = useAuth();
     const router = useRouter();
 
-    // Handle existing session
+    // 1. Force cleanup on mount to ensure clean state
     useEffect(() => {
         if (user && !welcomeMessage) {
-            // Check DB immediately if already logged in (persistence)
-            checkUserInDb(user);
+            // Check persistence immediately
+            verifyAndRedirect(user);
         }
     }, [user]);
 
-    const checkUserInDb = async (firebaseUser: any) => {
+    // Core verification logic
+    const verifyAndRedirect = async (firebaseUser: any) => {
         try {
-            const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+            setStatusMessage("Vérification du profil...");
+            const userRef = doc(db, 'users', firebaseUser.uid);
+            const userDoc = await getDoc(userRef);
+
             if (userDoc.exists()) {
+                // User exists -> Access Granted
                 const userData = userDoc.data();
                 const name = userData.displayName || firebaseUser.email;
-                setWelcomeMessage(`Bienvenue (Retour), ${name} !`);
-
-                setTimeout(() => {
-                    router.push('/admin');
-                }, 1500);
+                setWelcomeMessage(`Bienvenue, ${name} !`);
+                setStatusMessage(''); // Clear info
+                setTimeout(() => router.push('/admin'), 1500);
             } else {
-                // AUTO-PROVISIONING: If user exists in Auth but not in Firestore, create the doc.
-                // This fulfills: "Identifiant présent dans Firebase => Accès OK"
-                try {
-                    const name = firebaseUser.displayName || firebaseUser.email.split('@')[0];
-                    await setDoc(doc(db, 'users', firebaseUser.uid), {
-                        uid: firebaseUser.uid,
-                        email: firebaseUser.email,
-                        displayName: name,
-                        role: 'admin', // Default role for now since restrictions are removed, everyone is admin
-                        createdAt: serverTimestamp(),
-                        updatedAt: serverTimestamp()
-                    });
+                // User doesn't exist -> Auto Provision
+                setStatusMessage("Premier accès détecté. Création du profil administrateur...");
 
-                    setWelcomeMessage(`Bienvenue (Nouveau), ${name} !`);
-                    setTimeout(() => {
-                        router.push('/admin');
-                    }, 1500);
+                const name = firebaseUser.displayName || firebaseUser.email.split('@')[0];
+                await setDoc(userRef, {
+                    uid: firebaseUser.uid,
+                    email: firebaseUser.email,
+                    displayName: name,
+                    role: 'admin', // Default role with full access
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp(),
+                    authProvider: 'email'
+                });
 
-                } catch (createErr: any) {
-                    console.error("Error creating profile:", createErr);
-                    // If creation fails (e.g. permission rules), show specific error
-                    setError("Erreur de création de profil : " + createErr.message);
-                    await auth.signOut();
-                    setLoading(false); // Fix stuck loading
-                }
+                setWelcomeMessage(`Profil configuré. Bienvenue, ${name} !`);
+                setStatusMessage('');
+                setTimeout(() => router.push('/admin'), 1500);
             }
         } catch (err: any) {
-            console.error(err);
-            // Show full error to user for debugging
-            setError(`Erreur système : ${err.message}`);
-            setLoading(false); // Fix stuck loading
+            console.error("Verification Error:", err);
+            setError(`Erreur lors de la vérification : ${err.code || err.message}`);
+            setStatusMessage('');
+            setLoading(false);
+            await auth.signOut(); // Security: kick out if we can't verify
         }
     };
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
+        setStatusMessage('');
         setLoading(true);
 
         try {
-            // 1. Authenticate with Firebase Auth
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const loggedInUser = userCredential.user;
+            // Step 1: Auth
+            setStatusMessage("Authentification...");
+            const creds = await signInWithEmailAndPassword(auth, email, password);
 
-            // 2. Check Database Presence
-            // checkUserInDb will handle success/redirect or error display
-            // It is now responsible for setLoading(false) on error.
-            await checkUserInDb(loggedInUser);
+            // Step 2: Verification (Handled by verifyAndRedirect)
+            await verifyAndRedirect(creds.user);
 
         } catch (err: any) {
-            console.error('Login Error:', err);
-            // Translate common Firebase errors
-            if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
-                setError("Identifiants incorrects. Veuillez vérifier votre email et mot de passe.");
-            } else if (err.code === 'auth/too-many-requests') {
-                setError("Trop de tentatives. Veuillez réessayer plus tard.");
-            } else {
-                setError(`Erreur de connexion : ${err.message}`);
-            }
+            console.error("Login Error:", err);
             setLoading(false);
+            setStatusMessage('');
+
+            // User-friendly error mapping
+            switch (err.code) {
+                case 'auth/invalid-credential':
+                case 'auth/user-not-found':
+                case 'auth/wrong-password':
+                    setError("Email ou mot de passe incorrect.");
+                    break;
+                case 'auth/too-many-requests':
+                    setError("Comptes bloqué temporairement (trop d'essais). Réessayez plus tard.");
+                    break;
+                case 'auth/operation-not-allowed':
+                    setError("ERREUR CONFIGURATION : L'authentification Email/Password n'est pas activée dans la Console Firebase.");
+                    break;
+                default:
+                    setError(`Erreur technique : ${err.message}`);
+            }
         }
     };
 
     const handleGoogleLogin = async () => {
         setError('');
-        setLoading(true); // Add loading feedback for Google too
+        setLoading(true);
+        setStatusMessage("Connexion avec Google...");
         try {
             await signInWithGoogle();
-            // The useEffect will catch the user update and trigger checkUserInDb
+            // The useEffect hook will catch 'user' change and trigger verifyAndRedirect
         } catch (err: any) {
-            setError("Erreur Google : " + err.message);
             setLoading(false);
+            setStatusMessage('');
+            setError("Erreur Google : " + err.message);
         }
     };
 
+    // Render Success View
     if (welcomeMessage) {
         return (
             <div className={styles.loginPage}>
@@ -119,14 +130,15 @@ export default function LoginPage() {
                     <div className="animate-bounce" style={{ fontSize: '4rem', color: '#4ade80', marginBottom: '1rem' }}>
                         <i className="fa-solid fa-circle-check"></i>
                     </div>
-                    <h1 className={styles.title} style={{ color: 'white' }}>{welcomeMessage}</h1>
-                    <p className={styles.subtitle}>Redirection en cours...</p>
+                    <h1 className={styles.title} style={{ color: 'white' }}>Accès Autorisé</h1>
+                    <p className={styles.subtitle} style={{ color: '#dcfce7' }}>{welcomeMessage}</p>
                     <div className="loader" style={{ margin: '2rem auto' }}></div>
                 </div>
             </div>
         );
     }
 
+    // Render Logic Form
     return (
         <div className={styles.loginPage}>
             <div className={`${styles.blob} ${styles.blob1}`}></div>
@@ -139,16 +151,22 @@ export default function LoginPage() {
                         <i className={`fa-solid fa-cube ${styles.icon}`}></i>
                     </div>
                     <h1 className={styles.title}>TEDSAI Admin</h1>
-                    <p className={styles.subtitle}>Portail de gestion unifié pour l'écosystème.</p>
+                    <p className={styles.subtitle}>Espace sécurisé</p>
                 </div>
 
+                {/* Error Banner */}
                 {error && (
                     <div className={`${styles.errorAlert} fade-in`}>
                         <i className="fa-solid fa-triangle-exclamation"></i>
-                        <div style={{ marginLeft: '12px' }}>
-                            <strong>Accès Refusé</strong>
-                            <p style={{ margin: 0, fontSize: '0.9rem', opacity: 0.9 }}>{error}</p>
-                        </div>
+                        <span style={{ marginLeft: '10px' }}>{error}</span>
+                    </div>
+                )}
+
+                {/* Status Message (Loading feedback) */}
+                {statusMessage && !error && (
+                    <div className={styles.statusMessage}>
+                        <i className="fa-solid fa-spinner fa-spin"></i>
+                        <span style={{ marginLeft: '10px' }}>{statusMessage}</span>
                     </div>
                 )}
 
@@ -160,8 +178,9 @@ export default function LoginPage() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
-                            placeholder="votre@email.com"
+                            placeholder="admin@example.com"
                             className={styles.input}
+                            disabled={loading}
                         />
                     </div>
                     <div className={styles.inputGroup}>
@@ -173,6 +192,7 @@ export default function LoginPage() {
                             required
                             placeholder="••••••••"
                             className={styles.input}
+                            disabled={loading}
                         />
                     </div>
 
@@ -181,17 +201,27 @@ export default function LoginPage() {
                         disabled={loading}
                         className={styles.submitBtn}
                     >
-                        {loading ? (
-                            <>
-                                <i className="fa-solid fa-circle-notch fa-spin"></i>
-                                Connexion...
-                            </>
-                        ) : (
-                            'Se connecter'
-                        )}
+                        {loading ? 'Traitement...' : 'Se connecter'}
                     </button>
 
+                    <div className={styles.divider}>
+                        <span>OU</span>
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={handleGoogleLogin}
+                        disabled={loading}
+                        className={styles.googleBtn}
+                    >
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20" />
+                        Continuer avec Google
+                    </button>
                 </form>
+
+                <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.8rem', opacity: 0.7 }}>
+                    &copy; TEDSAI Ventures
+                </div>
             </div>
         </div>
     );
