@@ -26,7 +26,24 @@ export default function AdminSettingsPage() {
 
     if (!mounted) return null;
 
-    const sections = [
+    interface SettingItem {
+        title: string;
+        description: string;
+        type: 'toggle' | 'text' | 'select' | 'button';
+        value?: string | boolean;
+        options?: string[];
+        label?: string;
+        color?: string;
+        icon?: any;
+    }
+
+    interface SettingSection {
+        title: string;
+        icon: any;
+        items: SettingItem[];
+    }
+
+    const sections: SettingSection[] = [
         {
             title: "Général",
             icon: Settings,
