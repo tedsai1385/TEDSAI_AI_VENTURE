@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { auth, db } from '@/lib/firebase/config';
-import { getDoc, doc } from 'firebase/firestore';
+import { getDoc, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import styles from './login.module.css';
 
@@ -31,19 +31,41 @@ export default function LoginPage() {
             if (userDoc.exists()) {
                 const userData = userDoc.data();
                 const name = userData.displayName || firebaseUser.email;
-                setWelcomeMessage(`Bienvenue, ${name} !`);
+                setWelcomeMessage(`Bienvenue (Retour), ${name} !`);
 
-                // Delay redirect slightly to show welcome message
                 setTimeout(() => {
                     router.push('/admin');
                 }, 1500);
             } else {
-                setError("Désolé, vous n'avez pas accès au tableau de bord. (Identifiant non reconnu dans la base)");
-                await auth.signOut();
+                // AUTO-PROVISIONING: If user exists in Auth but not in Firestore, create the doc.
+                // This fulfills: "Identifiant présent dans Firebase => Accès OK"
+                try {
+                    const name = firebaseUser.displayName || firebaseUser.email.split('@')[0];
+                    await setDoc(doc(db, 'users', firebaseUser.uid), {
+                        uid: firebaseUser.uid,
+                        email: firebaseUser.email,
+                        displayName: name,
+                        role: 'admin', // Default role for now since restrictions are removed, everyone is admin
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp()
+                    });
+
+                    setWelcomeMessage(`Bienvenue (Nouveau), ${name} !`);
+                    setTimeout(() => {
+                        router.push('/admin');
+                    }, 1500);
+
+                } catch (createErr: any) {
+                    console.error("Error creating profile:", createErr);
+                    // If creation fails (e.g. permission rules), show specific error
+                    setError("Erreur de création de profil : " + createErr.message);
+                    await auth.signOut();
+                }
             }
-        } catch (err) {
+        } catch (err: any) {
             console.error(err);
-            setError("Erreur de vérification du compte.");
+            // Show full error to user for debugging
+            setError(`Erreur système : ${err.message}`);
         }
     };
 
