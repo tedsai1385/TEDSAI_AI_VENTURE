@@ -11,13 +11,14 @@ import {
 } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase/config';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { Role } from '@/lib/dashboard/roles';
 
 interface UserProfile {
     uid: string;
     email: string | null;
     displayName: string | null;
     photoURL: string | null;
-    role: 'user' | 'admin' | 'moderator';
+    role: Role | 'user';
     createdAt: any;
 }
 

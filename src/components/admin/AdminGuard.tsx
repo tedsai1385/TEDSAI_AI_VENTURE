@@ -2,58 +2,54 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { auth, db } from '@/lib/firebase/config';
-import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { useAuth } from '@/context/AuthContext';
+import { checkPermission } from '@/lib/dashboard/roles';
 
-export default function AdminGuard({ children, requiredRoles = [] }: { children: React.ReactNode, requiredRoles?: string[] }) {
+export default function AdminGuard({
+    children,
+    permission
+}: {
+    children: React.ReactNode,
+    permission?: string
+}) {
     const router = useRouter();
+    const { user, profile, loading } = useAuth();
     const [authorized, setAuthorized] = useState(false);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        if (!loading) {
             if (!user) {
                 router.push('/login');
                 return;
             }
 
-            try {
-                // Check user profile in 'users' collection
-                const userDoc = await getDoc(doc(db, 'users', user.uid));
-
-                if (userDoc.exists()) {
-                    const userData = userDoc.data();
-                    // USER REQUEST: "Chaque administrateur a accès à tout sans restriction"
-                    // If the user exists in the database, they are an admin with full access.
-                    setAuthorized(true);
-                } else {
-                    // FALLBACK: If user exists in Auth but not in DB, we let them in (per user request "identifier present in firebase")
-                    // Ideally we should auto-provision here too, but the page logic should have handled it.
-                    // If we reach here, we just grant access.
-                    console.warn("User not found in DB but authenticated. Granting access.");
-                    setAuthorized(true);
+            // RBAC Check
+            if (permission) {
+                const hasAccess = profile?.role === 'super_admin' || checkPermission(profile?.role, permission);
+                if (!hasAccess) {
+                    console.warn(`Access denied for permission: ${permission}`);
+                    router.push('/admin'); // Redirect to dashboard home if unauthorized
+                    return;
                 }
-            } catch (error) {
-                console.error("Auth Guard Error (Firestore):", error);
-                // CRITICAL FIX: If permission denied (Rules issue), STILL ALLOW ACCESS based on Auth.
-                setAuthorized(true);
-            } finally {
-                setLoading(false);
             }
-        });
 
-        return () => unsubscribe();
-    }, [router, requiredRoles]);
+            setAuthorized(true);
+        }
+    }, [user, profile, loading, permission, router]);
 
     if (loading) {
         return (
-            <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mr-3"></div>
-                Chargement des droits...
+            <div className="flex h-screen items-center justify-center bg-slate-950">
+                <div className="relative">
+                    <div className="w-12 h-12 border-4 border-blue-500/10 border-t-blue-500 rounded-full animate-spin"></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-6 h-6 bg-blue-500/10 rounded-full blur-sm animate-pulse"></div>
+                    </div>
+                </div>
             </div>
         );
     }
 
     return authorized ? <>{children}</> : null;
 }
+

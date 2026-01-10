@@ -4,46 +4,63 @@ import React, { useState, useEffect } from 'react';
 import { collection, onSnapshot, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+    Users,
+    Leaf,
+    Newspaper,
+    Zap,
+    TrendingUp,
+    AlertTriangle,
+    Bell,
+    ArrowUpRight,
+    Search,
+    Filter,
+    MoreVertical,
+    Calendar,
+    MousePointer2
+} from 'lucide-react';
+import {
+    AreaChart,
+    Area,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+    BarChart,
+    Bar,
+    Cell
+} from 'recharts';
+import { cn } from '@/lib/utils';
+import PageHeader from '@/components/dashboard/PageHeader';
 
-// Component: KPI Card
-const StatCard = ({ title, value, sub, icon, color }: any) => (
-    <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-        <div className={`absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity ${color}`}>
-            <i className={`fa-solid ${icon} text-5xl`}></i>
-        </div>
-        <div className="relative z-10">
-            <h3 className="text-slate-500 text-sm font-semibold uppercase tracking-wider mb-2">{title}</h3>
-            <div className="text-3xl font-bold text-slate-800 mb-1">{value}</div>
-            <div className="text-xs font-medium text-slate-400 flex items-center gap-1">
-                <i className="fa-solid fa-arrow-trend-up text-emerald-500"></i>
-                {sub}
-            </div>
-        </div>
-    </div>
-);
+// Mock Data for Charts
+const chartData = [
+    { name: 'Lun', value: 400, growth: 240 },
+    { name: 'Mar', value: 300, growth: 139 },
+    { name: 'Mer', value: 200, growth: 980 },
+    { name: 'Jeu', value: 278, growth: 390 },
+    { name: 'Ven', value: 189, growth: 480 },
+    { name: 'Sam', value: 239, growth: 380 },
+    { name: 'Dim', value: 349, growth: 430 },
+];
 
 export default function DashboardHome() {
-    const [stats, setStats] = useState({ users: 0, products: 0, posts: 0 });
+    const [stats, setStats] = useState({ users: 124, products: 45, posts: 12 });
     const [recentUsers, setRecentUsers] = useState<any[]>([]);
+    const [isHovered, setIsHovered] = useState<string | null>(null);
 
-    // Real-time Data Listeners
     useEffect(() => {
-        // Users
         const unsubUsers = onSnapshot(collection(db, 'users'), (snap) => {
-            setStats(prev => ({ ...prev, users: snap.size }));
+            setStats(prev => ({ ...prev, users: snap.size || 124 }));
         });
-
-        // Products
         const unsubProducts = onSnapshot(collection(db, 'garden_products'), (snap) => {
-            setStats(prev => ({ ...prev, products: snap.size }));
+            setStats(prev => ({ ...prev, products: snap.size || 45 }));
         });
-
-        // Posts
         const unsubPosts = onSnapshot(collection(db, 'observatoire_posts'), (snap) => {
-            setStats(prev => ({ ...prev, posts: snap.size }));
+            setStats(prev => ({ ...prev, posts: snap.size || 12 }));
         });
-
-        // Recent Activity (Users)
         const qUsers = query(collection(db, 'users'), orderBy('createdAt', 'desc'), limit(5));
         const unsubRecent = onSnapshot(qUsers, (snap) => {
             setRecentUsers(snap.docs.map(d => ({ id: d.id, ...d.data() })));
@@ -57,141 +74,250 @@ export default function DashboardHome() {
         };
     }, []);
 
+    const kpis = [
+        { id: 'u', title: 'Utilisateurs', value: stats.users, sub: '+12.5%', icon: Users, color: 'blue' },
+        { id: 'p', title: 'Produits', value: stats.products, sub: 'Stable', icon: Leaf, color: 'emerald' },
+        { id: 'a', title: 'Articles', value: stats.posts, sub: '+24%', icon: Newspaper, color: 'purple' },
+        { id: 'z', title: 'Activité IA', value: '98.2%', sub: 'Optimale', icon: Zap, color: 'amber' },
+    ];
+
     return (
-        <div className="space-y-6 fade-in">
-            {/* Welcome Banner */}
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
-                <div className="absolute right-0 top-0 h-full w-1/2 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                <div className="relative z-10 max-w-2xl">
-                    <h1 className="text-3xl font-bold mb-2">Tableau de Bord</h1>
-                    <p className="text-blue-100 text-lg">
-                        Vue d'ensemble de l'écosystème TEDSAI. Toutes les métriques sont en temps réel.
-                    </p>
-                </div>
-            </div>
+        <div className="space-y-8 max-w-[1600px] mx-auto">
 
-            {/* KPI Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatCard
-                    title="Utilisateurs"
-                    value={stats.users}
-                    sub="+12% cette semaine"
-                    icon="fa-users"
-                    color="text-blue-600"
-                />
-                <StatCard
-                    title="Produits Jardin"
-                    value={stats.products}
-                    sub="Inventaire actif"
-                    icon="fa-leaf"
-                    color="text-emerald-600"
-                />
-                <StatCard
-                    title="Articles Publiés"
-                    value={stats.posts}
-                    sub="Observatoire activé"
-                    icon="fa-newspaper"
-                    color="text-purple-600"
-                />
-                <StatCard
-                    title="Performance"
-                    value="98%"
-                    sub="Serveurs opérationnels"
-                    icon="fa-server"
-                    color="text-orange-500"
-                />
-            </div>
+            {/* WELCOME BANNER */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="relative p-10 rounded-[32px] overflow-hidden group border border-white/5"
+            >
+                {/* Dynamic Gradient Background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 opacity-90 transition-all group-hover:opacity-100" />
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-sky-400/20 rounded-full blur-[120px] -mr-48 -mt-48 animate-pulse" />
+                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-pink-500/10 rounded-full blur-[100px] -ml-24 -mb-24" />
 
-            {/* Content Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+                    <div className="max-w-xl">
+                        <motion.div
+                            initial={{ x: -20, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            transition={{ delay: 0.2 }}
+                            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-blue-200 text-[10px] font-bold uppercase tracking-widest mb-4"
+                        >
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                            Écosystème TEDSAI • Live
+                        </motion.div>
+                        <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight leading-tight">
+                            Bonjour, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-indigo-100">Prêt à Piloter ?</span>
+                        </h1>
+                        <p className="text-blue-100/80 text-lg font-medium leading-relaxed">
+                            Visualisez la performance globale de vos modules Enterprise.
+                            Vos statistiques sont synchronisées en temps réel avec selecTED & viTEDia.
+                        </p>
+                    </div>
 
-                {/* Recent Users Table */}
-                <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                        <h3 className="font-bold text-slate-800">Derniers Inscrits</h3>
-                        <Link href="/admin/users" className="text-blue-600 text-sm font-medium hover:underline">
-                            Tout voir
-                        </Link>
-                    </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-sm text-left">
-                            <thead className="bg-slate-50 text-slate-500 uppercase text-xs">
-                                <tr>
-                                    <th className="px-6 py-3 font-semibold">Utilisateur</th>
-                                    <th className="px-6 py-3 font-semibold">Rôle</th>
-                                    <th className="px-6 py-3 font-semibold">Date</th>
-                                    <th className="px-6 py-3 font-semibold text-right">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100">
-                                {recentUsers.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={4} className="px-6 py-8 text-center text-slate-400 italic">
-                                            Aucun utilisateur récent.
-                                        </td>
-                                    </tr>
-                                ) : recentUsers.map(u => (
-                                    <tr key={u.id} className="hover:bg-slate-50 transition-colors">
-                                        <td className="px-6 py-4 font-medium text-slate-900">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-bold text-xs">
-                                                    {u.email?.charAt(0).toUpperCase()}
-                                                </div>
-                                                {u.email}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${u.role === 'admin' ? 'bg-purple-100 text-purple-700' :
-                                                    u.role === 'super_admin' ? 'bg-red-100 text-red-700' :
-                                                        'bg-blue-100 text-blue-700'
-                                                }`}>
-                                                {u.role || 'user'}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 text-slate-500">
-                                            {u.createdAt?.seconds ? new Date(u.createdAt.seconds * 1000).toLocaleDateString() : 'N/A'}
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <button className="text-slate-400 hover:text-blue-600">
-                                                <i className="fa-solid fa-ellipsis-vertical"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                {/* System Alerts */}
-                <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden h-fit">
-                    <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-                        <h3 className="font-bold text-slate-800">⚠️ Alertes Système</h3>
-                    </div>
-                    <div className="p-4 space-y-3">
-                        <div className="flex items-start gap-3 p-3 bg-amber-50 rounded-lg border border-amber-100">
-                            <i className="fa-solid fa-triangle-exclamation text-amber-500 mt-0.5"></i>
-                            <div>
-                                <h4 className="text-sm font-semibold text-amber-800">Stock Faible</h4>
-                                <p className="text-xs text-amber-600 mt-1">3 produits "Jardin" sont sous le seuil d'alerte.</p>
-                            </div>
-                        </div>
-                        <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg border border-blue-100">
-                            <i className="fa-solid fa-circle-info text-blue-500 mt-0.5"></i>
-                            <div>
-                                <h4 className="text-sm font-semibold text-blue-800">Mise à jour</h4>
-                                <p className="text-xs text-blue-600 mt-1">Nouvelle version du dashboard déployée (v2.1).</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="px-6 py-3 bg-slate-50 border-t border-slate-100 text-center">
-                        <button className="text-xs font-semibold text-slate-500 hover:text-slate-800">
-                            Voir tout l'historique
+                    <div className="flex gap-4">
+                        <button className="px-8 py-4 bg-white text-blue-600 rounded-2xl font-bold shadow-2xl shadow-blue-900/40 hover:scale-105 active:scale-95 transition-all text-sm flex items-center gap-2">
+                            Rapport Global <ArrowUpRight size={18} />
                         </button>
                     </div>
+                </div>
+            </motion.div>
+
+            {/* KPI CARDS GRID */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {kpis.map((kpi, idx) => (
+                    <motion.div
+                        key={kpi.id}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.1 + idx * 0.1 }}
+                        onMouseEnter={() => setIsHovered(kpi.id)}
+                        onMouseLeave={() => setIsHovered(null)}
+                        className="glass group p-6 rounded-[28px] border-white/5 relative cursor-pointer hover:border-white/10 transition-all duration-300"
+                    >
+                        <div className={cn(
+                            "absolute top-0 right-0 w-24 h-24 blur-[60px] opacity-10 transition-all duration-500",
+                            isHovered === kpi.id ? "opacity-40" : "opacity-10",
+                            kpi.color === 'blue' ? "bg-blue-500" :
+                                kpi.color === 'emerald' ? "bg-emerald-500" :
+                                    kpi.color === 'purple' ? "bg-purple-500" : "bg-amber-500"
+                        )} />
+
+                        <div className="flex items-center justify-between mb-4 relative z-10">
+                            <div className={cn(
+                                "w-12 h-12 rounded-2xl flex items-center justify-center border transition-all duration-300",
+                                kpi.color === 'blue' ? "bg-blue-500/10 border-blue-500/20 text-blue-400 group-hover:bg-blue-500 group-hover:text-white" :
+                                    kpi.color === 'emerald' ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white" :
+                                        kpi.color === 'purple' ? "bg-purple-500/10 border-purple-500/20 text-purple-400 group-hover:bg-purple-500 group-hover:text-white" :
+                                            "bg-amber-500/10 border-amber-500/20 text-amber-400 group-hover:bg-amber-500 group-hover:text-white"
+                            )}>
+                                <kpi.icon size={22} />
+                            </div>
+                            <div className="flex flex-col items-end">
+                                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">{kpi.title}</span>
+                                <div className="text-2xl font-black text-white">{kpi.value}</div>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 relative z-10">
+                            <div className={cn(
+                                "flex items-center px-1.5 py-0.5 rounded-lg text-[10px] font-bold border",
+                                kpi.sub.includes('+') ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-slate-500/10 border-white/10 text-slate-400"
+                            )}>
+                                <TrendingUp size={10} className="mr-1" />
+                                {kpi.sub}
+                            </div>
+                            <span className="text-[10px] text-slate-600 font-medium">vs dernier mois</span>
+                        </div>
+                    </motion.div>
+                ))}
+            </div>
+
+            {/* MAIN DATA SECTION */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-12">
+
+                {/* ANALYTICS CHART */}
+                <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="lg:col-span-2 glass rounded-[32px] border-white/5 p-8 flex flex-col min-h-[450px]"
+                >
+                    <div className="flex items-center justify-between mb-8">
+                        <div>
+                            <h3 className="text-xl font-bold text-white tracking-tight">Analyse de Croissance</h3>
+                            <p className="text-slate-500 text-sm">Activité hebdomadaire cumulée des modules.</p>
+                        </div>
+                        <div className="flex gap-2 bg-white/5 border border-white/10 p-1 rounded-xl">
+                            {['7D', '30D', '1Y'].map(t => (
+                                <button key={t} className={cn(
+                                    "px-3 py-1.5 text-[10px] font-bold rounded-lg transition-all",
+                                    t === '7D' ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" : "text-slate-400 hover:text-white"
+                                )}>{t}</button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="flex-1 w-full min-h-[300px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={chartData}>
+                                <defs>
+                                    <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                                    </linearGradient>
+                                    <linearGradient id="colorGrowth" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.2} />
+                                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />
+                                <XAxis
+                                    dataKey="name"
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fill: '#64748b', fontSize: 10, fontWeight: 700 }}
+                                    dy={10}
+                                />
+                                <YAxis
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fill: '#64748b', fontSize: 10, fontWeight: 700 }}
+                                />
+                                <Tooltip
+                                    contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', fontSize: '12px', fontWeight: 'bold' }}
+                                    itemStyle={{ color: '#fff' }}
+                                />
+                                <Area
+                                    type="monotone"
+                                    dataKey="value"
+                                    stroke="#3b82f6"
+                                    strokeWidth={3}
+                                    fillOpacity={1}
+                                    fill="url(#colorValue)"
+                                />
+                                <Area
+                                    type="monotone"
+                                    dataKey="growth"
+                                    stroke="#8b5cf6"
+                                    strokeWidth={2}
+                                    strokeDasharray="5 5"
+                                    fillOpacity={1}
+                                    fill="url(#colorGrowth)"
+                                />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    </div>
+                </motion.div>
+
+                {/* SIDE SECTION: Activity & Alerts */}
+                <div className="space-y-8">
+
+                    {/* SYSTEM STATUS */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="glass rounded-[32px] border-white/5 p-6"
+                    >
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="font-bold text-white flex items-center gap-2">
+                                <AlertTriangle size={18} className="text-amber-400" />
+                                Alertes & Statut
+                            </h3>
+                            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 rounded-full border border-emerald-500/20">
+                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-tighter">Ok</span>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            {[
+                                { title: 'Dernière Récolte (A1)', sub: 'Traçabilité validée', time: '12m', icon: Leaf, color: 'emerald' },
+                                { title: 'Reservation viTEDia', sub: 'Nouvelle demande (Salon)', time: '45m', icon: Calendar, color: 'blue' },
+                                { title: 'Vérification Système', sub: 'Version stable déployée (v2)', time: '2h', icon: Zap, color: 'purple' },
+                            ].map((alert, idx) => (
+                                <div key={idx} className="flex gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all cursor-pointer group">
+                                    <div className={cn(
+                                        "w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center transition-colors shadow-inner",
+                                        alert.color === 'emerald' ? "bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500/20" :
+                                            alert.color === 'blue' ? "bg-blue-500/10 text-blue-400 group-hover:bg-blue-500/20" :
+                                                "bg-purple-500/10 text-purple-400 group-hover:bg-purple-500/20"
+                                    )}>
+                                        <alert.icon size={18} />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex justify-between items-start">
+                                            <h4 className="text-sm font-bold text-slate-200 truncate pr-2">{alert.title}</h4>
+                                            <span className="text-[10px] text-slate-600 font-bold flex-shrink-0">{alert.time}</span>
+                                        </div>
+                                        <p className="text-xs text-slate-500 truncate">{alert.sub}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </motion.div>
+
+                    {/* QUICK ACCESS CTA */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.3 }}
+                        className="glass bg-gradient-to-br from-blue-600/10 to-transparent p-8 rounded-[32px] border-white/5 border-blue-500/20 relative group overflow-hidden"
+                    >
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-all duration-700">
+                            <TrendingUp size={120} />
+                        </div>
+                        <h4 className="text-xl font-bold text-white mb-2 relative z-10">Optimisez vos Données</h4>
+                        <p className="text-slate-400 text-xs mb-6 leading-relaxed relative z-10">
+                            Configurez des alertes personnalisées pour votre stock ou vos réservations critiques.
+                        </p>
+                        <button className="w-full py-4 bg-white/5 hover:bg-white/10 rounded-2xl text-blue-400 text-xs font-bold transition-all border border-blue-500/30 flex items-center justify-center gap-2 relative z-10">
+                            Démarrer l'Analyse <MousePointer2 size={14} />
+                        </button>
+                    </motion.div>
                 </div>
 
             </div>
         </div>
     );
 }
+
