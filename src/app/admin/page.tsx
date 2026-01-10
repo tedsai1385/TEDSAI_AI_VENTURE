@@ -1,7 +1,11 @@
-import './admin.css';
+'use client';
 
-// ... (Existing Imports)
-import { collection, deleteDoc, doc, onSnapshot, query, orderBy, getDocs, limit, where } from 'firebase/firestore'; // Added limit/where
+import React, { useState, useEffect } from 'react';
+import './admin.css';
+import AdminGuard from '@/components/admin/AdminGuard';
+import ProductForm from '@/components/admin/ProductForm';
+import PostEditor from '@/components/admin/PostEditor';
+import { collection, deleteDoc, doc, onSnapshot, query, orderBy, getDocs, limit, where } from 'firebase/firestore';
 import Link from 'next/link';
 
 // Legacy-style StatCard
