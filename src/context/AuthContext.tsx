@@ -40,33 +40,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            setUser(user);
+            try {
+                setUser(user);
 
-            if (user) {
-                // Sync with Firestore profile
-                const profileRef = doc(db, 'users', user.uid);
-                const profileSnap = await getDoc(profileRef);
+                if (user) {
+                    // Sync with Firestore profile
+                    const profileRef = doc(db, 'users', user.uid);
+                    const profileSnap = await getDoc(profileRef);
 
-                if (profileSnap.exists()) {
-                    setProfile(profileSnap.data() as UserProfile);
+                    if (profileSnap.exists()) {
+                        setProfile(profileSnap.data() as UserProfile);
+                    } else {
+                        // Create new profile
+                        const newProfile: UserProfile = {
+                            uid: user.uid,
+                            email: user.email,
+                            displayName: user.displayName,
+                            photoURL: user.photoURL,
+                            role: 'user',
+                            createdAt: serverTimestamp(),
+                        };
+                        try {
+                            await setDoc(profileRef, newProfile);
+                            setProfile(newProfile);
+                        } catch (e) {
+                            console.error('Error creating profile:', e);
+                            setProfile(newProfile); // Set temporarily even if write fails
+                        }
+                    }
                 } else {
-                    // Create new profile
-                    const newProfile: UserProfile = {
-                        uid: user.uid,
-                        email: user.email,
-                        displayName: user.displayName,
-                        photoURL: user.photoURL,
-                        role: 'user',
-                        createdAt: serverTimestamp(),
-                    };
-                    await setDoc(profileRef, newProfile);
-                    setProfile(newProfile);
+                    setProfile(null);
                 }
-            } else {
-                setProfile(null);
+            } catch (error) {
+                console.error('Auth state change error:', error);
+            } finally {
+                setLoading(false);
             }
-
-            setLoading(false);
         });
 
         return () => unsubscribe();

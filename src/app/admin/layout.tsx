@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import AdminSidebar from '@/components/admin/Sidebar';
 import { cn } from '@/lib/utils';
+import './tailwind-admin.css';
 import './admin.css';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -27,13 +28,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const [isScrolled, setIsScrolled] = useState(false);
 
     const isPublicAdminRoute = pathname === '/admin/login' || pathname === '/admin/setup';
+    const [safetyLoading, setSafetyLoading] = useState(true);
 
     // Scroll listener for header polish
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 20);
         window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+
+        // Safety timeout to prevent infinite loading
+        const timer = setTimeout(() => {
+            setSafetyLoading(false);
+        }, 5000);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            clearTimeout(timer);
+        };
     }, []);
+
+    const isLoading = loading && safetyLoading;
 
     // Protect Route
     useEffect(() => {
@@ -50,7 +63,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     };
 
     // Loading State
-    if (loading) {
+    if (isLoading) {
         return (
             <div className="flex h-screen items-center justify-center bg-slate-950">
                 <div className="relative">
