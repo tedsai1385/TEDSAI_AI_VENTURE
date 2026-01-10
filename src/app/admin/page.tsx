@@ -7,6 +7,7 @@ import ProductForm from '@/components/admin/ProductForm';
 import PostEditor from '@/components/admin/PostEditor';
 import { collection, deleteDoc, doc, onSnapshot, query, orderBy, getDocs, limit, where } from 'firebase/firestore';
 import Link from 'next/link';
+import { GardenProduct } from '@/types';
 
 // Legacy-style StatCard
 const StatCard = ({ label, value, sub, color = "text-slate-900", id }: any) => (
