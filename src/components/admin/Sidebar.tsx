@@ -19,7 +19,6 @@ export default function AdminSidebar() {
         {
             header: "Gestion Modules",
             items: [
-                { href: '/admin/users', icon: 'fa-users-gear', label: 'Utilisateurs' },
                 { href: '/admin/restaurant', icon: 'fa-utensils', label: 'Restaurant' },
                 { href: '/admin/garden', icon: 'fa-leaf', label: 'SelecTED Gardens' },
                 { href: '/admin/ia', icon: 'fa-brain', label: 'IA / Services' }
@@ -51,8 +50,8 @@ export default function AdminSidebar() {
                                 key={item.href}
                                 href={item.href}
                                 className={`flex items-center px-6 py-3 text-sm transition-colors ${pathname === item.href
-                                        ? 'bg-blue-600 text-white border-l-4 border-blue-400'
-                                        : 'text-slate-400 hover:bg-slate-800 hover:text-white border-l-4 border-transparent'
+                                    ? 'bg-blue-600 text-white border-l-4 border-blue-400'
+                                    : 'text-slate-400 hover:bg-slate-800 hover:text-white border-l-4 border-transparent'
                                     }`}
                             >
                                 <i className={`fa-solid ${item.icon} w-6 text-center mr-3`}></i>

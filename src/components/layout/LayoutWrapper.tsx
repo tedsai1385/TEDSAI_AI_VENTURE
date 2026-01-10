@@ -8,9 +8,9 @@ import ChatWidget from "@/components/features/ChatWidget";
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const isAdmin = pathname?.startsWith('/admin');
+    const isAuthPage = pathname?.startsWith('/admin') || pathname === '/login';
 
-    if (isAdmin) {
+    if (isAuthPage) {
         return <>{children}</>;
     }
 
