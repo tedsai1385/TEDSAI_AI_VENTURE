@@ -18,6 +18,7 @@ const ViTEDia = () => {
         payment: 'spot'
     });
 
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
 
@@ -109,10 +110,54 @@ const ViTEDia = () => {
                                 </ul>
                             </div>
                         </div>
-                        <button className="btn btn-secondary" style={{ marginTop: '3rem' }}>Voir la Carte Complète</button>
+                    </div>
+
+                    <div className="menu-card" style={{ marginTop: '2rem' }}>
+                        <h2 style={{ marginBottom: '2.5rem', color: 'var(--color-vitedia-primary)', fontSize: '2rem' }}>Carte des Vins & Boissons</h2>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', textAlign: 'left' }}>
+                            <div>
+                                <h3 style={{ borderBottom: '2px solid #eee', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Vins de Prestige</h3>
+                                <ul style={{ listStyle: 'none', padding: 0 }}>
+                                    <li style={{ marginBottom: '1rem' }}>
+                                        <strong>Château Bellevue</strong> <span style={{ float: 'right', color: 'var(--color-vitedia-primary)' }}>15 000 F</span>
+                                        <p style={{ fontSize: '0.85rem', color: '#777' }}>Rouge Intense, notes boisées</p>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 style={{ borderBottom: '2px solid #eee', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Cocktails Signature</h3>
+                                <ul style={{ listStyle: 'none', padding: 0 }}>
+                                    <li style={{ marginBottom: '1rem' }}>
+                                        <strong>Le TED-Tonic</strong> <span style={{ float: 'right', color: 'var(--color-vitedia-primary)' }}>4 500 F</span>
+                                        <p style={{ fontSize: '0.85rem', color: '#777' }}>Gingembre du jardin et citronnelle</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
+
+            {/* Gallery with Lightbox */}
+            <section className="container" style={{ padding: '4rem 0' }}>
+                <h2 style={{ textAlign: 'center', marginBottom: '3rem', color: 'var(--color-vitedia-primary)' }}>Galerie Immersive</h2>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
+                    {[1, 2, 3, 4, 5, 6].map(i => (
+                        <div key={i} className="gallery-item" style={{ cursor: 'pointer', overflow: 'hidden', borderRadius: '8px', height: '200px' }} onClick={() => setSelectedImage(`/assets/images/gallery/rest-${i}.jpg`)}>
+                            <img src={`/assets/images/gallery/rest-${i}.jpg`} alt={`Resto ${i}`} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s' }}
+                                onError={(e) => { e.currentTarget.src = 'https://via.placeholder.com/400x300?text=viTEDia+Gallery'; }} />
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            {/* Lightbox Component */}
+            {selectedImage && (
+                <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.9)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setSelectedImage(null)}>
+                    <img src={selectedImage} style={{ maxWidth: '90%', maxHeight: '90%', borderRadius: '8px' }} onClick={(e) => e.stopPropagation()} />
+                    <button style={{ position: 'absolute', top: '20px', right: '20px', background: 'none', border: 'none', color: 'white', fontSize: '2rem', cursor: 'pointer' }} onClick={() => setSelectedImage(null)}>&times;</button>
+                </div>
+            )}
 
             {/* Reservation Section */}
             <section className="reservation-section" id="reservation">

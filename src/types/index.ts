@@ -78,3 +78,35 @@ export interface ChatSession {
     createdAt: Date;
     updatedAt: Date;
 }
+
+// Cart types
+export interface CartItem {
+    id: string;
+    productId: string;
+    name: string;
+    price: number;
+    quantity: number;
+    image: string;
+    variety?: string;
+    category: 'menu' | 'garden' | 'ia_service';
+}
+
+export interface Cart {
+    items: CartItem[];
+    total: number;
+    subtotal: number;
+    tax: number;
+    shipping: number;
+    discount: number;
+    promoCode?: string;
+}
+
+export interface ShippingAddress {
+    name: string;
+    street: string;
+    city: string;
+    postalCode: string;
+    country: string;
+    phone: string;
+    email: string;
+}

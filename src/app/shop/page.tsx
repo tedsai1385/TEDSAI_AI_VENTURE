@@ -14,6 +14,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { GardenProduct } from '@/types';
+import { useCart } from '@/context/CartContext';
 import styles from './shop.module.css';
 import CartSidebar from '@/components/features/CartSidebar';
 
@@ -28,11 +29,11 @@ const LoadingSkeleton = () => (
 
 // Main Content Component
 const ShopContent = () => {
+    const { cart, addItem } = useCart();
     const [products, setProducts] = useState<GardenProduct[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState('all');
     const [cartOpen, setCartOpen] = useState(false);
-    const [cartItems, setCartItems] = useState<any[]>([]);
 
     // 1. Fetch Products
     useEffect(() => {
@@ -45,41 +46,19 @@ const ShopContent = () => {
         return () => unsubscribe();
     }, []);
 
-    // 2. Load Cart from LocalStorage
-    useEffect(() => {
-        const saved = localStorage.getItem('tedsai_cart');
-        if (saved) setCartItems(JSON.parse(saved));
-    }, []);
-
-    // 3. Save Cart to LocalStorage
-    useEffect(() => {
-        localStorage.setItem('tedsai_cart', JSON.stringify(cartItems));
-    }, [cartItems]);
-
     // Cart Logic
-    const addToCart = (product: GardenProduct) => {
-        setCartItems(prev => {
-            const existing = prev.find(item => item.id === product.id);
-            if (existing) {
-                return prev.map(item => item.id === product.id ? { ...item, cartQuantity: item.cartQuantity + 1 } : item);
-            }
-            return [...prev, { ...product, cartQuantity: 1 }];
+    const handleAddToCart = (product: GardenProduct) => {
+        addItem({
+            id: product.id,
+            productId: product.id,
+            name: product.name,
+            price: product.price,
+            quantity: 1,
+            image: product.image || '',
+            variety: product.variety,
+            category: 'garden'
         });
-        // Feedback could be added here (toast)
         setCartOpen(true);
-    };
-
-    const updateQuantity = (id: string, delta: number) => {
-        setCartItems(prev => prev.map(item => {
-            if (item.id === id) {
-                return { ...item, cartQuantity: Math.max(1, item.cartQuantity + delta) };
-            }
-            return item;
-        }));
-    };
-
-    const removeFromCart = (id: string) => {
-        setCartItems(prev => prev.filter(item => item.id !== id));
     };
 
     // Filter Logic
@@ -162,7 +141,7 @@ const ShopContent = () => {
                                                 </div>
                                                 <button
                                                     className={styles.addBtn}
-                                                    onClick={() => addToCart(product)}
+                                                    onClick={() => handleAddToCart(product)}
                                                     disabled={!product.inStock}
                                                 >
                                                     <i className="fa-solid fa-plus"></i>
@@ -187,9 +166,9 @@ const ShopContent = () => {
             {/* Cart FAB */}
             <button className={styles.cartFab} onClick={() => setCartOpen(true)}>
                 <i className="fa-solid fa-basket-shopping fa-lg"></i>
-                {cartItems.length > 0 && (
+                {cart.items.length > 0 && (
                     <span className={styles.cartCount}>
-                        {cartItems.reduce((acc, item) => acc + item.cartQuantity, 0)}
+                        {cart.items.reduce((acc, item) => acc + item.quantity, 0)}
                     </span>
                 )}
             </button>
@@ -198,9 +177,6 @@ const ShopContent = () => {
             <CartSidebar
                 isOpen={cartOpen}
                 onClose={() => setCartOpen(false)}
-                items={cartItems}
-                onUpdateQuantity={updateQuantity}
-                onRemove={removeFromCart}
             />
         </div>
     );

@@ -6,9 +6,40 @@ import './solutions-ia.css';
 
 const SolutionsIA = () => {
   const [activeTab, setActiveTab] = useState('facturation');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<null | any>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+      setAnalysisResult(null);
+    }
+  };
 
   const handlePlaygroundClick = () => {
-    alert("Analyse de la facture en cours... (Ceci est une simulation)");
+    if (!selectedFile) {
+      alert("Veuillez d'abord sélectionner une facture.");
+      return;
+    }
+    setIsAnalyzing(true);
+    setAnalysisResult(null);
+
+    // Simulation d'analyse OCR
+    setTimeout(() => {
+      setIsAnalyzing(false);
+      setAnalysisResult({
+        vendor: "FOURNISSEUR EXEMPLE SARL",
+        date: "12/01/2026",
+        total: "145 000 FCFA",
+        tax: "27 912 FCFA",
+        items: [
+          { desc: "Maintenance Serveur", qty: 1, price: "100 000" },
+          { desc: "Licence Logiciel", qty: 5, price: "45 000" }
+        ],
+        confidence: "99.8%"
+      });
+    }, 3000);
   };
 
   return (
@@ -88,11 +119,80 @@ const SolutionsIA = () => {
       <section id="playground" style={{ background: '#eef2f6', padding: 'var(--space-xl) 0', marginTop: 'var(--space-xl)', textAlign: 'center' }}>
         <div className="container">
           <h2>IA Playground</h2>
-          <p>Testez notre technologie OCR en temps réel (Simulation).</p>
-          <div style={{ background: 'white', width: '100%', maxWidth: '600px', height: '300px', margin: '2rem auto', border: '2px dashed #ccc', display: 'flex', alignItems: 'center', justifySelf: 'center', justifyContent: 'center', borderRadius: '8px' }}>
-            <p style={{ color: '#888' }}><i className="fa-solid fa-cloud-upload-alt fa-2x"></i><br /><span>Glissez une facture ici (Démo)</span></p>
+          <p>Testez notre technologie de reconnaissance de documents en temps réel.</p>
+
+          <div style={{
+            background: 'white',
+            width: '100%',
+            maxWidth: '800px',
+            minHeight: '400px',
+            margin: '2rem auto',
+            padding: '2rem',
+            borderRadius: '12px',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            {!analysisResult && !isAnalyzing ? (
+              <div style={{ border: '2px dashed #ccc', padding: '3rem', borderRadius: '8px', cursor: 'pointer', width: '100%' }} onClick={() => document.getElementById('file-upload')?.click()}>
+                <i className="fa-solid fa-cloud-upload-alt fa-3x" style={{ color: 'var(--color-primary)', marginBottom: '1rem' }}></i>
+                <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>{selectedFile ? selectedFile.name : "Cliquez ou glissez une facture (Images/PDF)"}</p>
+                <input type="file" id="file-upload" style={{ display: 'none' }} accept="image/*,application/pdf" onChange={handleFileChange} />
+              </div>
+            ) : isAnalyzing ? (
+              <div style={{ textAlign: 'center' }}>
+                <div className="spinner" style={{ width: '50px', height: '50px', border: '5px solid #f3f3f3', borderTop: '5px solid var(--color-primary)', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 2rem' }}></div>
+                <h3>Analyse par l'IA en cours...</h3>
+                <p>Extraction des données structurées via OCR multimodal</p>
+                <style jsx>{`
+                  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: scale(1.1) rotate(360deg); } }
+                `}</style>
+              </div>
+            ) : (
+              <div className="analysis-result fade-in" style={{ width: '100%', textAlign: 'left' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '2px solid #eee', paddingBottom: '1rem' }}>
+                  <h3 style={{ margin: 0 }}>Résultat de l'analyse</h3>
+                  <span style={{ background: '#27ae60', color: 'white', padding: '4px 12px', borderRadius: '20px', fontSize: '0.8rem' }}>Confiance : {analysisResult.confidence}</span>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <p><strong>Fournisseur :</strong> {analysisResult.vendor}</p>
+                  <p><strong>Date :</strong> {analysisResult.date}</p>
+                  <p><strong>Total TTC :</strong> {analysisResult.total}</p>
+                  <p><strong>Dont TVA :</strong> {analysisResult.tax}</p>
+                </div>
+                <div style={{ marginTop: '1.5rem' }}>
+                  <h4 style={{ marginBottom: '0.5rem' }}>Articles détectés :</h4>
+                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                      <tr style={{ background: '#f8f9fa' }}>
+                        <th style={{ padding: '8px', textAlign: 'left' }}>Description</th>
+                        <th style={{ padding: '8px', textAlign: 'center' }}>Qté</th>
+                        <th style={{ padding: '8px', textAlign: 'right' }}>Prix</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {analysisResult.items.map((item: any, idx: number) => (
+                        <tr key={idx} style={{ borderBottom: '1px solid #eee' }}>
+                          <td style={{ padding: '8px' }}>{item.desc}</td>
+                          <td style={{ padding: '8px', textAlign: 'center' }}>{item.qty}</td>
+                          <td style={{ padding: '8px', textAlign: 'right' }}>{item.price} F</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <button className="btn btn-secondary" style={{ marginTop: '2rem' }} onClick={() => setSelectedFile(null)}>Nouvelle analyse</button>
+              </div>
+            )}
           </div>
-          <button className="btn btn-primary" onClick={handlePlaygroundClick}>Lancer l'analyse</button>
+
+          {!analysisResult && (
+            <button className="btn btn-primary" onClick={handlePlaygroundClick} disabled={isAnalyzing}>
+              {isAnalyzing ? 'Analyse...' : "Lancer l'analyse intelligente"}
+            </button>
+          )}
         </div>
       </section>
 

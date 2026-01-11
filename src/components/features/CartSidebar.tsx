@@ -1,26 +1,19 @@
-'use client';
-
-import { GardenProduct } from '@/types';
+import { useCart } from '@/context/CartContext';
 import Image from 'next/image';
 import styles from './CartSidebar.module.css';
 import { loadStripe } from '@stripe/stripe-js';
 
-interface CartItem extends GardenProduct {
-    cartQuantity: number;
-}
-
 interface CartSidebarProps {
     isOpen: boolean;
     onClose: () => void;
-    items: CartItem[];
-    onUpdateQuantity: (id: string, delta: number) => void;
-    onRemove: (id: string) => void;
 }
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
-export default function CartSidebar({ isOpen, onClose, items, onUpdateQuantity, onRemove }: CartSidebarProps) {
-    const total = items.reduce((sum, item) => sum + (item.price || 0) * item.cartQuantity, 0);
+export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
+    const { cart, updateQuantity, removeItem } = useCart();
+    const items = cart.items;
+    const total = cart.total;
 
     const handleCheckout = async () => {
         try {
@@ -32,7 +25,7 @@ export default function CartSidebar({ isOpen, onClose, items, onUpdateQuantity, 
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ items }),
+                body: JSON.stringify({ items: cart.items }),
             });
 
             if (!response.ok) {
@@ -63,7 +56,7 @@ export default function CartSidebar({ isOpen, onClose, items, onUpdateQuantity, 
                     <div className={styles.header}>
                         <h2 className={styles.title}>
                             <i className="fa-solid fa-bag-shopping" style={{ color: '#00B207' }}></i>
-                            Shopping Cart ({items.length})
+                            Mon Panier ({items.length})
                         </h2>
                         <button onClick={onClose} className={styles.closeBtn}>
                             <i className="fa-solid fa-times"></i>
@@ -77,9 +70,9 @@ export default function CartSidebar({ isOpen, onClose, items, onUpdateQuantity, 
                                 <div className={styles.emptyIcon}>
                                     <i className="fa-solid fa-basket-shopping"></i>
                                 </div>
-                                <p className="text-xl font-medium">Your cart is empty</p>
+                                <p className="text-xl font-medium">Votre panier est vide</p>
                                 <button onClick={onClose} className={styles.continueBtn}>
-                                    Continue Shopping
+                                    Continuer mes achats
                                 </button>
                             </div>
                         ) : (
@@ -98,7 +91,7 @@ export default function CartSidebar({ isOpen, onClose, items, onUpdateQuantity, 
                                         <div className={styles.itemHeader}>
                                             <h4 className={styles.itemName}>{item.name}</h4>
                                             <button
-                                                onClick={() => onRemove(item.id)}
+                                                onClick={() => removeItem(item.productId)}
                                                 className={styles.removeBtn}
                                             >
                                                 <i className="fa-solid fa-times-circle text-lg"></i>
@@ -109,22 +102,22 @@ export default function CartSidebar({ isOpen, onClose, items, onUpdateQuantity, 
                                         <div className={styles.itemControls}>
                                             <div className={styles.quantityControl}>
                                                 <button
-                                                    onClick={() => onUpdateQuantity(item.id, -1)}
+                                                    onClick={() => updateQuantity(item.productId, item.quantity - 1)}
                                                     className={styles.qtyBtn}
-                                                    disabled={item.cartQuantity <= 1}
+                                                    disabled={item.quantity <= 1}
                                                 >
                                                     -
                                                 </button>
-                                                <span className={styles.qtyValue}>{item.cartQuantity}</span>
+                                                <span className={styles.qtyValue}>{item.quantity}</span>
                                                 <button
-                                                    onClick={() => onUpdateQuantity(item.id, 1)}
+                                                    onClick={() => updateQuantity(item.productId, item.quantity + 1)}
                                                     className={styles.qtyBtn}
                                                 >
                                                     +
                                                 </button>
                                             </div>
                                             <span className={styles.itemPrice}>
-                                                {((item.price || 0) * item.cartQuantity).toLocaleString()} XAF
+                                                {(item.price * item.quantity).toLocaleString()} XAF
                                             </span>
                                         </div>
                                     </div>
@@ -137,14 +130,22 @@ export default function CartSidebar({ isOpen, onClose, items, onUpdateQuantity, 
                     {items.length > 0 && (
                         <div className={styles.footer}>
                             <div className={styles.totalRow}>
-                                <span>Subtotal:</span>
+                                <span>Sous-total:</span>
+                                <span>{cart.subtotal.toLocaleString()} XAF</span>
+                            </div>
+                            <div className={styles.totalRow} style={{ fontSize: '0.9rem', color: '#666' }}>
+                                <span>Livraison:</span>
+                                <span>{cart.shipping.toLocaleString()} XAF</span>
+                            </div>
+                            <div className={styles.totalRow} style={{ fontWeight: 'bold', fontSize: '1.2rem', marginTop: '0.5rem', borderTop: '1px solid #eee', paddingTop: '0.5rem' }}>
+                                <span>Total:</span>
                                 <span>{total.toLocaleString()} XAF</span>
                             </div>
                             <button
                                 onClick={handleCheckout}
                                 className={styles.checkoutBtn}
                             >
-                                Checkout
+                                Passer à la caisse
                             </button>
                         </div>
                     )}
