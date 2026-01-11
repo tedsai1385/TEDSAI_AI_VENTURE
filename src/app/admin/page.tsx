@@ -100,6 +100,29 @@ export default function DashboardHome() {
 
     if (!mounted) return null;
 
+    const kpis = [
+        { id: 'users', title: 'Utilisateurs', value: stats.users, icon: Users, color: 'blue', sub: '+12%' },
+        { id: 'products', title: 'Produits', value: stats.products, icon: Leaf, color: 'emerald', sub: '+5%' },
+        { id: 'posts', title: 'Articles', value: stats.posts, icon: Newspaper, color: 'purple', sub: '+3' },
+        { id: 'sessions', title: 'Sessions IA', value: stats.sessions, icon: Zap, color: 'amber', sub: 'Live' },
+    ];
+
+    const displayActivity = [
+        ...recentOrders.map(o => ({
+            title: `Commande ${o.status === 'paid' ? 'Payée' : 'Nouvelle'}`,
+            time: 'Récemment',
+            sub: `${o.customerEmail || 'Client'} - ${o.totalAmount || 0}€`,
+            icon: Newspaper,
+            color: 'blue'
+        })),
+        ...recentReservations.map(r => ({
+            title: 'Nouvelle Réservation',
+            time: r.time || 'Aujourd\'hui',
+            sub: `${r.name} - ${r.guestCount} pers.`,
+            icon: Users,
+            color: 'emerald'
+        }))
+    ].slice(0, 5);
 
     return (
         <div className="space-y-8 max-w-[1600px] mx-auto">
