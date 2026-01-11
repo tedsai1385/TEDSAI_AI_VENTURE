@@ -1,0 +1,39 @@
+name: Deploy Cloud Run Services
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/app/api/**'
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GCP_REGION: europe-west1
+
+jobs:
+  # This serves as a template for when standalone microservices are moved to Cloud Run
+  deploy-api:
+    runs-on: ubuntu-latest
+    if: false # Disabled by default until migration to standalone services
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+      
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+      
+      - name: Build and deploy
+        run: |
+          gcloud builds submit --tag gcr.io/${{ env.GCP_PROJECT_ID }}/tedsai-api
+          gcloud run deploy tedsai-api \
+            --image gcr.io/${{ env.GCP_PROJECT_ID }}/tedsai-api \
+            --platform managed \
+            --region ${{ env.GCP_REGION }} \
+            --allow-unauthenticated

@@ -27,6 +27,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
         discount: 0,
     });
 
+    const [isHydrated, setIsHydrated] = useState(false);
+
     // Load cart from localStorage on mount
     useEffect(() => {
         const savedCart = localStorage.getItem('tedsai_cart');
@@ -38,12 +40,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 console.error('Error loading cart:', error);
             }
         }
+        setIsHydrated(true);
     }, []);
 
     // Save cart to localStorage on change
     useEffect(() => {
-        localStorage.setItem('tedsai_cart', JSON.stringify(cart));
-    }, [cart]);
+        if (isHydrated) {
+            localStorage.setItem('tedsai_cart', JSON.stringify(cart));
+        }
+    }, [cart, isHydrated]);
 
     // Recalculate totals
     const recalculateCart = (items: CartItem[], discount = 0, promoCode?: string) => {

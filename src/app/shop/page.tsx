@@ -16,6 +16,7 @@ import { db } from '@/lib/firebase/config';
 import { GardenProduct } from '@/types';
 import { useCart } from '@/context/CartContext';
 import styles from './shop.module.css';
+import OptimizedImage from '@/components/ui/OptimizedImage';
 import CartSidebar from '@/components/features/CartSidebar';
 
 // Loading Component
@@ -123,20 +124,22 @@ const ShopContent = () => {
                                             <span className={styles.stockBadge}>
                                                 {product.inStock ? 'En Stock' : 'Épuisé'}
                                             </span>
-                                            <img
+                                            <OptimizedImage
                                                 src={product.image || 'https://via.placeholder.com/400'}
-                                                alt={product.name}
+                                                alt={product.name || 'Produit'}
+                                                width={400}
+                                                height={300}
                                                 className={styles.productImg}
                                             />
                                         </div>
                                         <div className={styles.cardBody}>
-                                            <span className={styles.catTag}>{product.category}</span>
-                                            <h3 className={styles.prodTitle}>{product.name}</h3>
-                                            <p className={styles.prodDesc}>{product.description}</p>
+                                            <span className={styles.catTag}>{product.category || 'Général'}</span>
+                                            <h3 className={styles.prodTitle}>{product.name || 'Produit sans nom'}</h3>
+                                            <p className={styles.prodDesc}>{product.description || ''}</p>
 
                                             <div className={styles.cardFooter}>
                                                 <div className={styles.price}>
-                                                    {product.price.toLocaleString()} XAF
+                                                    {(product.price || 0).toLocaleString()} XAF
                                                     <span> / {product.unit || 'unité'}</span>
                                                 </div>
                                                 <button

@@ -10,6 +10,8 @@ import LayoutWrapper from "@/components/layout/LayoutWrapper";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 
+import { Analytics } from '@vercel/analytics/react';
+
 export default function RootLayout({
     children,
 }: Readonly<{
@@ -28,6 +30,7 @@ export default function RootLayout({
                         </LayoutWrapper>
                     </CartProvider>
                 </AuthProvider>
+                <Analytics />
             </body>
         </html>
     );
