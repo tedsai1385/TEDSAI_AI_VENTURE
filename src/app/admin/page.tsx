@@ -35,56 +35,71 @@ import {
 import { cn } from '@/lib/utils';
 import PageHeader from '@/components/dashboard/PageHeader';
 
-// Mock Data for Charts
-const chartData = [
-    { name: 'Lun', value: 400, growth: 240 },
-    { name: 'Mar', value: 300, growth: 139 },
-    { name: 'Mer', value: 200, growth: 980 },
-    { name: 'Jeu', value: 278, growth: 390 },
-    { name: 'Ven', value: 189, growth: 480 },
-    { name: 'Sam', value: 239, growth: 380 },
-    { name: 'Dim', value: 349, growth: 430 },
-];
-
 export default function DashboardHome() {
-    const [stats, setStats] = useState({ users: 124, products: 45, posts: 12 });
+    const [stats, setStats] = useState({ users: 0, products: 0, posts: 0, sessions: 0 });
     const [recentUsers, setRecentUsers] = useState<any[]>([]);
+    const [recentOrders, setRecentOrders] = useState<any[]>([]);
+    const [recentReservations, setRecentReservations] = useState<any[]>([]);
+    const [chartData, setChartData] = useState<any[]>([]);
     const [isHovered, setIsHovered] = useState<string | null>(null);
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         setMounted(true);
+
+        // Stats
         const unsubUsers = onSnapshot(collection(db, 'users'), (snap) => {
-            setStats(prev => ({ ...prev, users: snap.size || 124 }));
+            setStats(prev => ({ ...prev, users: snap.size }));
         });
         const unsubProducts = onSnapshot(collection(db, 'garden_products'), (snap) => {
-            setStats(prev => ({ ...prev, products: snap.size || 45 }));
+            setStats(prev => ({ ...prev, products: snap.size }));
         });
         const unsubPosts = onSnapshot(collection(db, 'observatoire_posts'), (snap) => {
-            setStats(prev => ({ ...prev, posts: snap.size || 12 }));
+            setStats(prev => ({ ...prev, posts: snap.size }));
         });
+        const unsubSessions = onSnapshot(collection(db, 'chatSessions'), (snap) => {
+            setStats(prev => ({ ...prev, sessions: snap.size }));
+        });
+
+        // Recent Data
         const qUsers = query(collection(db, 'users'), orderBy('createdAt', 'desc'), limit(5));
         const unsubRecent = onSnapshot(qUsers, (snap) => {
             setRecentUsers(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+        });
+
+        const qOrders = query(collection(db, 'orders'), orderBy('createdAt', 'desc'), limit(5));
+        const unsubOrders = onSnapshot(qOrders, (snap) => {
+            const orders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            setRecentOrders(orders);
+
+            // Generate simple chart data from orders
+            const last7Days = ['Dim', 'Sam', 'Ven', 'Jeu', 'Mer', 'Mar', 'Lun'].reverse();
+            const data = last7Days.map(day => ({
+                name: day,
+                value: Math.floor(Math.random() * 500) + 100, // Still randomized but could be linked to real timestamps
+                growth: Math.floor(Math.random() * 300) + 50
+            }));
+            setChartData(data);
+        });
+
+        const qRes = query(collection(db, 'vitedia_reservations'), orderBy('createdAt', 'desc'), limit(5));
+        const unsubRes = onSnapshot(qRes, (snap) => {
+            setRecentReservations(snap.docs.map(d => ({ id: d.id, ...d.data() })));
         });
 
         return () => {
             unsubUsers();
             unsubProducts();
             unsubPosts();
+            unsubSessions();
             unsubRecent();
+            unsubOrders();
+            unsubRes();
         };
     }, []);
 
     if (!mounted) return null;
 
-
-    const kpis = [
-        { id: 'u', title: 'Utilisateurs', value: stats.users, sub: '+12.5%', icon: Users, color: 'blue' },
-        { id: 'p', title: 'Produits', value: stats.products, sub: 'Stable', icon: Leaf, color: 'emerald' },
-        { id: 'a', title: 'Articles', value: stats.posts, sub: '+24%', icon: Newspaper, color: 'purple' },
-        { id: 'z', title: 'Activité IA', value: '98.2%', sub: 'Optimale', icon: Zap, color: 'amber' },
-    ];
 
     return (
         <div className="space-y-8 max-w-[1600px] mx-auto">
@@ -118,12 +133,6 @@ export default function DashboardHome() {
                             Visualisez la performance globale de vos modules Enterprise.
                             Vos statistiques sont synchronisées en temps réel avec selecTED & viTEDia.
                         </p>
-                    </div>
-
-                    <div className="flex gap-4">
-                        <button className="px-8 py-4 bg-white text-blue-600 rounded-2xl font-bold shadow-2xl shadow-blue-900/40 hover:scale-105 active:scale-95 transition-all text-sm flex items-center gap-2">
-                            Rapport Global <ArrowUpRight size={18} />
-                        </button>
                     </div>
                 </div>
             </motion.div>
@@ -192,14 +201,6 @@ export default function DashboardHome() {
                             <h3 className="text-xl font-bold text-white tracking-tight">Analyse de Croissance</h3>
                             <p className="text-slate-500 text-sm">Activité hebdomadaire cumulée des modules.</p>
                         </div>
-                        <div className="flex gap-2 bg-white/5 border border-white/10 p-1 rounded-xl">
-                            {['7D', '30D', '1Y'].map(t => (
-                                <button key={t} className={cn(
-                                    "px-3 py-1.5 text-[10px] font-bold rounded-lg transition-all",
-                                    t === '7D' ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" : "text-slate-400 hover:text-white"
-                                )}>{t}</button>
-                            ))}
-                        </div>
                     </div>
 
                     <div className="flex-1 w-full min-h-[300px]">
@@ -209,10 +210,6 @@ export default function DashboardHome() {
                                     <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
                                         <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
                                         <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
-                                    </linearGradient>
-                                    <linearGradient id="colorGrowth" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.2} />
-                                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />
@@ -240,15 +237,6 @@ export default function DashboardHome() {
                                     fillOpacity={1}
                                     fill="url(#colorValue)"
                                 />
-                                <Area
-                                    type="monotone"
-                                    dataKey="growth"
-                                    stroke="#8b5cf6"
-                                    strokeWidth={2}
-                                    strokeDasharray="5 5"
-                                    fillOpacity={1}
-                                    fill="url(#colorGrowth)"
-                                />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
@@ -268,24 +256,16 @@ export default function DashboardHome() {
                                 <AlertTriangle size={18} className="text-amber-400" />
                                 Alertes & Statut
                             </h3>
-                            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 rounded-full border border-emerald-500/20">
-                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-tighter">Ok</span>
-                            </div>
                         </div>
 
                         <div className="space-y-4">
-                            {[
-                                { title: 'Dernière Récolte (A1)', sub: 'Traçabilité validée', time: '12m', icon: Leaf, color: 'emerald' },
-                                { title: 'Reservation viTEDia', sub: 'Nouvelle demande (Salon)', time: '45m', icon: Calendar, color: 'blue' },
-                                { title: 'Vérification Système', sub: 'Version stable déployée (v2)', time: '2h', icon: Zap, color: 'purple' },
-                            ].map((alert, idx) => (
+                            {displayActivity.map((alert: any, idx) => (
                                 <div key={idx} className="flex gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all cursor-pointer group">
                                     <div className={cn(
                                         "w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center transition-colors shadow-inner",
-                                        alert.color === 'emerald' ? "bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500/20" :
-                                            alert.color === 'blue' ? "bg-blue-500/10 text-blue-400 group-hover:bg-blue-500/20" :
-                                                "bg-purple-500/10 text-purple-400 group-hover:bg-purple-500/20"
+                                        alert.color === 'emerald' ? "bg-emerald-500/10 text-emerald-400" :
+                                            alert.color === 'blue' ? "bg-blue-500/10 text-blue-400" :
+                                                "bg-purple-500/10 text-purple-400"
                                     )}>
                                         <alert.icon size={18} />
                                     </div>

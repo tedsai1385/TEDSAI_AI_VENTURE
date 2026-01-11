@@ -3,14 +3,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { ChatMessage } from '@/types';
+import { db } from '@/lib/firebase/config';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
-// Simple mock DB for reservations to match legacy behavior
-const saveReservation = (data: any) => {
-    console.log('Reservation saved:', data);
-    // In a real app, this would be a Firestore call
-    const saved = JSON.parse(localStorage.getItem('ted_reservations') || '[]');
-    saved.push({ ...data, createdAt: new Date().toISOString() });
-    localStorage.setItem('ted_reservations', JSON.stringify(saved));
+// Real Firestore reservation
+const saveReservation = async (data: any, userId: string = 'anonymous') => {
+    try {
+        await addDoc(collection(db, 'vitedia_reservations'), {
+            ...data,
+            userId,
+            status: 'pending',
+            createdAt: serverTimestamp()
+        });
+        console.log('Reservation saved to Firestore');
+    } catch (error) {
+        console.error('Error saving reservation:', error);
+    }
 };
 
 const ChatWidget = () => {

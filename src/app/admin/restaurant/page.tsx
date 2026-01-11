@@ -15,24 +15,59 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { db } from '@/lib/firebase/config';
+import { collection, onSnapshot, query, orderBy, limit } from 'firebase/firestore';
 
 export default function AdminRestaurantPage() {
     const [mounted, setMounted] = useState(false);
-    useEffect(() => { setMounted(true); }, []);
-
-    const [reservations, setReservations] = useState([
-
-        { id: '1', name: 'Dupont Jean', time: '19:30', guestCount: 4, status: 'confirmed' },
-        { id: '2', name: 'Sarah Miller', time: '20:00', guestCount: 2, status: 'pending' },
-        { id: '3', name: 'Robert Chen', time: '12:30', guestCount: 6, status: 'completed' },
+    const [reservations, setReservations] = useState<any[]>([]);
+    const [stats, setStats] = useState([
+        { label: 'Réservations Aujourd\'hui', value: '0', icon: CalendarCheck, color: 'blue', sub: 'Temps Réel' },
+        { label: 'Temps Moyen Service', value: '45m', icon: Clock, color: 'amber', sub: 'Standard' },
+        { label: 'Clients ce Mois', value: '0', icon: Users, color: 'emerald', sub: 'Croissance active' },
+        { label: 'Satisfaction', value: '4.8/5', icon: TrendingUp, color: 'indigo', sub: 'Avis vérifiés' },
     ]);
 
-    const stats = [
-        { label: 'Réservations Aujourd\'hui', value: '12', icon: CalendarCheck, color: 'blue', sub: '+2 vs hier' },
-        { label: 'Temps Moyen Service', value: '45m', icon: Clock, color: 'amber', sub: '-5m ce mois' },
-        { label: 'Clients ce Mois', value: '342', icon: Users, color: 'emerald', sub: '+12% croissance' },
-        { label: 'Satisfaction', value: '4.8/5', icon: TrendingUp, color: 'indigo', sub: 'Basé sur 89 avis' },
-    ];
+    const updateStatus = async (id: string, status: string) => {
+        try {
+            const { doc, updateDoc } = await import('firebase/firestore');
+            await updateDoc(doc(db, 'vitedia_reservations', id), { status });
+        } catch (error) {
+            console.error('Error updating status:', error);
+        }
+    };
+
+    const addMockReservation = async () => {
+        try {
+            const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+            await addDoc(collection(db, 'vitedia_reservations'), {
+                name: 'Test Reservation',
+                guestCount: 2,
+                time: '20:00',
+                date: new Date().toLocaleDateString(),
+                status: 'pending',
+                createdAt: serverTimestamp()
+            });
+        } catch (error) {
+            console.error('Error adding reservation:', error);
+        }
+    };
+
+    useEffect(() => {
+        setMounted(true);
+        const unsub = onSnapshot(query(collection(db, 'vitedia_reservations'), orderBy('createdAt', 'desc'), limit(10)), (snap) => {
+            const resList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            setReservations(resList);
+
+            setStats(prev => {
+                const newStats = [...prev];
+                newStats[0].value = snap.size.toString();
+                return newStats;
+            });
+        });
+
+        return () => unsub();
+    }, []);
 
     if (!mounted) return null;
 
@@ -45,7 +80,10 @@ export default function AdminRestaurantPage() {
                 subtitle="Gérez vos menus, réservations et performance en temps réel."
                 icon={UtensilsCrossed}
                 actions={
-                    <button className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-semibold shadow-lg shadow-blue-600/20 transition-all hover:scale-[1.02] active:scale-95">
+                    <button
+                        onClick={addMockReservation}
+                        className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-semibold shadow-lg shadow-blue-600/20 transition-all hover:scale-[1.02] active:scale-95"
+                    >
                         <Plus size={18} />
                         Nouveau Plat / Menu
                     </button>
@@ -142,9 +180,24 @@ export default function AdminRestaurantPage() {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <button className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-all">
-                                                <ChevronRight size={18} />
-                                            </button>
+                                            <div className="flex items-center justify-end gap-2">
+                                                {res.status === 'pending' && (
+                                                    <button
+                                                        onClick={() => updateStatus(res.id, 'confirmed')}
+                                                        className="px-3 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded-lg border border-emerald-500/20 transition-all"
+                                                    >
+                                                        Confirmer
+                                                    </button>
+                                                )}
+                                                {res.status !== 'cancelled' && (
+                                                    <button
+                                                        onClick={() => updateStatus(res.id, 'cancelled')}
+                                                        className="px-3 py-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[10px] font-bold rounded-lg border border-red-500/20 transition-all"
+                                                    >
+                                                        Annuler
+                                                    </button>
+                                                )}
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}

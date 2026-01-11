@@ -16,24 +16,59 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { db } from '@/lib/firebase/config';
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 
 export default function AdminGardenPage() {
     const [mounted, setMounted] = useState(false);
-    useEffect(() => { setMounted(true); }, []);
-
-    const [products, setProducts] = useState([
-
-        { id: '1', name: 'Tomate Cerise', stock: '45kg', parcel: 'Parcelle A1', cert: 'Bio', status: 'optimal' },
-        { id: '2', name: 'Basilic Grand Vert', stock: '12kg', parcel: 'Serre 2', cert: 'AB', status: 'recolte_urgente' },
-        { id: '3', name: 'Piment de Cayenne', stock: '8kg', parcel: 'Parcelle C4', cert: 'Bio', status: 'optimal' },
-    ]);
-
-    const stats = [
-        { label: 'Produits en Stock', value: '24', icon: Warehouse, color: 'emerald' },
+    const [products, setProducts] = useState<any[]>([]);
+    const [stats, setStats] = useState([
+        { label: 'Produits en Stock', value: '0', icon: Warehouse, color: 'emerald' },
         { label: 'Surface Cultivée', value: '1.2ha', icon: MapIcon, color: 'blue' },
         { label: 'Récoltes ce Mois', value: '156kg', icon: Leaf, color: 'amber' },
         { label: 'Indice Qualité', value: '98%', icon: ShieldCheck, color: 'green' },
-    ];
+    ]);
+
+    const registerHarvest = async () => {
+        try {
+            const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+            await addDoc(collection(db, 'garden_products'), {
+                name: 'Nouvelle Récolte ' + Math.floor(Math.random() * 100),
+                stock: '50kg',
+                parcel: 'Parcelle D',
+                status: 'optimal',
+                cert: 'BIO CERTIFIÉ',
+                createdAt: serverTimestamp()
+            });
+        } catch (error) {
+            console.error('Error registering harvest:', error);
+        }
+    };
+
+    const updateStock = async (id: string, newStock: string) => {
+        try {
+            const { doc, updateDoc } = await import('firebase/firestore');
+            await updateDoc(doc(db, 'garden_products', id), { stock: newStock });
+        } catch (error) {
+            console.error('Error updating stock:', error);
+        }
+    };
+
+    useEffect(() => {
+        setMounted(true);
+        const unsub = onSnapshot(query(collection(db, 'garden_products'), orderBy('name')), (snap) => {
+            const prodList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            setProducts(prodList);
+
+            setStats(prev => {
+                const newStats = [...prev];
+                newStats[0].value = snap.size.toString();
+                return newStats;
+            });
+        });
+
+        return () => unsub();
+    }, []);
 
     if (!mounted) return null;
 
@@ -47,7 +82,10 @@ export default function AdminGardenPage() {
                 icon={Leaf}
                 actions={
                     <div className="flex gap-3">
-                        <button className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-semibold shadow-lg shadow-emerald-600/20 transition-all hover:scale-[1.02] active:scale-95">
+                        <button
+                            onClick={registerHarvest}
+                            className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-semibold shadow-lg shadow-emerald-600/20 transition-all hover:scale-[1.02] active:scale-95"
+                        >
                             <Plus size={18} />
                             Enregistrer Récolte
                         </button>
@@ -148,9 +186,26 @@ export default function AdminGardenPage() {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <button className="p-2 hover:bg-emerald-500/10 rounded-lg text-slate-500 hover:text-emerald-400 transition-all">
-                                                <ArrowUpRight size={18} />
-                                            </button>
+                                            <div className="flex items-center justify-end gap-2 text-slate-500">
+                                                <button
+                                                    onClick={() => {
+                                                        const current = parseInt(p.stock) || 0;
+                                                        updateStock(p.id, `${current + 1}kg`);
+                                                    }}
+                                                    className="p-1 hover:bg-emerald-500/10 rounded text-emerald-400 border border-transparent hover:border-emerald-500/20 transition-all"
+                                                >
+                                                    <Plus size={14} />
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        const current = parseInt(p.stock) || 0;
+                                                        if (current > 0) updateStock(p.id, `${current - 1}kg`);
+                                                    }}
+                                                    className="p-1 hover:bg-red-500/10 rounded text-red-400 border border-transparent hover:border-red-500/20 transition-all font-bold"
+                                                >
+                                                    -
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
