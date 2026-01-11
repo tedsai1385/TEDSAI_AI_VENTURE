@@ -173,12 +173,4 @@ export default function AdminIAPage() {
         </AdminGuard>
     );
 }
-                        </div >
-                    </div >
-                ))}
-            </div >
-        </div >
-    </AdminGuard >
-);
-    }
 
