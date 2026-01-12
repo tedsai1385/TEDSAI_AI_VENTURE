@@ -20,6 +20,7 @@ import { db } from '@/lib/firebase/config';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 
 import QRCodeGenerator from '@/components/admin/garden/QRCodeGenerator';
+import HarvestForm from '@/components/admin/garden/HarvestForm';
 
 export default function AdminGardenPage() {
     const [mounted, setMounted] = useState(false);
