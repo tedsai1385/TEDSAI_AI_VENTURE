@@ -14,6 +14,7 @@ const MobileNav = () => {
         { href: '/garden', label: 'Jardin', icon: 'fa-solid fa-leaf' },
         { href: '/ecosystem', label: 'Éco', icon: 'fa-solid fa-diagram-project' },
         { href: '/observatoire', label: 'Obs', icon: 'fa-solid fa-satellite-dish' },
+        { href: '/shop', label: 'Boutique', icon: 'fa-solid fa-basket-shopping' },
         { href: '/contact', label: 'Contact', icon: 'fa-solid fa-envelope' },
     ];
 

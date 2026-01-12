@@ -86,3 +86,35 @@
         gap: 0;
     }
 }
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .hero-rest {
+        height: auto;
+        padding: 6rem 1rem 4rem;
+    }
+
+    .hero-rest h1 {
+        font-size: 2.5rem !important;
+    }
+
+    .hero-rest p {
+        font-size: 1.1rem !important;
+    }
+
+    .menu-card {
+        padding: 1.5rem;
+    }
+
+    .menu-card h2 {
+        font-size: 1.75rem !important;
+    }
+
+    .menu-section {
+        padding: 3rem 1rem;
+    }
+}

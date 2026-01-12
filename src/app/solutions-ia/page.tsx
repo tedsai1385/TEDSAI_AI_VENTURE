@@ -53,9 +53,9 @@ const SolutionsIA = () => {
       </section>
 
       {/* Intro / Vision Section */}
-      <section className="container" style={{ padding: '4rem 0', textAlign: 'center' }}>
-        <h2 style={{ color: 'var(--color-primary)', marginBottom: '2rem' }}>Notre Double Mission</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', maxWidth: '900px', margin: '0 auto' }}>
+      <section className="container" style={{ padding: '4rem 0' }}>
+        <h2 style={{ color: 'var(--color-primary)', marginBottom: '2rem', textAlign: 'center' }}>Notre Double Mission</h2>
+        <div className="responsive-grid" style={{ maxWidth: '900px', margin: '0 auto' }}>
           <div style={{ textAlign: 'left' }}>
             <h3 style={{ color: 'var(--color-secondary)' }}>
               <i className="fa-solid fa-network-wired"></i> <span>Interne</span>
@@ -156,7 +156,7 @@ const SolutionsIA = () => {
                   <h3 style={{ margin: 0 }}>Résultat de l'analyse</h3>
                   <span style={{ background: '#27ae60', color: 'white', padding: '4px 12px', borderRadius: '20px', fontSize: '0.8rem' }}>Confiance : {analysisResult.confidence}</span>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div className="responsive-grid">
                   <p><strong>Fournisseur :</strong> {analysisResult.vendor}</p>
                   <p><strong>Date :</strong> {analysisResult.date}</p>
                   <p><strong>Total TTC :</strong> {analysisResult.total}</p>
@@ -228,7 +228,7 @@ const SolutionsIA = () => {
       {/* Resources Section */}
       <section className="container" style={{ padding: '4rem 0', background: '#f9f9f9', borderRadius: '12px', marginBottom: '4rem' }}>
         <h2 style={{ textAlign: 'center', marginBottom: '2rem' }}>Ressources Utiles</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+        <div className="responsive-grid">
           <div className="pricing-card" style={{ textAlign: 'left' }}>
             <i className="fa-solid fa-file-pdf" style={{ color: '#e74c3c', fontSize: '2rem', marginBottom: '1rem' }}></i>
             <h3>Livre Blanc IA & PME</h3>

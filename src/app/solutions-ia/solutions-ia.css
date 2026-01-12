@@ -102,3 +102,37 @@
     justify-content: space-between;
     align-items: center;
 }
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+    .hero-ia {
+        height: auto;
+        padding: 6rem 1rem 4rem;
+    }
+
+    .tabs-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tab-btn {
+        border-bottom: none;
+        border-left: 3px solid transparent;
+        text-align: left;
+        padding: 10px 15px;
+    }
+
+    .tab-btn.active {
+        border-left-color: var(--color-primary);
+        background: rgba(10, 36, 99, 0.05);
+    }
+
+    .pricing-card.featured {
+        transform: none;
+        margin: 1rem 0;
+    }
+
+    .pricing-card.featured:hover {
+        transform: translateY(-5px);
+    }
+}

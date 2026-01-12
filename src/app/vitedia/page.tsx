@@ -52,8 +52,8 @@ const ViTEDia = () => {
             {/* Hero */}
             <section className="hero-rest">
                 <div className="container fade-in-up" style={{ textAlign: 'center' }}>
-                    <h1 style={{ fontSize: '4rem', fontWeight: 800 }}>Bon. Propre. Rapide.</h1>
-                    <p style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>Le goût de l'excellence, la traçabilité en plus.</p>
+                    <h1>Bon. Propre. Rapide.</h1>
+                    <p>Le goût de l'excellence, la traçabilité en plus.</p>
                     <a href="#reservation" className="btn btn-primary" style={{ backgroundColor: 'var(--color-vitedia-primary)', border: 'none' }}>
                         Réserver une table
                     </a>
@@ -72,7 +72,7 @@ const ViTEDia = () => {
             <section className="menu-section">
                 <div className="container">
                     <div className="menu-card">
-                        <h2 style={{ marginBottom: '2.5rem', color: 'var(--color-vitedia-primary)', fontSize: '2.5rem' }}>Menu du Jour</h2>
+                        <h2 style={{ marginBottom: '2.5rem', color: 'var(--color-vitedia-primary)' }}>Menu du Jour</h2>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem', textAlign: 'left' }}>
                             <div>
                                 <h3 style={{ borderBottom: '2px solid #eee', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Entrées</h3>
@@ -113,7 +113,7 @@ const ViTEDia = () => {
                     </div>
 
                     <div className="menu-card" style={{ marginTop: '2rem' }}>
-                        <h2 style={{ marginBottom: '2.5rem', color: 'var(--color-vitedia-primary)', fontSize: '2rem' }}>Carte des Vins & Boissons</h2>
+                        <h2 style={{ marginBottom: '2.5rem', color: 'var(--color-vitedia-primary)' }}>Carte des Vins & Boissons</h2>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', textAlign: 'left' }}>
                             <div>
                                 <h3 style={{ borderBottom: '2px solid #eee', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Vins de Prestige</h3>

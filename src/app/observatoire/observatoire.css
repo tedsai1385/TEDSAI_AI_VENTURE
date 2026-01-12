@@ -202,8 +202,40 @@
 }
 
 @media (max-width: 768px) {
+    .obs-hero-v2 {
+        padding: 4rem 0 2rem;
+    }
+
+    .hero-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hero-text {
+        text-align: center;
+    }
+
     .hero-text h1 {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
+    }
+
+    .hero-text p {
+        font-size: 1.1rem;
+        margin: 0 auto;
+    }
+
+    .hero-image {
+        margin-top: 2rem;
+    }
+
+    .hero-image img {
+        max-width: 100% !important;
+    }
+
+    .obs-grid {
+        grid-template-columns: 1fr;
+        padding: 2rem 0;
+        gap: 1.5rem;
     }
 
     .fab-submit {
