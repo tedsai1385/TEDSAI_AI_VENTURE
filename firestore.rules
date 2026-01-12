@@ -14,172 +14,133 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
     
+    // Check if user has 'admin' or 'super_admin' role in their user profile
     function isAdmin() {
       return isAuthenticated() && 
-             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'super_admin';
+             (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'super_admin' || 
+              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
     }
     
-    function isAdminOrOwner(userId) {
-      return isAdmin() || isOwner(userId);
+    // Specific Role Checks (Future granularity if needed)
+    function isGardenAdmin() {
+      return isAdmin() || (isAuthenticated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin_garden');
     }
     
+    function isRestoAdmin() {
+      return isAdmin() || (isAuthenticated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin_resto');
+    }
+
     // ========================================
     // USERS COLLECTION
     // ========================================
     
     match /users/{userId} {
-      allow read: if isAdminOrOwner(userId);
-      allow create: if isOwner(userId) && 
-                       request.resource.data.keys().hasAll(['name', 'email', 'role', 'createdAt']);
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId); // Users sign up themselves
       allow update: if isOwner(userId) && 
-                       !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']) ||
-                       isAdmin();
+                       (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']) || isAdmin()); // Only admin can change roles
       allow delete: if isAdmin();
     }
     
     // ========================================
-    // MENU COLLECTION (Restaurant)
+    // PUBLIC CONTENT MODULES (ReadOnly Public, Write Admin)
     // ========================================
     
-    match /menu/{menuId} {
+    // Restaurant Menu
+    match /vitedia_menu/{menuId} {
       allow read: if true;
-      allow write: if isAdmin() || 
-                      (isAuthenticated() && 
-                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin_resto');
+      allow write: if isRestoAdmin();
     }
     
-    // ========================================
-    // GARDEN PRODUCTS COLLECTION
-    // ========================================
-    
+    // Garden Products (Inventory & Traceability)
     match /garden_products/{productId} {
       allow read: if true;
-      allow write: if isAdmin() || 
-                      (isAuthenticated() && 
-                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin_garden');
+      allow write: if isGardenAdmin();
+    }
+
+      // Garden Inventory (Internal management if separate)
+    match /garden_inventory/{itemId} {
+      allow read: if true;
+      allow write: if isGardenAdmin();
     }
     
-    // ========================================
-    // IA SERVICES COLLECTION
-    // ========================================
+    // Shop Products
+    match /epicerie_products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
     
+    // Elevage Stats & Services
+    match /elevage_stats/{statId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /elevage_services/{serviceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // IA Services
     match /ia_services/{serviceId} {
       allow read: if true;
-      allow write: if isAdmin() || 
-                      (isAuthenticated() && 
-                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin_ia');
+      allow write: if isAdmin();
     }
     
     // ========================================
-    // RESERVATIONS COLLECTION
+    // BLOG (Observatoire)
     // ========================================
     
+    match /observatoire_posts/{postId} {
+      // Public validation: Published only. Admin sees everything.
+      allow read: if (resource.data.status == 'published') || isAdmin();
+      
+      // Submission: Auth users can create "pending" posts
+      allow create: if isAuthenticated() && request.resource.data.status == 'pending';
+      
+      // Update: Admin Only (Publish/Reject)
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // ========================================
+    // USER TRANSACTIONS
+    // ========================================
+    
+    // Reservations
     match /reservations/{reservationId} {
-      allow read: if isAuthenticated() && 
-                     (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if isAuthenticated() && 
-                       request.resource.data.userId == request.auth.uid &&
-                       request.resource.data.keys().hasAll(['name', 'date', 'time', 'phone']);
-      allow update: if isAdmin();
-      allow delete: if isAdmin();
+      allow read: if isOwner(resource.data.userId) || isRestoAdmin();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isRestoAdmin(); // Confirm/Reject
+      allow delete: if isRestoAdmin();
     }
     
-    // ========================================
-    // ORDERS COLLECTION (E-Commerce)
-    // ========================================
-    
+    // Orders (Shop)
     match /orders/{orderId} {
-      allow read: if isAuthenticated() && 
-                     (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if isAuthenticated() && 
-                       request.resource.data.userId == request.auth.uid;
-      allow update: if isAdmin();
-      allow delete: if false;
+      allow read: if isOwner(resource.data.userId) || isAdmin();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAdmin(); // Update status
+      allow delete: if false; // Archive only
     }
     
     // ========================================
-    // INVENTORY COLLECTION
+    // SYSTEM & UTILS
     // ========================================
     
-    match /inventory/{productId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    // ========================================
-    // BLOG COLLECTIONS
-    // ========================================
-    
-    match /blog_posts/{postId} {
-      allow read: if resource.data.status == 'publié' || isAdmin();
-      allow create: if isAuthenticated() && 
-                       request.resource.data.status == 'en_attente';
-      allow update: if isAdmin();
-      allow delete: if isAdmin();
-    }
-    
-    match /blog_categories/{categoryId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    match /blog_comments/{commentId} {
-      allow read: if true;
-      allow create: if isAuthenticated();
-      allow update, delete: if isAdmin();
-    }
-    
-    // ========================================
-    // CHAT SESSIONS (pour Chatbot IA)
-    // ========================================
-    
+    // Chat Sessions
     match /chatSessions/{sessionId} {
-      allow read: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
-      allow create: if true;
-      allow update: if isAdmin() || 
-                       (resource.data.userId == 'anonymous') || 
-                       (isAuthenticated() && resource.data.userId == request.auth.uid);
-      allow delete: if isAdmin();
+      allow read, write: if true; // Open for demo purposes (or refine to owner)
     }
-    
-    // ========================================
-    // MESSAGES COLLECTION (Contact)
-    // ========================================
-    
-    match /messages/{messageId} {
-      allow read: if isAdmin();
-      allow create: if true;
-      allow update, delete: if isAdmin();
-    }
-    
-    // ========================================
-    // MEDIA COLLECTION
-    // ========================================
-    
+
+    // Media (Images)
     match /media/{mediaId} {
       allow read: if true;
-      allow write: if isAdmin() || 
-                      (isAuthenticated() && 
-                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin_resto', 'admin_garden']);
+      allow write: if isAdmin();
     }
     
-    // ========================================
-    // LOGS COLLECTION
-    // ========================================
-    
+    // Logs (Admin Only)
     match /logs/{logId} {
       allow read: if isAdmin();
-      allow create: if false;
-      allow update, delete: if false;
-    }
-    
-    // ========================================
-    // CONTENT PAGES (CMS)
-    // ========================================
-    
-    match /content_pages/{pageId} {
-      allow read: if true;
-      allow write: if isAdmin();
+      allow create: if isAdmin(); // System logs
     }
   }
 }

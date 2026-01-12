@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
                 break;
 
             default:
-                console.log(`ℹ️ Unhandled event type: ${event.type}`);
+            // console.log(`ℹ️ Unhandled event type: ${event.type}`);
         }
 
         return NextResponse.json({ received: true });
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     if (!adminDb) return;
 
-    console.log('[Webhook] Processing checkout session:', session.id);
+    // console.log('[Webhook] Processing checkout session:', session.id);
 
     // Find order by session ID
     const ordersSnapshot = await adminDb
@@ -82,7 +82,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         updatedAt: new Date(),
     });
 
-    console.log('[Webhook] Order confirmed:', orderDoc.id);
+    // console.log('[Webhook] Order confirmed:', orderDoc.id);
 
     // Trigger internal notification service
     try {
@@ -102,14 +102,14 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
 async function handleSessionExpired(session: Stripe.Checkout.Session) {
     if (!adminDb) return;
-    console.log('[Webhook] Session expired, releasing stock:', session.id);
+    // console.log('[Webhook] Session expired, releasing stock:', session.id);
     await releaseStockFromSession(session);
 }
 
 async function handlePaymentFailed(paymentIntent: Stripe.PaymentIntent) {
     if (!adminDb) return;
 
-    console.log('[Webhook] Payment failed:', paymentIntent.id);
+    // console.log('[Webhook] Payment failed:', paymentIntent.id);
 
     // Find order
     const ordersSnapshot = await adminDb

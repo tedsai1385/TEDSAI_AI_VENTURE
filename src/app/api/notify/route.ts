@@ -12,8 +12,8 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
-        console.log(`[Email Service] To: ${to}, Subject: ${subject}, Type: ${type}`);
-        console.log(`[Email Service] Data:`, data);
+        // console.log(`[Email Service] To: ${to}, Subject: ${subject}, Type: ${type}`);
+        // console.log(`[Email Service] Data:`, data);
 
         // Simulation d'envoi via SendGrid
         // await sgMail.send({ to, from: 'noreply@tedsai.cm', subject, html: '...' });

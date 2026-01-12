@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST="{\"src/app/admin/garden/page.tsx -> firebase/firestore\":{\"id\":\"src/app/admin/garden/page.tsx -> firebase/firestore\",\"files\":[]},\"src/app/admin/restaurant/page.tsx -> firebase/firestore\":{\"id\":\"src/app/admin/restaurant/page.tsx -> firebase/firestore\",\"files\":[]}}"

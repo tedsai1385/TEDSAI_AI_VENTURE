@@ -1,22 +1,8 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/api/checkout/route": "app/api/checkout/route.js",
-  "/login/page": "app/login/page.js",
-  "/observatoire/[id]/page": "app/observatoire/[id]/page.js",
-  "/elevage/page": "app/elevage/page.js",
-  "/garden/page": "app/garden/page.js",
-  "/ecosystem/page": "app/ecosystem/page.js",
-  "/page": "app/page.js",
-  "/api/chat/route": "app/api/chat/route.js",
-  "/solutions-ia/page": "app/solutions-ia/page.js",
-  "/contact/page": "app/contact/page.js",
-  "/observatoire/page": "app/observatoire/page.js",
-  "/shop/page": "app/shop/page.js",
-  "/vitedia/page": "app/vitedia/page.js",
-  "/admin/page": "app/admin/page.js",
-  "/admin/ia/page": "app/admin/ia/page.js",
-  "/admin/restaurant/page": "app/admin/restaurant/page.js",
   "/admin/garden/page": "app/admin/garden/page.js",
   "/admin/settings/page": "app/admin/settings/page.js",
-  "/admin/users/page": "app/admin/users/page.js"
+  "/admin/migrate/page": "app/admin/migrate/page.js",
+  "/admin/restaurant/page": "app/admin/restaurant/page.js",
+  "/admin/restaurant/menu/page": "app/admin/restaurant/menu/page.js",
+  "/admin/page": "app/admin/page.js"
 }

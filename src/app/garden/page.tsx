@@ -11,6 +11,24 @@ const Garden = () => {
     const [searchError, setSearchError] = useState<string | null>(null);
     const [traceResult, setTraceResult] = useState<any>(null);
 
+    const [recentHarvests, setRecentHarvests] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchHarvests = async () => {
+            try {
+                const { collection, getDocs, query, orderBy, limit } = await import('firebase/firestore');
+                const { db } = await import('@/lib/firebase/config');
+
+                const q = query(collection(db, 'garden_products'), orderBy('createdAt', 'desc'), limit(6));
+                const snapshot = await getDocs(q);
+                setRecentHarvests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+            } catch (error) {
+                console.error("Error fetching harvests:", error);
+            }
+        };
+        fetchHarvests();
+    }, []);
+
     const handleTrace = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!traceCode.trim()) return;
@@ -20,51 +38,42 @@ const Garden = () => {
         setTraceResult(null);
 
         try {
-            // Simulation d'une recherche dans la collection 'inventory' de Firestore
-            // En production, on ferait : const q = query(collection(db, 'inventory'), where('sku', '==', traceCode));
+            const { doc, getDoc } = await import('firebase/firestore');
+            const { db } = await import('@/lib/firebase/config');
 
-            // Simulation d'un délai réseau
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            // Try to find the document by ID (Trace Code)
+            const docRef = doc(db, 'garden_products', traceCode.trim());
+            const docSnap = await getDoc(docRef);
 
-            // Données simulées basées sur la structure attendue
-            const mockInventory: Record<string, any> = {
-                'TOM-B3': {
-                    name: 'Tomate Cœur de Bœuf Bio',
-                    origin: 'Serre #2, Parcelle B3',
-                    plantedAt: '15 Septembre 2024',
-                    harvestedAt: '13 Décembre 2024',
-                    technician: 'Jean K.',
-                    destination: 'viTEDia Restaurant'
-                },
-                'POIVRE-P1': {
-                    name: 'Poivre Noir de Penja',
-                    origin: 'Plantation Est, Secteur P1',
-                    plantedAt: 'Janvier 2022',
-                    harvestedAt: 'Novembre 2024',
-                    technician: 'Samuel T.',
-                    destination: 'E-Shop / Export'
-                }
-            };
-
-            const result = mockInventory[traceCode.toUpperCase()] || mockInventory[Object.keys(mockInventory)[0]]; // Fallback pour la démo
-
-            setTraceResult(result);
-            setShowResult(true);
-
-            setTimeout(() => {
-                const element = document.getElementById('trace-result');
-                if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }, 100);
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                setTraceResult({
+                    name: data.name,
+                    origin: data.parcel || 'SelecTED Garden',
+                    plantedAt: 'Cycle Court (Automatique)', // Could be added to data model
+                    harvestedAt: data.harvestDate?.toDate().toLocaleDateString('fr-FR') || new Date().toLocaleDateString('fr-FR'),
+                    technician: 'Équipe Jardin',
+                    destination: 'Vente Directe / Restaurant',
+                    cert: data.cert,
+                    status: data.status
+                });
+                setShowResult(true);
+                setTimeout(() => {
+                    const element = document.getElementById('trace-result');
+                    if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            } else {
+                setSearchError("Aucun produit trouvé avec ce code de traçabilité.");
+            }
         } catch (err) {
-            setSearchError("Impossible de trouver les données pour ce code.");
+            console.error(err);
+            setSearchError("Erreur lors de la recherche. Vérifiez votre connexion.");
         } finally {
             setIsSearching(false);
         }
     };
 
-    const products = [
+    const categories = [
         { icon: 'fa-solid fa-pepper-hot', name: 'Épices Rares', desc: 'Poivre de Penja, Gingembre, Curcuma bio.', link: '/shop' },
         { icon: 'fa-solid fa-leaf', name: 'Légumes Feuilles', desc: 'Ndolé, Biteskout, Basilic frais.', link: null },
         { icon: 'fa-solid fa-carrot', name: 'Maraîchage', desc: 'Tomates, Carottes, Poivrons sans pesticides.', link: null },
@@ -81,11 +90,11 @@ const Garden = () => {
                 </div>
             </section>
 
-            {/* Production Section */}
+            {/* Production Categories */}
             <section className="container" style={{ padding: '4rem 0' }}>
-                <h2 style={{ textAlign: 'center', color: 'var(--color-garden-primary)', marginBottom: '3rem', fontSize: '2.5rem' }}>Notre Production</h2>
+                <h2 style={{ textAlign: 'center', color: 'var(--color-garden-primary)', marginBottom: '3rem', fontSize: '2.5rem' }}>Nos Filières</h2>
                 <div className="prod-grid">
-                    {products.map((prod, idx) => (
+                    {categories.map((prod, idx) => (
                         prod.link ? (
                             <Link key={idx} href={prod.link} className="prod-card block hover:shadow-xl transition-shadow cursor-pointer">
                                 <div className="prod-icon">
@@ -106,6 +115,35 @@ const Garden = () => {
                     ))}
                 </div>
             </section>
+
+            {/* Real-time Inventory */}
+            {recentHarvests.length > 0 && (
+                <section className="container" style={{ paddingBottom: '4rem' }}>
+                    <h2 style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '2rem' }}>
+                        <i className="fa-solid fa-basket-shopping" style={{ color: 'var(--color-garden-primary)', marginRight: '10px' }}></i>
+                        Récoltes du Jour (En direct)
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {recentHarvests.map((harvest) => (
+                            <div key={harvest.id} className="p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all bg-white">
+                                <div className="flex justify-between items-start mb-3">
+                                    <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-1 rounded-full uppercase">{harvest.parcel || 'Jardin'}</span>
+                                    <span className="text-xs font-bold text-gray-400">#{harvest.id.slice(0, 6)}</span>
+                                </div>
+                                <h3 className="font-bold text-lg text-gray-800 mb-1">{harvest.name}</h3>
+                                <div className="flex items-center gap-2 mb-3">
+                                    <div className={`w-2 h-2 rounded-full ${harvest.status === 'optimal' ? 'bg-emerald-500' : 'bg-amber-500'}`}></div>
+                                    <span className="text-sm text-gray-500 capitalize">{harvest.status === 'optimal' ? 'Qualité Premium' : 'Quality Standard'}</span>
+                                </div>
+                                <div className="flex justify-between items-center pt-3 border-t border-gray-50">
+                                    <span className="font-mono font-bold text-gray-700">{harvest.stock}</span>
+                                    <span className="text-xs text-emerald-600 font-bold bg-emerald-50 px-2 py-1 rounded border border-emerald-100">{harvest.cert || 'BIO'}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
 
             {/* Spices Project Teaser */}
             <section style={{ background: 'var(--color-garden-primary)', color: 'white', padding: '5rem 0' }}>
@@ -135,7 +173,7 @@ const Garden = () => {
                         <input
                             type="text"
                             className="trace-input"
-                            placeholder="Ex: TOM-B3"
+                            placeholder="Ex: ID du produit (scan QR)"
                             value={traceCode}
                             onChange={(e) => setTraceCode(e.target.value)}
                             required
@@ -163,23 +201,23 @@ const Garden = () => {
                             <h3 style={{ color: 'var(--color-garden-primary)', textAlign: 'center', marginBottom: '2rem', fontSize: '1.8rem' }}>Résultat de la Traçabilité</h3>
                             <div style={{ borderBottom: '2px solid #eee', paddingBottom: '1rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <span style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>{traceResult.name}</span>
-                                <span style={{ color: '#666' }}>Code: {traceCode.toUpperCase()}</span>
+                                <span style={{ color: '#666' }}>Code: {traceCode}</span>
                             </div>
 
                             <div style={{ display: 'grid', gap: '1.5rem' }}>
-                                <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(100px, auto) 1fr', gap: '1rem' }}>
                                     <span style={{ color: '#888', fontWeight: 600 }}>ORIGINE</span>
                                     <span><strong>{traceResult.origin}</strong></span>
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr' }}>
-                                    <span style={{ color: '#888', fontWeight: 600 }}>PLANTATION</span>
-                                    <span>{traceResult.plantedAt}</span>
-                                </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(100px, auto) 1fr', gap: '1rem' }}>
                                     <span style={{ color: '#888', fontWeight: 600 }}>RÉCOLTE</span>
-                                    <span>{traceResult.harvestedAt} ({traceResult.technician})</span>
+                                    <span>{traceResult.harvestedAt}</span>
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(100px, auto) 1fr', gap: '1rem' }}>
+                                    <span style={{ color: '#888', fontWeight: 600 }}>QUALITÉ</span>
+                                    <span className="capitalize">{traceResult.status}</span>
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(100px, auto) 1fr', gap: '1rem' }}>
                                     <span style={{ color: '#888', fontWeight: 600 }}>DESTINATION</span>
                                     <span style={{ color: 'green', fontWeight: 'bold' }}>{traceResult.destination}</span>
                                 </div>
@@ -188,9 +226,9 @@ const Garden = () => {
                             <div style={{ marginTop: '2.5rem', textAlign: 'center' }}>
                                 <button
                                     className="btn btn-secondary"
-                                    onClick={() => alert('Génération du PDF... (Simulation)')}
+                                    onClick={() => window.print()}
                                 >
-                                    Télécharger Certificat
+                                    Imprimer Fiche
                                 </button>
                             </div>
                         </div>

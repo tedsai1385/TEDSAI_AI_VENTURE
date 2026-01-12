@@ -1,29 +1,50 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { db } from '@/lib/firebase/config';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function ElevagePage() {
-    const volaille = {
-        capacity: "5000 têtes",
-        cycle_duration: "45 jours",
-        production_annuelle: "40,000 poulets",
-        stats: { taux_survie: "96%", poids_moyen: "2.2kg", rentabilite: "+25%" }
-    };
+    const [stats, setStats] = useState<any>(null);
+    const [services, setServices] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const aquaculture = {
-        especes: ["Tilapia", "Silure"],
-        bassins: "12",
-        production_annuelle: "5 tonnes",
-        stats: { taux_survie: "92%", poids_moyen_tilapia: "500g", rentabilite: "+30%" }
-    };
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                const statsDoc = await getDoc(doc(db, 'elevage_stats', 'current'));
+                if (statsDoc.exists()) {
+                    setStats(statsDoc.data());
+                }
 
-    const services = [
-        { name: "Consultation Démarrage", description: "Étude de faisabilité et dimensionnement de votre projet.", price: "50,000 FCFA" },
-        { name: "Suivi Vétérinaire", description: "Audit sanitaire et plan de prophylaxie personnalisé.", price: "Sur devis" },
-        { name: "Formation Avicole", description: "3 jours de formation pratique sur site.", price: "75,000 FCFA" },
-        { name: "Vente Poussins 1J", description: "Souche Cobb 500, vaccinés Marek/Newcastle.", price: "Variable" }
-    ];
+                const servicesDoc = await getDoc(doc(db, 'elevage_services', 'list'));
+                if (servicesDoc.exists()) {
+                    setServices(servicesDoc.data().items || []);
+                }
+            } catch (error) {
+                console.error('Error loading elevage data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadData();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-16 h-16 border-4 border-amber-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-slate-600">Chargement...</p>
+                </div>
+            </div>
+        );
+    }
+
+    const volaille = stats?.volaille || {};
+    const aquaculture = stats?.aquaculture || {};
 
     return (
         <div className="min-h-screen">
@@ -49,12 +70,12 @@ export default function ElevagePage() {
                         </div>
                         <table className="w-full text-left">
                             <tbody className="divide-y divide-gray-100">
-                                <tr><td className="py-2 text-gray-600">Capacité</td><td className="font-bold">{volaille.capacity}</td></tr>
-                                <tr><td className="py-2 text-gray-600">Durée cycle</td><td className="font-bold">{volaille.cycle_duration}</td></tr>
-                                <tr><td className="py-2 text-gray-600">Production/an</td><td className="font-bold">{volaille.production_annuelle}</td></tr>
-                                <tr><td className="py-2 text-gray-600">Taux survie</td><td className="font-bold text-green-600">{volaille.stats.taux_survie}</td></tr>
-                                <tr><td className="py-2 text-gray-600">Poids moyen</td><td className="font-bold">{volaille.stats.poids_moyen}</td></tr>
-                                <tr><td className="py-2 text-gray-600">Rentabilité</td><td className="font-bold text-green-600">{volaille.stats.rentabilite}</td></tr>
+                                <tr><td className="py-2 text-gray-600">Capacité</td><td className="font-bold">{volaille.capacity || 'N/A'}</td></tr>
+                                <tr><td className="py-2 text-gray-600">Durée cycle</td><td className="font-bold">{volaille.cycle_duration || 'N/A'}</td></tr>
+                                <tr><td className="py-2 text-gray-600">Production/an</td><td className="font-bold">{volaille.production_annuelle || 'N/A'}</td></tr>
+                                <tr><td className="py-2 text-gray-600">Taux survie</td><td className="font-bold text-green-600">{volaille.taux_survie || 'N/A'}</td></tr>
+                                <tr><td className="py-2 text-gray-600">Poids moyen</td><td className="font-bold">{volaille.poids_moyen || 'N/A'}</td></tr>
+                                <tr><td className="py-2 text-gray-600">Rentabilité</td><td className="font-bold text-green-600">{volaille.rentabilite || 'N/A'}</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -67,12 +88,12 @@ export default function ElevagePage() {
                         </div>
                         <table className="w-full text-left">
                             <tbody className="divide-y divide-gray-100">
-                                <tr><td className="py-2 text-gray-600">Espèces</td><td className="font-bold">{aquaculture.especes.join(', ')}</td></tr>
-                                <tr><td className="py-2 text-gray-600">Bassins</td><td className="font-bold">{aquaculture.bassins}</td></tr>
-                                <tr><td className="py-2 text-gray-600">Production/an</td><td className="font-bold">{aquaculture.production_annuelle}</td></tr>
-                                <tr><td className="py-2 text-gray-600">Taux survie</td><td className="font-bold text-green-600">{aquaculture.stats.taux_survie}</td></tr>
-                                <tr><td className="py-2 text-gray-600">Poids Tilapia</td><td className="font-bold">{aquaculture.stats.poids_moyen_tilapia}</td></tr>
-                                <tr><td className="py-2 text-gray-600">Rentabilité</td><td className="font-bold text-green-600">{aquaculture.stats.rentabilite}</td></tr>
+                                <tr><td className="py-2 text-gray-600">Espèces</td><td className="font-bold">{aquaculture.especes || 'N/A'}</td></tr>
+                                <tr><td className="py-2 text-gray-600">Bassins</td><td className="font-bold">{aquaculture.bassins || 'N/A'}</td></tr>
+                                <tr><td className="py-2 text-gray-600">Production/an</td><td className="font-bold">{aquaculture.production_annuelle || 'N/A'}</td></tr>
+                                <tr><td className="py-2 text-gray-600">Taux survie</td><td className="font-bold text-green-600">{aquaculture.taux_survie || 'N/A'}</td></tr>
+                                <tr><td className="py-2 text-gray-600">Poids Tilapia</td><td className="font-bold">{aquaculture.poids_moyen_tilapia || 'N/A'}</td></tr>
+                                <tr><td className="py-2 text-gray-600">Rentabilité</td><td className="font-bold text-green-600">{aquaculture.rentabilite || 'N/A'}</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -80,21 +101,23 @@ export default function ElevagePage() {
             </section>
 
             {/* Services */}
-            <section className="py-16 bg-gray-50">
-                <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center mb-12">Nos Services</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {services.map((service, idx) => (
-                            <div key={idx} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                                <i className="fa-solid fa-handshake text-3xl text-[#8B4513] mb-4"></i>
-                                <h3 className="text-lg font-bold mb-2">{service.name}</h3>
-                                <p className="text-gray-600 text-sm mb-4">{service.description}</p>
-                                <strong className="text-[#8B4513] block">{service.price}</strong>
-                            </div>
-                        ))}
+            {services.length > 0 && (
+                <section className="py-16 bg-gray-50">
+                    <div className="container mx-auto px-4">
+                        <h2 className="text-3xl font-bold text-center mb-12">Nos Services</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {services.map((service, idx) => (
+                                <div key={idx} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                    <i className="fa-solid fa-handshake text-3xl text-[#8B4513] mb-4"></i>
+                                    <h3 className="text-lg font-bold mb-2">{service.name}</h3>
+                                    <p className="text-gray-600 text-sm mb-4">{service.description}</p>
+                                    <strong className="text-[#8B4513] block">{service.price}</strong>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            )}
 
             {/* CTA */}
             <section className="py-16 container mx-auto px-4 text-center">

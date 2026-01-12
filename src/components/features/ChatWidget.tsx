@@ -15,7 +15,7 @@ const saveReservation = async (data: any, userId: string = 'anonymous') => {
             status: 'pending',
             createdAt: serverTimestamp()
         });
-        console.log('Reservation saved to Firestore');
+        // console.log('Reservation saved to Firestore');
     } catch (error) {
         console.error('Error saving reservation:', error);
     }

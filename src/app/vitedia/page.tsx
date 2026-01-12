@@ -1,11 +1,25 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './vitedia.css';
 import { db } from '@/lib/firebase/config';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, query, where, onSnapshot } from 'firebase/firestore';
+
+interface MenuItem {
+    id: string;
+    name: string;
+    description: string;
+    price: number;
+    category: 'starter' | 'main' | 'dessert';
+    isDailySpecial?: boolean;
+    available: boolean;
+}
 
 const ViTEDia = () => {
+    const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+    const [loadingMenu, setLoadingMenu] = useState(true);
+
+
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -22,6 +36,23 @@ const ViTEDia = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
 
+    // Fetch menu items from Firestore
+    useEffect(() => {
+        const unsub = onSnapshot(
+            query(collection(db, 'vitedia_menu'), where('available', '==', true)),
+            (snap) => {
+                const items = snap.docs.map(d => ({ id: d.id, ...d.data() } as MenuItem));
+                setMenuItems(items);
+                setLoadingMenu(false);
+            },
+            (error) => {
+                console.error('Error fetching menu:', error);
+                setLoadingMenu(false);
+            }
+        );
+        return () => unsub();
+    }, []);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { id, value } = e.target;
         const key = id.replace('res-', '');
@@ -33,7 +64,7 @@ const ViTEDia = () => {
         setIsSubmitting(true);
 
         try {
-            await addDoc(collection(db, 'reservations'), {
+            await addDoc(collection(db, 'vitedia_reservations'), {
                 ...formData,
                 status: 'pending',
                 createdAt: serverTimestamp()
@@ -46,6 +77,13 @@ const ViTEDia = () => {
             setIsSubmitting(false);
         }
     };
+
+    // Filter menu items
+    const dailySpecials = menuItems.filter(item => item.isDailySpecial);
+    const starters = dailySpecials.filter(item => item.category === 'starter');
+    const mains = dailySpecials.filter(item => item.category === 'main');
+    const desserts = dailySpecials.filter(item => item.category === 'dessert');
+
 
     return (
         <>
@@ -73,43 +111,59 @@ const ViTEDia = () => {
                 <div className="container">
                     <div className="menu-card">
                         <h2 style={{ marginBottom: '2.5rem', color: 'var(--color-vitedia-primary)' }}>Menu du Jour</h2>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem', textAlign: 'left' }}>
-                            <div>
-                                <h3 style={{ borderBottom: '2px solid #eee', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Entrées</h3>
-                                <ul style={{ listStyle: 'none', padding: 0 }}>
-                                    <li style={{ marginBottom: '1rem' }}>
-                                        <strong>Ndolé Gastronomique</strong> <span style={{ float: 'right', color: 'var(--color-vitedia-primary)' }}>3 500 F</span>
-                                        <p style={{ fontSize: '0.85rem', color: '#777' }}>Version légère aux crevettes de Kribi</p>
-                                    </li>
-                                    <li>
-                                        <strong>Carpaccio d'Ananas & Épices</strong> <span style={{ float: 'right', color: 'var(--color-vitedia-primary)' }}>2 500 F</span>
-                                        <p style={{ fontSize: '0.85rem', color: '#777' }}>Épices SelecTED, basilic du jardin</p>
-                                    </li>
-                                </ul>
+
+                        {loadingMenu ? (
+                            <div className="text-center py-8">
+                                <div className="inline-block w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                                <p className="mt-4 text-slate-600">Chargement du menu...</p>
                             </div>
-                            <div>
-                                <h3 style={{ borderBottom: '2px solid #eee', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Plats</h3>
-                                <ul style={{ listStyle: 'none', padding: 0 }}>
-                                    <li style={{ marginBottom: '1rem' }}>
-                                        <strong>Poulet DG Déstructuré</strong> <span style={{ float: 'right', color: 'var(--color-vitedia-primary)' }}>7 500 F</span>
-                                        <p style={{ fontSize: '0.85rem', color: '#777' }}>Légumes croquants SelecTED Garden</p>
-                                    </li>
-                                    <li>
-                                        <strong>Filet de Capitaine Braisé</strong> <span style={{ float: 'right', color: 'var(--color-vitedia-primary)' }}>8 500 F</span>
-                                        <p style={{ fontSize: '0.85rem', color: '#777' }}>Purée de plantain mûr truffée</p>
-                                    </li>
-                                </ul>
+                        ) : dailySpecials.length === 0 ? (
+                            <div className="text-center py-8">
+                                <p className="text-slate-600">Aucun plat du jour disponible pour le moment.</p>
                             </div>
-                            <div>
-                                <h3 style={{ borderBottom: '2px solid #eee', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Desserts</h3>
-                                <ul style={{ listStyle: 'none', padding: 0 }}>
-                                    <li style={{ marginBottom: '1rem' }}>
-                                        <strong>Mousse Chocolat & Piment</strong> <span style={{ float: 'right', color: 'var(--color-vitedia-primary)' }}>3 000 F</span>
-                                        <p style={{ fontSize: '0.85rem', color: '#777' }}>Cacao pur du Centre, pointe de piment</p>
-                                    </li>
-                                </ul>
+                        ) : (
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem', textAlign: 'left' }}>
+                                {starters.length > 0 && (
+                                    <div>
+                                        <h3 style={{ borderBottom: '2px solid #eee', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Entrées</h3>
+                                        <ul style={{ listStyle: 'none', padding: 0 }}>
+                                            {starters.map(item => (
+                                                <li key={item.id} style={{ marginBottom: '1rem' }}>
+                                                    <strong>{item.name}</strong> <span style={{ float: 'right', color: 'var(--color-vitedia-primary)' }}>{item.price}€</span>
+                                                    <p style={{ fontSize: '0.85rem', color: '#777' }}>{item.description}</p>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                                {mains.length > 0 && (
+                                    <div>
+                                        <h3 style={{ borderBottom: '2px solid #eee', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Plats</h3>
+                                        <ul style={{ listStyle: 'none', padding: 0 }}>
+                                            {mains.map(item => (
+                                                <li key={item.id} style={{ marginBottom: '1rem' }}>
+                                                    <strong>{item.name}</strong> <span style={{ float: 'right', color: 'var(--color-vitedia-primary)' }}>{item.price}€</span>
+                                                    <p style={{ fontSize: '0.85rem', color: '#777' }}>{item.description}</p>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                                {desserts.length > 0 && (
+                                    <div>
+                                        <h3 style={{ borderBottom: '2px solid #eee', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Desserts</h3>
+                                        <ul style={{ listStyle: 'none', padding: 0 }}>
+                                            {desserts.map(item => (
+                                                <li key={item.id} style={{ marginBottom: '1rem' }}>
+                                                    <strong>{item.name}</strong> <span style={{ float: 'right', color: 'var(--color-vitedia-primary)' }}>{item.price}€</span>
+                                                    <p style={{ fontSize: '0.85rem', color: '#777' }}>{item.description}</p>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
                             </div>
-                        </div>
+                        )}
                     </div>
 
                     <div className="menu-card" style={{ marginTop: '2rem' }}>

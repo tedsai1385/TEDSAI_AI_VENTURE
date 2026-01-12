@@ -14,7 +14,12 @@ import {
     Users,
     ChevronRight,
     LogOut,
-    LayoutDashboard
+    LayoutDashboard,
+    ShoppingBag,
+    Bird,
+    Newspaper,
+    ChefHat,
+    CalendarCheck
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ROLES, Role } from '@/lib/dashboard/roles';
@@ -33,9 +38,17 @@ export default function AdminSidebar() {
         {
             header: "Gestion Modules",
             items: [
-                { href: '/admin/restaurant', icon: UtensilsCrossed, label: 'Restaurant' },
+                {
+                    href: '/admin/restaurant', icon: UtensilsCrossed, label: 'Restaurant', submenu: [
+                        { href: '/admin/restaurant/menu', icon: ChefHat, label: 'Carte & Menu du Jour' },
+                        { href: '/admin/restaurant', icon: CalendarCheck, label: 'Réservations' }
+                    ]
+                },
                 { href: '/admin/garden', icon: Leaf, label: 'SelecTED Gardens' },
-                { href: '/admin/ia', icon: BrainCircuit, label: 'IA / Services' }
+                { href: '/admin/shop', icon: ShoppingBag, label: 'Épicerie' },
+                { href: '/admin/elevage', icon: Bird, label: 'Élevage' },
+                { href: '/admin/ia', icon: BrainCircuit, label: 'IA / Services' },
+                { href: '/admin/blog', icon: Newspaper, label: 'Blog' }
             ]
         },
         {
@@ -83,29 +96,58 @@ export default function AdminSidebar() {
                         <div className="space-y-1">
                             {group.items.map((item, itemIdx) => {
                                 const active = isPathActive(item.href);
+                                const hasSubmenu = item.submenu && item.submenu.length > 0;
+
                                 return (
-                                    <Link key={item.href} href={item.href}>
-                                        <motion.div
-                                            whileHover={{ x: 4 }}
-                                            whileTap={{ scale: 0.98 }}
-                                            className={cn(
-                                                "group flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 relative",
-                                                active
-                                                    ? "bg-gradient-to-r from-blue-600/20 to-transparent text-blue-400 active-nav-glow"
-                                                    : "text-slate-400 hover:text-white hover:bg-white/5"
-                                            )}
-                                        >
-                                            {active && (
-                                                <motion.div
-                                                    layoutId="active-indicator"
-                                                    className="absolute left-0 w-1 h-6 bg-blue-500 rounded-full shadow-[0_0_12px_rgba(59,130,246,0.5)]"
-                                                />
-                                            )}
-                                            <item.icon size={20} className={cn("mr-4", active ? "text-blue-400" : "group-hover:text-white")} />
-                                            <span className="flex-1">{item.label}</span>
-                                            {active && <ChevronRight size={14} className="opacity-50" />}
-                                        </motion.div>
-                                    </Link>
+                                    <div key={item.href}>
+                                        <Link href={item.href}>
+                                            <motion.div
+                                                whileHover={{ x: 4 }}
+                                                whileTap={{ scale: 0.98 }}
+                                                className={cn(
+                                                    "group flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 relative",
+                                                    active
+                                                        ? "bg-gradient-to-r from-blue-600/20 to-transparent text-blue-400 active-nav-glow"
+                                                        : "text-slate-400 hover:text-white hover:bg-white/5"
+                                                )}
+                                            >
+                                                {active && (
+                                                    <motion.div
+                                                        layoutId="active-indicator"
+                                                        className="absolute left-0 w-1 h-6 bg-blue-500 rounded-full shadow-[0_0_12px_rgba(59,130,246,0.5)]"
+                                                    />
+                                                )}
+                                                <item.icon size={20} className={cn("mr-4", active ? "text-blue-400" : "group-hover:text-white")} />
+                                                <span className="flex-1">{item.label}</span>
+                                                {active && <ChevronRight size={14} className="opacity-50" />}
+                                            </motion.div>
+                                        </Link>
+
+                                        {/* Submenu */}
+                                        {hasSubmenu && (
+                                            <div className="ml-8 mt-1 space-y-1">
+                                                {item.submenu.map((subitem: any) => {
+                                                    const subActive = isPathActive(subitem.href);
+                                                    return (
+                                                        <Link key={subitem.href} href={subitem.href}>
+                                                            <motion.div
+                                                                whileHover={{ x: 4 }}
+                                                                className={cn(
+                                                                    "flex items-center px-4 py-2 rounded-lg text-xs font-medium transition-all",
+                                                                    subActive
+                                                                        ? "bg-blue-500/10 text-blue-400"
+                                                                        : "text-slate-500 hover:text-white hover:bg-white/5"
+                                                                )}
+                                                            >
+                                                                <subitem.icon size={16} className="mr-3" />
+                                                                <span>{subitem.label}</span>
+                                                            </motion.div>
+                                                        </Link>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+                                    </div>
                                 );
                             })}
                         </div>

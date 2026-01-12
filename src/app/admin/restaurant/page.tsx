@@ -28,12 +28,49 @@ export default function AdminRestaurantPage() {
         { label: 'Satisfaction', value: '4.8/5', icon: TrendingUp, color: 'indigo', sub: 'Avis vérifiés' },
     ]);
 
-    const updateStatus = async (id: string, status: string) => {
+    const [processingId, setProcessingId] = useState<string | null>(null);
+
+    const sendNotification = async (reservation: any, type: 'confirmed' | 'cancelled') => {
+        try {
+            await fetch('/api/notify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    to: reservation.email, // Ensure reservation has email field
+                    subject: type === 'confirmed' ? 'Votre réservation chez viTEDia est confirmée !' : 'Mise à jour de votre réservation viTEDia',
+                    type: 'reservation_update',
+                    data: {
+                        name: reservation.name,
+                        date: reservation.date,
+                        time: reservation.time,
+                        guests: reservation.guestCount,
+                        status: type,
+                        message: type === 'confirmed'
+                            ? "Nous sommes ravis de vous confirmer votre table. À très bientôt !"
+                            : "Nous sommes au regret de devoir annuler votre réservation. Veuillez nous contacter pour plus de détails."
+                    }
+                })
+            });
+        } catch (error) {
+            console.error('Failed to send notification:', error);
+        }
+    };
+
+    const updateStatus = async (id: string, status: string, reservation?: any) => {
+        setProcessingId(id);
         try {
             const { doc, updateDoc } = await import('firebase/firestore');
             await updateDoc(doc(db, 'vitedia_reservations', id), { status });
+
+            // Send email notification if reservation data is provided
+            if (reservation && reservation.email) {
+                await sendNotification(reservation, status as 'confirmed' | 'cancelled');
+            }
         } catch (error) {
             console.error('Error updating status:', error);
+            alert("Erreur lors de la mise à jour");
+        } finally {
+            setProcessingId(null);
         }
     };
 
@@ -183,18 +220,20 @@ export default function AdminRestaurantPage() {
                                             <div className="flex items-center justify-end gap-2">
                                                 {res.status === 'pending' && (
                                                     <button
-                                                        onClick={() => updateStatus(res.id, 'confirmed')}
-                                                        className="px-3 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded-lg border border-emerald-500/20 transition-all"
+                                                        onClick={() => updateStatus(res.id, 'confirmed', res)}
+                                                        disabled={processingId === res.id}
+                                                        className="px-3 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded-lg border border-emerald-500/20 transition-all disabled:opacity-50"
                                                     >
-                                                        Confirmer
+                                                        {processingId === res.id ? '...' : 'Confirmer'}
                                                     </button>
                                                 )}
                                                 {res.status !== 'cancelled' && (
                                                     <button
-                                                        onClick={() => updateStatus(res.id, 'cancelled')}
-                                                        className="px-3 py-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[10px] font-bold rounded-lg border border-red-500/20 transition-all"
+                                                        onClick={() => updateStatus(res.id, 'cancelled', res)}
+                                                        disabled={processingId === res.id}
+                                                        className="px-3 py-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[10px] font-bold rounded-lg border border-red-500/20 transition-all disabled:opacity-50"
                                                     >
-                                                        Annuler
+                                                        {processingId === res.id ? '...' : 'Annuler'}
                                                     </button>
                                                 )}
                                             </div>

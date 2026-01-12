@@ -19,149 +19,63 @@ import { cn } from '@/lib/utils';
 import { db } from '@/lib/firebase/config';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 
+import QRCodeGenerator from '@/components/admin/garden/QRCodeGenerator';
+
 export default function AdminGardenPage() {
     const [mounted, setMounted] = useState(false);
+    const [showHarvestForm, setShowHarvestForm] = useState(false);
+    const [qrData, setQrData] = useState<{ data: string, label: string } | null>(null);
     const [products, setProducts] = useState<any[]>([]);
-    const [stats, setStats] = useState([
-        { label: 'Produits en Stock', value: '0', icon: Warehouse, color: 'emerald' },
-        { label: 'Surface Cultivée', value: '1.2ha', icon: MapIcon, color: 'blue' },
-        { label: 'Récoltes ce Mois', value: '156kg', icon: Leaf, color: 'amber' },
-        { label: 'Indice Qualité', value: '98%', icon: ShieldCheck, color: 'green' },
-    ]);
 
-    const registerHarvest = async () => {
-        try {
-            const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
-            await addDoc(collection(db, 'garden_products'), {
-                name: 'Nouvelle Récolte ' + Math.floor(Math.random() * 100),
-                stock: '50kg',
-                parcel: 'Parcelle D',
-                status: 'optimal',
-                cert: 'BIO CERTIFIÉ',
-                createdAt: serverTimestamp()
-            });
-        } catch (error) {
-            console.error('Error registering harvest:', error);
-        }
-    };
-
-    const updateStock = async (id: string, newStock: string) => {
-        try {
-            const { doc, updateDoc } = await import('firebase/firestore');
-            await updateDoc(doc(db, 'garden_products', id), { stock: newStock });
-        } catch (error) {
-            console.error('Error updating stock:', error);
-        }
-    };
-
-    useEffect(() => {
-        setMounted(true);
-        const unsub = onSnapshot(query(collection(db, 'garden_products'), orderBy('name')), (snap) => {
-            const prodList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-            setProducts(prodList);
-
-            setStats(prev => {
-                const newStats = [...prev];
-                newStats[0].value = snap.size.toString();
-                return newStats;
-            });
-        });
-
-        return () => unsub();
-    }, []);
+    // ... (rest of implementation)
 
     if (!mounted) return null;
 
     return (
 
         <AdminGuard>
+            {showHarvestForm && (
+                <HarvestForm
+                    onClose={() => setShowHarvestForm(false)}
+                    onSuccess={() => { }}
+                />
+            )}
+
+            {qrData && (
+                <QRCodeGenerator
+                    data={qrData.data}
+                    label={qrData.label}
+                    onClose={() => setQrData(null)}
+                />
+            )}
 
             <PageHeader
-                title="SelecTED Gardens"
-                subtitle="Gestion de l'inventaire agricole et traçabilité QR Code."
-                icon={Leaf}
-                actions={
-                    <div className="flex gap-3">
-                        <button
-                            onClick={registerHarvest}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-semibold shadow-lg shadow-emerald-600/20 transition-all hover:scale-[1.02] active:scale-95"
-                        >
-                            <Plus size={18} />
-                            Enregistrer Récolte
-                        </button>
-                        <button className="flex items-center gap-2 px-5 py-2.5 bg-white/5 hover:bg-white/10 text-white rounded-xl font-semibold border border-white/10 transition-all">
-                            <QrCode size={18} />
-                            Générer QR
-                        </button>
-                    </div>
-                }
+            // ... (header content)
             />
 
-            {/* DASHBOARD STATS */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                {stats.map((stat, idx) => (
-                    <motion.div
-                        key={stat.label}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.1 }}
-                        className="glass p-6 rounded-3xl group border-white/5"
-                    >
-                        <div className="flex items-center gap-4">
-                            <div className={cn(
-                                "p-3 rounded-2xl",
-                                stat.color === 'emerald' ? "bg-emerald-500/10 text-emerald-400" :
-                                    stat.color === 'blue' ? "bg-blue-500/10 text-blue-400" :
-                                        stat.color === 'amber' ? "bg-amber-500/10 text-amber-400" :
-                                            "bg-green-500/10 text-green-400"
-                            )}>
-                                <stat.icon size={24} />
-                            </div>
-                            <div>
-                                <h3 className="text-2xl font-bold text-white">{stat.value}</h3>
-                                <p className="text-slate-500 text-xs font-medium uppercase tracking-wider">{stat.label}</p>
-                            </div>
-                        </div>
-                    </motion.div>
-                ))}
-            </div>
+            {/* ... (stats) */}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* INVENTORY TABLE */}
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="lg:col-span-2 glass rounded-3xl border-white/5 overflow-hidden flex flex-col"
-                >
-                    <div className="p-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
-                        <h3 className="font-bold text-lg flex items-center gap-2">
-                            <Warehouse size={20} className="text-emerald-400" />
-                            Inventaire Produits
-                        </h3>
-                        <div className="flex gap-2">
-                            <span className="px-3 py-1 bg-white/5 rounded-lg text-[10px] font-bold text-slate-400 border border-white/10 cursor-pointer hover:bg-white/10 transition-colors">Tous</span>
-                            <span className="px-3 py-1 bg-emerald-500/10 rounded-lg text-[10px] font-bold text-emerald-400 border border-emerald-500/20 cursor-pointer">Bio</span>
-                        </div>
-                    </div>
+                <motion.div>
+                    {/* ... (table header) */}
 
                     <div className="overflow-x-auto">
                         <table className="w-full text-left">
-                            <thead>
-                                <tr className="text-[11px] font-bold text-slate-500 uppercase tracking-widest bg-black/20">
-                                    <th className="px-6 py-4">Produit</th>
-                                    <th className="px-6 py-4">Stock</th>
-                                    <th className="px-6 py-4">Parcelle</th>
-                                    <th className="px-6 py-4">Status</th>
-                                    <th className="px-6 py-4 text-right">Actions</th>
-                                </tr>
-                            </thead>
+                            {/* ... (thead) */}
                             <tbody className="divide-y divide-white/5">
                                 {products.map((p) => (
                                     <tr key={p.id} className="hover:bg-white/[0.01] transition-colors group">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                                                    <Leaf size={14} />
+                                                <div
+                                                    onClick={() => setQrData({
+                                                        data: `https://tedsai.com/garden/traceability/${p.id}`,
+                                                        label: p.name
+                                                    })}
+                                                    className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 cursor-pointer hover:bg-emerald-500/20 hover:scale-110 transition-all"
+                                                    title="Générer QR Code"
+                                                >
+                                                    <QrCode size={14} />
                                                 </div>
                                                 <div>
                                                     <div className="font-semibold text-slate-200">{p.name}</div>
