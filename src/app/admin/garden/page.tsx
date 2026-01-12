@@ -51,7 +51,18 @@ export default function AdminGardenPage() {
             )}
 
             <PageHeader
-            // ... (header content)
+                title="Jardin Connecté"
+                subtitle="Gestion des récoltes, stocks et traçabilité temps réel."
+                icon={Leaf}
+                actions={
+                    <button
+                        onClick={() => setShowHarvestForm(true)}
+                        className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold shadow-lg shadow-emerald-600/20 transition-all hover:scale-[1.02] active:scale-95"
+                    >
+                        <Plus size={18} />
+                        Nouvelle Récolte
+                    </button>
+                }
             />
 
             {/* ... (stats) */}
