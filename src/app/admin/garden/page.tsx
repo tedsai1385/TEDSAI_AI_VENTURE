@@ -17,7 +17,7 @@ import {
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { db } from '@/lib/firebase/config';
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, updateDoc, doc } from 'firebase/firestore';
 
 import QRCodeGenerator from '@/components/admin/garden/QRCodeGenerator';
 import HarvestForm from '@/components/admin/garden/HarvestForm';
@@ -28,7 +28,26 @@ export default function AdminGardenPage() {
     const [qrData, setQrData] = useState<{ data: string, label: string } | null>(null);
     const [products, setProducts] = useState<any[]>([]);
 
-    // ... (rest of implementation)
+    useEffect(() => {
+        setMounted(true);
+        const q = query(collection(db, 'garden_products'), orderBy('createdAt', 'desc'));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            setProducts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        });
+        return () => unsubscribe();
+    }, []);
+
+    const updateStock = async (id: string, newStock: string) => {
+        try {
+            const productRef = doc(db, 'garden_products', id);
+            await updateDoc(productRef, {
+                stock: newStock
+            });
+        } catch (error) {
+            console.error("Error updating stock:", error);
+            alert("Erreur lors de la mise à jour du stock");
+        }
+    };
 
     if (!mounted) return null;
 
