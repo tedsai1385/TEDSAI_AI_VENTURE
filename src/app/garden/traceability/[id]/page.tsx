@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-// We use the new next/navigation useParams if available or fall back
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Leaf, MapPin, Calendar, Truck, ShieldCheck, Printer, ArrowLeft } from 'lucide-react';
@@ -141,7 +140,7 @@ export default function TraceabilityPage() {
                                 <div>
                                     <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-1">Destination</h3>
                                     <p className="text-lg font-bold text-slate-800">Restaurant viTEDia</p>
-                                    <p className="text-slate-500">Circuit Court (< 1km)</p>
+                                    <p className="text-slate-500">Circuit Court (&lt; 1km)</p>
                                 </div>
                             </div>
                         </div>

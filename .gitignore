@@ -1,3 +1,4 @@
 node_modules
 .env.local
 migration-key.json
+service-account-key.json
