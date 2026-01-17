@@ -13,11 +13,31 @@ const firebaseConfig = {
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+// Validate Firebase config
+const isConfigValid = Object.values(firebaseConfig).every(value => value && value !== 'undefined');
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const storage = getStorage(app);
+if (!isConfigValid && typeof window !== 'undefined') {
+    console.warn('Firebase configuration is incomplete. Please check your environment variables.');
+}
 
+// Initialize Firebase only if config is valid
+let app: any;
+let auth: any;
+let db: any;
+let storage: any;
+
+if (isConfigValid) {
+    app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+    auth = getAuth(app);
+    db = getFirestore(app);
+    storage = getStorage(app);
+} else {
+    // Provide mock instances for development
+    app = null as any;
+    auth = null as any;
+    db = null as any;
+    storage = null as any;
+}
+
+export { auth, db, storage };
 export default app;

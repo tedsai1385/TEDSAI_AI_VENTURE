@@ -342,7 +342,7 @@
 .cartFab {
     position: fixed;
     bottom: 2rem;
-    right: 2rem;
+    left: 2rem;
     background: var(--text-dark);
     color: white;
     width: 64px;
@@ -429,12 +429,14 @@
 .mb-4 {
     margin-bottom: 1rem;
 }
+
 /* Entry Animations */
 @keyframes slideInUp {
     from {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -445,12 +447,29 @@
     animation: slideInUp 0.4s ease-out backwards;
 }
 
-.productCard:nth-child(1) { animation-delay: 0.05s; }
-.productCard:nth-child(2) { animation-delay: 0.1s; }
-.productCard:nth-child(3) { animation-delay: 0.15s; }
-.productCard:nth-child(4) { animation-delay: 0.2s; }
-.productCard:nth-child(5) { animation-delay: 0.25s; }
-.productCard:nth-child(6) { animation-delay: 0.3s; }
+.productCard:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.productCard:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.productCard:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.productCard:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.productCard:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.productCard:nth-child(6) {
+    animation-delay: 0.3s;
+}
 
 /* Mobile Responsive */
 @media (max-width: 1024px) {
@@ -506,7 +525,7 @@
 
     .cartFab {
         bottom: 85px;
-        right: 1.5rem;
+        left: 1.5rem;
         width: 56px;
         height: 56px;
     }

@@ -1,70 +1,156 @@
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import {
+    TrendingUp,
+    Target,
+    CheckCircle,
+    Quote,
+    ArrowRight,
+    Lightbulb,
+    AlertCircle
+} from 'lucide-react';
 // @ts-ignore
 import data from '../../../assets/data/case-studies.json';
-
-export const metadata = {
-    title: 'Études de Cas - TEDSAI Complex',
-};
 
 export default function CaseStudiesPage() {
     const caseStudies = data.case_studies;
 
     return (
-        <>
-            <section className="hero">
-                <div className="hero-content container fade-in-up">
-                    <h1>Études de Cas</h1>
-                    <p>Résultats Concrets • Avant/Après • ROI Mesurable</p>
+        <main className="min-h-screen">
+            {/* Hero Section */}
+            <section className="relative py-24 bg-gradient-to-br from-blue-900 to-purple-900 text-white overflow-hidden">
+                <div className="absolute inset-0 opacity-20 bg-[url('/assets/images/hero_bg.webp')] bg-cover bg-center" />
+                <div className="container relative z-10 mx-auto px-6 text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                    >
+                        <Badge className="mb-4 bg-white/10 backdrop-blur-md border border-white/20">
+                            <Target className="w-4 h-4 mr-2" />
+                            Success Stories
+                        </Badge>
+                        <h1 className="text-5xl md:text-6xl font-black mb-6">
+                            Études de Cas
+                        </h1>
+                        <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+                            Résultats Concrets • Avant/Après • ROI Mesurable
+                        </p>
+                    </motion.div>
                 </div>
             </section>
 
-            <section className="container" style={{ padding: '4rem 0' }}>
-                <div id="case-studies-container">
-                    {caseStudies.map((cs: any) => (
-                        <div key={cs.id} style={{ background: 'white', padding: '2.5rem', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1.5rem' }}>
-                                <div>
-                                    <h2 style={{ color: 'var(--color-primary)', margin: '0' }}>{cs.client}</h2>
-                                    <p style={{ color: '#666', margin: '0.5rem 0 0' }}>{cs.sector}</p>
-                                </div>
-                                <span style={{ background: 'var(--color-secondary)', color: 'white', padding: '6px 12px', borderRadius: '20px', fontSize: '0.85rem' }}>{cs.date}</span>
-                            </div>
+            {/* Case Studies List */}
+            <section className="py-20 bg-gray-50">
+                <div className="container mx-auto px-6">
+                    <div className="space-y-12">
+                        {caseStudies.map((cs: any, index: number) => (
+                            <motion.div
+                                key={cs.id}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: index * 0.1 }}
+                            >
+                                <Card className="overflow-hidden border-none shadow-xl hover:shadow-2xl transition-shadow">
+                                    <CardContent className="p-8 md:p-12">
+                                        {/* Header */}
+                                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                                            <div>
+                                                <h2 className="text-3xl font-bold text-blue-600 mb-2">{cs.client}</h2>
+                                                <p className="text-gray-600 flex items-center gap-2">
+                                                    <TrendingUp className="w-4 h-4" />
+                                                    {cs.sector}
+                                                </p>
+                                            </div>
+                                            <Badge variant="outline" className="text-purple-700 border-purple-300 bg-purple-50 px-4 py-2">
+                                                {cs.date}
+                                            </Badge>
+                                        </div>
 
-                            <div style={{ background: '#f8f9fa', padding: '1.5rem', borderRadius: '8px', marginBottom: '1.5rem' }}>
-                                <h4 style={{ color: '#e74c3c', margin: '0 0 0.5rem' }}><i className="fa-solid fa-exclamation-circle"></i> Défi</h4>
-                                <p style={{ margin: '0' }}>{cs.challenge}</p>
-                            </div>
+                                        {/* Challenge */}
+                                        <div className="bg-red-50 border-l-4 border-red-500 rounded-lg p-6 mb-6">
+                                            <h4 className="flex items-center gap-2 text-red-700 font-bold mb-3">
+                                                <AlertCircle className="w-5 h-5" />
+                                                Défi
+                                            </h4>
+                                            <p className="text-gray-700 leading-relaxed">{cs.challenge}</p>
+                                        </div>
 
-                            <div style={{ background: '#e8f5e9', padding: '1.5rem', borderRadius: '8px', marginBottom: '1.5rem' }}>
-                                <h4 style={{ color: '#27ae60', margin: '0 0 0.5rem' }}><i className="fa-solid fa-lightbulb"></i> Solution</h4>
-                                <p style={{ margin: '0' }}>{cs.solution}</p>
-                            </div>
+                                        {/* Solution */}
+                                        <div className="bg-green-50 border-l-4 border-green-500 rounded-lg p-6 mb-6">
+                                            <h4 className="flex items-center gap-2 text-green-700 font-bold mb-3">
+                                                <Lightbulb className="w-5 h-5" />
+                                                Solution
+                                            </h4>
+                                            <p className="text-gray-700 leading-relaxed">{cs.solution}</p>
+                                        </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
-                                {Object.entries(cs.results).map(([key, value]) => (
-                                    <div key={key} style={{ textAlign: 'center', background: 'white', padding: '1rem', borderRadius: '8px', border: '2px solid var(--color-primary)' }}>
-                                        <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>{value as string}</div>
-                                        <div style={{ fontSize: '0.85rem', color: '#666', textTransform: 'capitalize' }}>{key.replace(/_/g, ' ')}</div>
-                                    </div>
-                                ))}
-                            </div>
+                                        {/* Results Grid */}
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                            {Object.entries(cs.results).map(([key, value]) => (
+                                                <div
+                                                    key={key}
+                                                    className="text-center bg-white p-6 rounded-xl border-2 border-blue-600 hover:border-blue-700 transition-colors"
+                                                >
+                                                    <div className="text-4xl font-black text-blue-600 mb-2">
+                                                        {value as string}
+                                                    </div>
+                                                    <div className="text-sm text-gray-600 capitalize font-medium">
+                                                        {key.replace(/_/g, ' ')}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
 
-                            <div style={{ background: '#fff3cd', padding: '1.5rem', borderRadius: '8px', borderLeft: '4px solid #ffc107' }}>
-                                <p style={{ margin: '0', fontStyle: 'italic' }}>"{cs.testimonial}"</p>
-                            </div>
-                        </div>
-                    ))}
+                                        {/* Testimonial */}
+                                        <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-500 rounded-lg p-6 relative">
+                                            <Quote className="absolute top-4 right-4 w-12 h-12 text-amber-200" />
+                                            <p className="text-gray-800 italic leading-relaxed relative z-10">
+                                                "{cs.testimonial}"
+                                            </p>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </motion.div>
+                        ))}
+                    </div>
                 </div>
             </section>
 
-            <section className="container"
-                style={{ background: 'var(--color-primary)', color: 'white', padding: '3rem', borderRadius: '12px', textAlign: 'center', marginBottom: '4rem' }}>
-                <h2>Votre Projet, Notre Expertise</h2>
-                <p style={{ margin: '1rem 0' }}>Discutons de vos défis et objectifs. Audit gratuit.</p>
-                <Link href="/contact" className="btn btn-secondary">Demander un Audit</Link>
+            {/* CTA Section */}
+            <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
+                <div className="container mx-auto px-6 text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="max-w-3xl mx-auto"
+                    >
+                        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                            Votre Projet, Notre Expertise
+                        </h2>
+                        <p className="text-xl text-blue-100 mb-8">
+                            Discutons de vos défis et objectifs. Audit gratuit.
+                        </p>
+                        <Link href="/contact">
+                            <Button
+                                size="lg"
+                                className="bg-white text-blue-600 hover:bg-gray-100 font-bold shadow-xl"
+                            >
+                                Demander un Audit
+                                <ArrowRight className="w-5 h-5 ml-2" />
+                            </Button>
+                        </Link>
+                    </motion.div>
+                </div>
             </section>
-        </>
+        </main>
     );
 }

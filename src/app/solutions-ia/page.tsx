@@ -1,250 +1,426 @@
 'use client';
 
-import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
-import './solutions-ia.css';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
-const SolutionsIA = () => {
-  const [activeTab, setActiveTab] = useState('facturation');
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisResult, setAnalysisResult] = useState<null | any>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
-      setAnalysisResult(null);
-    }
-  };
 
-  const handlePlaygroundClick = () => {
-    if (!selectedFile) {
-      alert("Veuillez d'abord sélectionner une facture.");
-      return;
-    }
-    setIsAnalyzing(true);
-    setAnalysisResult(null);
+import {
+  Brain,
+  Zap,
+  BarChart3,
+  MessageSquare,
+  CheckCircle,
+  ArrowRight,
+  Sparkles,
+  TrendingUp,
+  Users,
+  Clock,
+  Shield,
+  Cpu
+} from 'lucide-react';
+import { formatCurrency } from '@/lib/utils';
 
-    // Simulation d'analyse OCR
-    setTimeout(() => {
-      setIsAnalyzing(false);
-      setAnalysisResult({
-        vendor: "FOURNISSEUR EXEMPLE SARL",
-        date: "12/01/2026",
-        total: "145 000 FCFA",
-        tax: "27 912 FCFA",
-        items: [
-          { desc: "Maintenance Serveur", qty: 1, price: "100 000" },
-          { desc: "Licence Logiciel", qty: 5, price: "45 000" }
-        ],
-        confidence: "99.8%"
-      });
-    }, 3000);
-  };
+export default function SolutionsIAPage() {
+  const services = [
+    {
+      icon: Zap,
+      title: 'Automatisation Intelligente',
+      description: 'Automatisez vos processus métier avec des agents IA sur mesure',
+      features: ['OCR 99.8%', 'Intégration ERP', 'Détection erreurs'],
+      stats: { value: '70%', label: 'Gain de temps' },
+      color: 'from-blue-500 to-cyan-500',
+    },
+    {
+      icon: MessageSquare,
+      title: 'Chatbots Personnalisés',
+      description: 'Assistants conversationnels disponibles 24/7 pour vos clients',
+      features: ['Multilingue', 'Contexte métier', 'Analytics'],
+      stats: { value: '24/7', label: 'Disponibilité' },
+      color: 'from-purple-500 to-pink-500',
+    },
+    {
+      icon: BarChart3,
+      title: 'Analyse Prédictive',
+      description: 'Anticipez les tendances avec le machine learning avancé',
+      features: ['Prévisions stocks', 'Détection fraudes', 'Optimisation prix'],
+      stats: { value: '95%', label: 'Précision' },
+      color: 'from-green-500 to-emerald-500',
+    },
+  ];
+
+  const useCases = [
+    {
+      title: 'Facturation Automatique',
+      company: 'Supermarché Local',
+      result: '5.5M FCFA économisés/an',
+      description: 'Extraction automatique des factures avec OCR et intégration ERP',
+      icon: '🧾',
+    },
+    {
+      title: 'Gestion Stocks Intelligente',
+      company: 'Restaurant viTEDia',
+      result: '40% réduction gaspillage',
+      description: 'Prédiction de la demande et optimisation des commandes',
+      icon: '📦',
+    },
+    {
+      title: 'Service Client IA',
+      company: 'E-commerce Local',
+      result: '85% satisfaction client',
+      description: 'Chatbot multilingue avec résolution instantanée',
+      icon: '💬',
+    },
+  ];
+
+  const pricing = [
+    {
+      name: 'Starter',
+      price: 325000,
+      period: 'mois',
+      description: 'Pour PME 1-10 employés',
+      features: [
+        '1 solution IA',
+        'Support email',
+        'Intégration basique',
+        'Analytics mensuels',
+      ],
+      popular: false,
+    },
+    {
+      name: 'Business',
+      price: 850000,
+      period: 'mois',
+      description: 'Pour PME 10-50 employés',
+      features: [
+        '3 solutions IA',
+        'Support prioritaire',
+        'Intégrations avancées',
+        'Analytics temps réel',
+        'Formation équipe',
+      ],
+      popular: true,
+    },
+    {
+      name: 'Enterprise',
+      price: null,
+      period: 'sur devis',
+      description: 'Pour +50 employés',
+      features: [
+        'Solutions illimitées',
+        'Support dédié 24/7',
+        'Infrastructure sur mesure',
+        'SLA garanti',
+        'Consulting stratégique',
+      ],
+      popular: false,
+    },
+  ];
 
   return (
-    <div style={{ paddingBottom: '100px' }}>
+    <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="hero hero-ia">
-        <div className="hero-content container fade-in-up" style={{ textAlign: 'center' }}>
-          <h1>Le Cerveau du Complexe</h1>
-          <p>Intelligence Artificielle pour PME & Optimisation Interne</p>
-        </div>
-      </section>
-
-      {/* Intro / Vision Section */}
-      <section className="container" style={{ padding: '4rem 0' }}>
-        <h2 style={{ color: 'var(--color-primary)', marginBottom: '2rem', textAlign: 'center' }}>Notre Double Mission</h2>
-        <div className="responsive-grid" style={{ maxWidth: '900px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'left' }}>
-            <h3 style={{ color: 'var(--color-secondary)' }}>
-              <i className="fa-solid fa-network-wired"></i> <span>Interne</span>
-            </h3>
-            <p>TEDSAI IA pilote l'ensemble du complexe. Gestion des stocks du restaurant, régulation de l'irrigation du jardin, et analyse des flux en temps réel.</p>
-          </div>
-          <div style={{ textAlign: 'left' }}>
-            <h3 style={{ color: 'var(--color-secondary)' }}>
-              <i className="fa-solid fa-briefcase"></i> <span>Externe</span>
-            </h3>
-            <p>Nous mettons cette même puissance technologique au service des PME locales pour automatiser, sécuriser et accélérer leur croissance.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Problems Tabs */}
-      <section className="container tabs-container">
-        <h2 style={{ textAlign: 'center', marginBottom: 'var(--space-md)' }}>Vos Défis, Nos Solutions</h2>
-
-        <div className="tabs-header">
-          <button className={`tab-btn ${activeTab === 'facturation' ? 'active' : ''}`} onClick={() => setActiveTab('facturation')}>🧾 Facturation</button>
-          <button className={`tab-btn ${activeTab === 'stocks' ? 'active' : ''}`} onClick={() => setActiveTab('stocks')}>📦 Stocks</button>
-          <button className={`tab-btn ${activeTab === 'service' ? 'active' : ''}`} onClick={() => setActiveTab('service')}>💬 Service Client</button>
+      <section className="relative py-24 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 text-white overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse-slow"></div>
+          <div className="absolute top-40 right-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse-slow animation-delay-2000"></div>
+          <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse-slow animation-delay-4000"></div>
         </div>
 
-        <div className={`tab-content ${activeTab === 'facturation' ? 'active' : ''}`}>
-          <div style={{ display: 'flex', gap: 'var(--space-lg)', flexWrap: 'wrap' }}>
-            <div style={{ flex: 1, minWidth: '300px' }}>
-              <h3>Automatisation de la Facturation</h3>
-              <p style={{ marginTop: '1rem' }}>Vos équipes passent 15h/semaine à saisir des factures manuellement ? L'IA TEDSAI scanne, extrait et intègre automatiquement vos factures dans votre ERP.</p>
-              <ul style={{ marginTop: '1rem', listStyle: 'circle', paddingLeft: '1.5rem' }}>
-                <li>Reconnaissance OCR 99.8%</li>
-                <li>Intégration Sage, QuickBooks, Odoo</li>
-                <li>Détection des erreurs et doublons</li>
-              </ul>
-            </div>
-            <div style={{ flex: 1, minWidth: '300px', background: '#f0f4f8', padding: 'var(--space-md)', borderRadius: '8px' }}>
-              <h4>Résultats Client</h4>
-              <p><strong>Supermarché Local :</strong></p>
-              <p className="stats" style={{ color: 'var(--color-secondary)' }}>
-                <span>ROI :</span>
-                <span>5 500 000 FCFA économisés/an</span>
+        <div className="container relative z-10 mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <Badge className="mb-4 bg-white/10 backdrop-blur-md border border-white/20">
+                <Brain className="w-4 h-4" />
+                Intelligence Artificielle
+              </Badge>
+
+              <h1 className="text-5xl md:text-6xl font-black mb-6 font-heading">
+                Le Cerveau du <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-purple-300">Complexe</span>
+              </h1>
+
+              <p className="text-xl text-blue-100 mb-8 leading-relaxed">
+                Propulsez votre entreprise avec des solutions IA sur mesure.
+                Automatisation, optimisation et transformation digitale pour les PME camerounaises.
               </p>
-              <p>Temps de gestion divisé par 8.</p>
-            </div>
+
+              <div className="flex flex-wrap gap-4 mb-8">
+                <Link href="#services">
+                  <Button size="lg" rounded="full" className="bg-white text-primary-900 hover:bg-blue-50 shadow-xl">
+                    Découvrir nos Solutions
+                    <ArrowRight className="w-5 h-5" />
+                  </Button>
+                </Link>
+
+                <Link href="#contact">
+                  <Button variant="outline" size="lg" rounded="full" className="border-white/30 text-white hover:bg-white/10">
+                    Demander une Démo
+                    <Sparkles className="w-5 h-5" />
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-6">
+                {[
+                  { value: '99.8%', label: 'Précision IA' },
+                  { value: '24/7', label: 'Disponibilité' },
+                  { value: '70%', label: 'Gain temps' },
+                ].map((stat, i) => (
+                  <div key={i} className="text-center">
+                    <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
+                    <div className="text-sm text-blue-200">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              className="relative"
+            >
+              <div className="relative h-[400px] flex items-center justify-center">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  className="absolute w-64 h-64 border-4 border-blue-400/30 rounded-full"
+                />
+                <motion.div
+                  animate={{ rotate: -360 }}
+                  transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                  className="absolute w-48 h-48 border-4 border-purple-400/30 rounded-full"
+                />
+                <div className="relative w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-500 rounded-3xl flex items-center justify-center shadow-2xl">
+                  <Brain className="w-16 h-16 text-white" />
+                </div>
+              </div>
+            </motion.div>
           </div>
-        </div>
-
-        <div className={`tab-content ${activeTab === 'stocks' ? 'active' : ''}`}>
-          <h3>Gestion Intelligente des Stocks</h3>
-          <p>Anticipez la demande et réduisez le gaspillage grâce à nos algorithmes prédictifs.</p>
-        </div>
-
-        <div className={`tab-content ${activeTab === 'service' ? 'active' : ''}`}>
-          <h3>Service Client 360°</h3>
-          <p>Chatbots intelligents disponibles 24/7 pour répondre à vos clients instantanément.</p>
         </div>
       </section>
 
-      {/* AI Playground Simulation */}
-      <section id="playground" style={{ background: '#eef2f6', padding: 'var(--space-xl) 0', marginTop: 'var(--space-xl)', textAlign: 'center' }}>
-        <div className="container">
-          <h2>IA Playground</h2>
-          <p>Testez notre technologie de reconnaissance de documents en temps réel.</p>
+      {/* Services Section */}
+      <section id="services" className="py-16 bg-white">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-4xl font-black text-gray-900 mb-4 font-heading">
+              Nos Solutions IA
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Des outils puissants pour automatiser, optimiser et transformer votre entreprise
+            </p>
+          </motion.div>
 
-          <div style={{
-            background: 'white',
-            width: '100%',
-            maxWidth: '800px',
-            minHeight: '400px',
-            margin: '2rem auto',
-            padding: '2rem',
-            borderRadius: '12px',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            {!analysisResult && !isAnalyzing ? (
-              <div style={{ border: '2px dashed #ccc', padding: '3rem', borderRadius: '8px', cursor: 'pointer', width: '100%' }} onClick={() => document.getElementById('file-upload')?.click()}>
-                <i className="fa-solid fa-cloud-upload-alt fa-3x" style={{ color: 'var(--color-primary)', marginBottom: '1rem' }}></i>
-                <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>{selectedFile ? selectedFile.name : "Cliquez ou glissez une facture (Images/PDF)"}</p>
-                <input type="file" id="file-upload" style={{ display: 'none' }} accept="image/*,application/pdf" onChange={handleFileChange} />
-              </div>
-            ) : isAnalyzing ? (
-              <div style={{ textAlign: 'center' }}>
-                <div className="spinner" style={{ width: '50px', height: '50px', border: '5px solid #f3f3f3', borderTop: '5px solid var(--color-primary)', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 2rem' }}></div>
-                <h3>Analyse par l'IA en cours...</h3>
-                <p>Extraction des données structurées via OCR multimodal</p>
-                <style jsx>{`
-                  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: scale(1.1) rotate(360deg); } }
-                `}</style>
-              </div>
-            ) : (
-              <div className="analysis-result fade-in" style={{ width: '100%', textAlign: 'left' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '2px solid #eee', paddingBottom: '1rem' }}>
-                  <h3 style={{ margin: 0 }}>Résultat de l'analyse</h3>
-                  <span style={{ background: '#27ae60', color: 'white', padding: '4px 12px', borderRadius: '20px', fontSize: '0.8rem' }}>Confiance : {analysisResult.confidence}</span>
-                </div>
-                <div className="responsive-grid">
-                  <p><strong>Fournisseur :</strong> {analysisResult.vendor}</p>
-                  <p><strong>Date :</strong> {analysisResult.date}</p>
-                  <p><strong>Total TTC :</strong> {analysisResult.total}</p>
-                  <p><strong>Dont TVA :</strong> {analysisResult.tax}</p>
-                </div>
-                <div style={{ marginTop: '1.5rem' }}>
-                  <h4 style={{ marginBottom: '0.5rem' }}>Articles détectés :</h4>
-                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead>
-                      <tr style={{ background: '#f8f9fa' }}>
-                        <th style={{ padding: '8px', textAlign: 'left' }}>Description</th>
-                        <th style={{ padding: '8px', textAlign: 'center' }}>Qté</th>
-                        <th style={{ padding: '8px', textAlign: 'right' }}>Prix</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {analysisResult.items.map((item: any, idx: number) => (
-                        <tr key={idx} style={{ borderBottom: '1px solid #eee' }}>
-                          <td style={{ padding: '8px' }}>{item.desc}</td>
-                          <td style={{ padding: '8px', textAlign: 'center' }}>{item.qty}</td>
-                          <td style={{ padding: '8px', textAlign: 'right' }}>{item.price} F</td>
-                        </tr>
+          <div className="grid md:grid-cols-3 gap-8">
+            {services.map((service, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <Card hover className="h-full group">
+                  <CardHeader>
+                    <div className={`w-16 h-16 bg-gradient-to-br ${service.color} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                      <service.icon className="w-8 h-8 text-white" />
+                    </div>
+                    <CardTitle>{service.title}</CardTitle>
+                    <CardDescription>{service.description}</CardDescription>
+                  </CardHeader>
+
+                  <CardContent>
+                    <ul className="space-y-2 mb-4">
+                      {service.features.map((feature, j) => (
+                        <li key={j} className="flex items-center gap-2 text-sm text-gray-600">
+                          <CheckCircle className="w-4 h-4 text-green-600" />
+                          {feature}
+                        </li>
                       ))}
-                    </tbody>
-                  </table>
-                </div>
-                <button className="btn btn-secondary" style={{ marginTop: '2rem' }} onClick={() => setSelectedFile(null)}>Nouvelle analyse</button>
-              </div>
-            )}
-          </div>
+                    </ul>
 
-          {!analysisResult && (
-            <button className="btn btn-primary" onClick={handlePlaygroundClick} disabled={isAnalyzing}>
-              {isAnalyzing ? 'Analyse...' : "Lancer l'analyse intelligente"}
-            </button>
-          )}
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+                      <span className="text-sm text-gray-600">{service.stats.label}</span>
+                      <span className="text-2xl font-bold text-primary-600">{service.stats.value}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Use Cases Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-4xl font-black text-gray-900 mb-4 font-heading">
+              Cas d'Usage Réels
+            </h2>
+            <p className="text-xl text-gray-600">
+              Découvrez comment nos clients transforment leur business avec l'IA
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {useCases.map((useCase, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <Card className="h-full">
+                  <CardHeader>
+                    <div className="text-5xl mb-4">{useCase.icon}</div>
+                    <CardTitle className="text-xl">{useCase.title}</CardTitle>
+                    <Badge variant="info" className="w-fit">{useCase.company}</Badge>
+                  </CardHeader>
+
+                  <CardContent>
+                    <div className="mb-4 p-4 bg-green-50 rounded-lg">
+                      <div className="flex items-center gap-2 text-green-700">
+                        <TrendingUp className="w-5 h-5" />
+                        <span className="font-bold">{useCase.result}</span>
+                      </div>
+                    </div>
+                    <p className="text-gray-600">{useCase.description}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Pricing Section */}
-      <section className="container" style={{ padding: '4rem 0' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '3rem', color: 'var(--color-primary)' }}>Débuter maintenant</h2>
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-4xl font-black text-gray-900 mb-4 font-heading">
+              Tarifs Transparents
+            </h2>
+            <p className="text-xl text-gray-600">
+              Choisissez le plan adapté à votre entreprise
+            </p>
+          </motion.div>
 
-        <div className="pricing-grid">
-          <div className="pricing-card">
-            <h3>Starter</h3>
-            <div className="price">325 000 FCFA<span style={{ fontSize: '1rem', color: '#666' }}>/mois</span></div>
-            <p>Pour PME 1-10 employés</p>
-            <Link href="/contact?plan=starter" className="btn btn-secondary" style={{ marginTop: 'var(--space-md)', display: 'inline-block' }}>Choisir</Link>
-          </div>
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {pricing.map((plan, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <Card className={`h-full relative ${plan.popular ? 'border-2 border-primary-500 shadow-xl' : ''}`}>
+                  {plan.popular && (
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                      <Badge className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1">
+                        POPULAIRE
+                      </Badge>
+                    </div>
+                  )}
 
-          <div className="pricing-card featured">
-            <div style={{ background: 'var(--color-secondary)', color: 'white', position: 'absolute', top: 0, left: 0, width: '100%', padding: '4px', fontSize: '0.8rem', fontWeight: 'bold', borderRadius: '8px 8px 0 0' }}>POPULAIRE</div>
-            <h3 style={{ marginTop: '1.5rem' }}>Business</h3>
-            <div className="price">850 000 FCFA<span style={{ fontSize: '1rem', color: '#666' }}>/mois</span></div>
-            <p>Pour PME 10-50 employés</p>
-            <Link href="/contact?plan=business" className="btn btn-primary" style={{ marginTop: 'var(--space-md)', display: 'inline-block' }}>Choisir</Link>
-          </div>
+                  <CardHeader className="text-center">
+                    <CardTitle className="text-2xl mb-2">{plan.name}</CardTitle>
+                    <div className="mb-2">
+                      {plan.price ? (
+                        <>
+                          <span className="text-4xl font-black text-gray-900">
+                            {formatCurrency(plan.price)}
+                          </span>
+                          <span className="text-gray-600">/{plan.period}</span>
+                        </>
+                      ) : (
+                        <span className="text-4xl font-black text-gray-900">Sur Devis</span>
+                      )}
+                    </div>
+                    <CardDescription>{plan.description}</CardDescription>
+                  </CardHeader>
 
-          <div className="pricing-card">
-            <h3>Enterprise</h3>
-            <div className="price">Sur Devis</div>
-            <p>Pour +50 employés</p>
-            <Link href="/contact?plan=enterprise" className="btn btn-secondary" style={{ marginTop: 'var(--space-md)', display: 'inline-block' }}>Contacter</Link>
+                  <CardContent>
+                    <ul className="space-y-3 mb-6">
+                      {plan.features.map((feature, j) => (
+                        <li key={j} className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                          <span className="text-gray-700">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <Link href={`/contact?plan=${plan.name.toLowerCase()}`}>
+                      <Button
+                        variant={plan.popular ? 'primary' : 'outline'}
+                        className="w-full"
+                        size="lg"
+                      >
+                        {plan.price ? 'Choisir ce Plan' : 'Nous Contacter'}
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Resources Section */}
-      <section className="container" style={{ padding: '4rem 0', background: '#f9f9f9', borderRadius: '12px', marginBottom: '4rem' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '2rem' }}>Ressources Utiles</h2>
-        <div className="responsive-grid">
-          <div className="pricing-card" style={{ textAlign: 'left' }}>
-            <i className="fa-solid fa-file-pdf" style={{ color: '#e74c3c', fontSize: '2rem', marginBottom: '1rem' }}></i>
-            <h3>Livre Blanc IA & PME</h3>
-            <p>Guide complet pour digitaliser votre entreprise au Cameroun.</p>
-            <button className="btn-text" style={{ color: 'var(--color-primary)', fontWeight: 600, border: 'none', background: 'none', cursor: 'pointer', padding: 0, marginTop: '1rem' }}>Télécharger (PDF)</button>
-          </div>
-          <div className="pricing-card" style={{ textAlign: 'left' }}>
-            <i className="fa-solid fa-file-excel" style={{ color: '#27ae60', fontSize: '2rem', marginBottom: '1rem' }}></i>
-            <h3>Calculateur ROI</h3>
-            <p>Fichier Excel pour calculer la rentabilité de l'automatisation.</p>
-            <button className="btn-text" style={{ color: 'var(--color-primary)', fontWeight: 600, border: 'none', background: 'none', cursor: 'pointer', padding: 0, marginTop: '1rem' }}>Télécharger (XLS)</button>
-          </div>
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-primary-900 to-purple-900 text-white">
+        <div className="container mx-auto px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl font-black mb-6 font-heading">
+              Prêt à Transformer Votre Entreprise ?
+            </h2>
+            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+              Discutons de vos besoins et découvrons comment l'IA peut propulser votre croissance.
+            </p>
+
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link href="/contact">
+                <Button size="xl" rounded="full" className="bg-white text-primary-900 hover:bg-blue-50 shadow-2xl">
+                  Demander une Démo Gratuite
+                  <Sparkles className="w-5 h-5" />
+                </Button>
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
-    </div>
+    </main>
   );
-};
-
-export default SolutionsIA;
+}

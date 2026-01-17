@@ -192,7 +192,7 @@
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	!function() {
-/******/ 		__webpack_require__.h = function() { return "93b6c2e7b7610cae"; }
+/******/ 		__webpack_require__.h = function() { return "45e39e556e316ed2"; }
 /******/ 	}();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
@@ -830,9 +830,9 @@
 /******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
 /******/ 		var installedChunks = __webpack_require__.hmrS_jsonp = __webpack_require__.hmrS_jsonp || {
 /******/ 			"webpack": 0,
-/******/ 			"css-src_app_admin_admin_css-src_app_admin_tailwind-admin_css": 0,
 /******/ 			"css-src_app_globals_css": 0,
-/******/ 			"css-src_app_login_login_module_css": 0
+/******/ 			"css-src_app_login_login_module_css": 0,
+/******/ 			"css-src_app_shop_shop_module_css-src_components_features_CartSidebar_module_css": 0
 /******/ 		};
 /******/ 		
 /******/ 		__webpack_require__.f.j = function(chunkId, promises) {
@@ -844,7 +844,7 @@
 /******/ 					if(installedChunkData) {
 /******/ 						promises.push(installedChunkData[2]);
 /******/ 					} else {
-/******/ 						if(!/^(css\-src_app_(admin_admin_css\-src_app_admin_tailwind\-admin|globals|login_login_module)_css|webpack)$/.test(chunkId)) {
+/******/ 						if(/^(app(\/(admin\/(layout|page)|(|login\/|shop\/)page|layout)|\-pages\-internals)|main\-app)$/.test(chunkId)) {
 /******/ 							// setup Promise in chunk cache
 /******/ 							var promise = new Promise(function(resolve, reject) { installedChunkData = installedChunks[chunkId] = [resolve, reject]; });
 /******/ 							promises.push(installedChunkData[2] = promise);

@@ -51,22 +51,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     if (profileSnap.exists()) {
                         setProfile(profileSnap.data() as UserProfile);
                     } else {
-                        // Create new profile
-                        const newProfile: UserProfile = {
-                            uid: user.uid,
-                            email: user.email,
-                            displayName: user.displayName,
-                            photoURL: user.photoURL,
-                            role: 'user',
-                            createdAt: serverTimestamp(),
-                        };
-                        try {
-                            await setDoc(profileRef, newProfile);
-                            setProfile(newProfile);
-                        } catch (e) {
-                            console.error('Error creating profile:', e);
-                            setProfile(newProfile); // Set temporarily even if write fails
-                        }
+                        // User exists in Auth but NOT in Firestore -> No Access
+                        console.warn(`User ${user.email} authenticated but has no profile.`);
+                        setProfile(null); // Explicitly null profile
                     }
                 } else {
                     setProfile(null);

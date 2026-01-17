@@ -1,8 +1,6 @@
 {
-  "/admin/garden/page": "app/admin/garden/page.js",
-  "/admin/settings/page": "app/admin/settings/page.js",
-  "/admin/migrate/page": "app/admin/migrate/page.js",
-  "/admin/restaurant/page": "app/admin/restaurant/page.js",
-  "/admin/restaurant/menu/page": "app/admin/restaurant/menu/page.js",
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js",
+  "/shop/page": "app/shop/page.js",
   "/admin/page": "app/admin/page.js"
 }

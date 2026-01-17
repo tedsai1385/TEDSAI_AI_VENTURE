@@ -1,294 +1,421 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import './vitedia.css';
-import { db } from '@/lib/firebase/config';
-import { collection, addDoc, serverTimestamp, query, where, onSnapshot } from 'firebase/firestore';
-
-interface MenuItem {
-    id: string;
-    name: string;
-    description: string;
-    price: number;
-    category: 'starter' | 'main' | 'dessert';
-    isDailySpecial?: boolean;
-    available: boolean;
-}
-
-const ViTEDia = () => {
-    const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-    const [loadingMenu, setLoadingMenu] = useState(true);
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        phone: '',
-        date: '',
-        time: '12:00',
-        guests: '2',
-        occasion: '',
-        special: '',
-        payment: 'spot'
-    });
 
-    const [selectedImage, setSelectedImage] = useState<string | null>(null);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [submitted, setSubmitted] = useState(false);
+import {
+    Utensils,
+    Leaf,
+    Award,
+    MapPin,
+    Clock,
+    Star,
+    CheckCircle,
+    QrCode,
+    ArrowRight,
+    Phone,
+    Mail
+} from 'lucide-react';
+import { formatCurrency } from '@/lib/utils';
 
-    // Fetch menu items from Firestore
-    useEffect(() => {
-        const unsub = onSnapshot(
-            query(collection(db, 'vitedia_menu'), where('available', '==', true)),
-            (snap) => {
-                const items = snap.docs.map(d => ({ id: d.id, ...d.data() } as MenuItem));
-                setMenuItems(items);
-                setLoadingMenu(false);
-            },
-            (error) => {
-                console.error('Error fetching menu:', error);
-                setLoadingMenu(false);
-            }
-        );
-        return () => unsub();
-    }, []);
+export default function VitediaPage() {
+    const dishes = [
+        {
+            name: 'Ndolé Revisité',
+            description: 'Plat signature avec légumes du jardin SelecTED et arachides bio',
+            image: '/assets/images/vitedia_dish_ndole.webp',
+            price: 8500,
+            category: 'Plats Traditionnels',
+            traceability: [
+                { ingredient: 'Épinards', source: 'Jardin A3', verified: true },
+                { ingredient: 'Arachides', source: 'Local Bio', verified: true },
+                { ingredient: 'Viande', source: 'Élevage TEDSAI', verified: true },
+            ],
+        },
+        {
+            name: 'Poulet DG Premium',
+            description: 'Poulet fermier de notre élevage avec légumes frais et plantains',
+            image: '/assets/images/vitedia_dish_poulet_dg.webp',
+            price: 9500,
+            category: 'Plats Signature',
+            traceability: [
+                { ingredient: 'Poulet', source: 'Élevage TEDSAI', verified: true },
+                { ingredient: 'Plantains', source: 'Jardin B2', verified: true },
+                { ingredient: 'Légumes', source: 'Jardin A1', verified: true },
+            ],
+        },
+        {
+            name: 'Koki de Haricots',
+            description: 'Recette traditionnelle avec haricots bio et huile de palme locale',
+            image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80',
+            price: 6500,
+            category: 'Végétarien',
+            traceability: [
+                { ingredient: 'Haricots', source: 'Jardin C1', verified: true },
+                { ingredient: 'Huile de palme', source: 'Production locale', verified: true },
+            ],
+        },
+        {
+            name: 'Eru Sauce',
+            description: 'Légumes sauvages avec poisson fumé et crevettes',
+            image: '/assets/images/vitedia_dish_eru.webp',
+            price: 7500,
+            category: 'Spécialités',
+            traceability: [
+                { ingredient: 'Eru', source: 'Cueillette locale', verified: true },
+                { ingredient: 'Poisson fumé', source: 'Pêcheurs locaux', verified: true },
+            ],
+        },
+        {
+            name: 'Sanga de Boeuf',
+            description: 'Boeuf mijoté avec épices et légumes du jardin',
+            image: '/assets/images/vitedia_dish_grilled_fish.webp',
+            price: 10500,
+            category: 'Plats Signature',
+            traceability: [
+                { ingredient: 'Boeuf', source: 'Élevage local', verified: true },
+                { ingredient: 'Épices', source: 'Jardin D2', verified: true },
+            ],
+        },
+        {
+            name: 'Okok aux Crevettes',
+            description: 'Feuilles d\'okok avec crevettes fraîches et arachides',
+            image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80',
+            price: 8000,
+            category: 'Spécialités',
+            traceability: [
+                { ingredient: 'Okok', source: 'Cueillette locale', verified: true },
+                { ingredient: 'Crevettes', source: 'Pêcheurs locaux', verified: true },
+            ],
+        },
+    ];
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const { id, value } = e.target;
-        const key = id.replace('res-', '');
-        setFormData(prev => ({ ...prev, [key]: value }));
-    };
-
-    const handleReservation = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-
-        try {
-            await addDoc(collection(db, 'vitedia_reservations'), {
-                ...formData,
-                status: 'pending',
-                createdAt: serverTimestamp()
-            });
-            setSubmitted(true);
-        } catch (error) {
-            console.error('Error saving reservation:', error);
-            alert("Une erreur est survenue lors de la réservation. Veuillez réessayer.");
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    // Filter menu items
-    const dailySpecials = menuItems.filter(item => item.isDailySpecial);
-    const starters = dailySpecials.filter(item => item.category === 'starter');
-    const mains = dailySpecials.filter(item => item.category === 'main');
-    const desserts = dailySpecials.filter(item => item.category === 'dessert');
-
+    const gallery = [
+        { src: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80', alt: 'Plat signature viTEDia' },
+        { src: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80', alt: 'Ambiance restaurant' },
+        { src: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&q=80', alt: 'Ingrédients frais' },
+        { src: 'https://images.unsplash.com/photo-1556910103-1c02745a30bf?w=800&q=80', alt: 'Cuisine ouverte' },
+        { src: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?w=800&q=80', alt: 'Table dressée' },
+        { src: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=800&q=80', alt: 'Chef en action' },
+    ];
 
     return (
-        <>
-            {/* Hero */}
-            <section className="hero-rest">
-                <div className="container fade-in-up" style={{ textAlign: 'center' }}>
-                    <h1>Bon. Propre. Rapide.</h1>
-                    <p>Le goût de l'excellence, la traçabilité en plus.</p>
-                    <a href="#reservation" className="btn btn-primary" style={{ backgroundColor: 'var(--color-vitedia-primary)', border: 'none' }}>
-                        Réserver une table
-                    </a>
-                </div>
-            </section>
-
-            {/* Concept Section */}
-            <section className="container" style={{ padding: '4rem 0', textAlign: 'center' }}>
-                <h2 style={{ color: 'var(--color-vitedia-primary)', marginBottom: '1rem' }}>Une Odyssée Culinaire</h2>
-                <p style={{ maxWidth: '800px', margin: '0 auto', fontSize: '1.1rem', color: '#555' }}>
-                    viTEDia célèbre la diversité des dix régions du Cameroun. Nos chefs revisitent les classiques avec une touche moderne, en utilisant exclusivement des produits de notre jardin urbain. C'est la rencontre entre la tradition ancestrale et l'innovation de TEDSAI.
-                </p>
-            </section>
-
-            {/* Menu Section */}
-            <section className="menu-section">
-                <div className="container">
-                    <div className="menu-card">
-                        <h2 style={{ marginBottom: '2.5rem', color: 'var(--color-vitedia-primary)' }}>Menu du Jour</h2>
-
-                        {loadingMenu ? (
-                            <div className="text-center py-8">
-                                <div className="inline-block w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-                                <p className="mt-4 text-slate-600">Chargement du menu...</p>
+        <main className="min-h-screen">
+            {/* Hero Section */}
+            <section className="py-24 bg-gradient-to-br from-amber-50 via-orange-50 to-red-50">
+                <div className="container mx-auto px-6">
+                    <div className="grid md:grid-cols-2 gap-12 items-center">
+                        {/* Text Content */}
+                        <motion.div
+                            initial={{ opacity: 0, x: -30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.6 }}
+                        >
+                            <div className="mb-6 relative w-32 h-32">
+                                <Image
+                                    src="/assets/images/logos/vitedia_logo.jpg"
+                                    alt="Logo viTEDia"
+                                    fill
+                                    className="object-contain"
+                                />
                             </div>
-                        ) : dailySpecials.length === 0 ? (
-                            <div className="text-center py-8">
-                                <p className="text-slate-600">Aucun plat du jour disponible pour le moment.</p>
+                            <Badge variant="vitedia" className="mb-4">
+                                <Utensils className="w-4 h-4" />
+                                Gastronomie Traçable
+                            </Badge>
+
+                            <h1 className="text-5xl md:text-6xl font-black text-gray-900 mb-6 font-heading">
+                                Restaurant <span className="text-vitedia-primary">viTEDia</span>
+                            </h1>
+
+                            <p className="text-xl text-gray-700 mb-6 leading-relaxed">
+                                Chaque ingrédient raconte son histoire, du jardin à votre assiette.
+                                Découvrez une cuisine fusion où tradition camerounaise et innovation
+                                se rencontrent dans une expérience culinaire unique.
+                            </p>
+
+                            {/* Features */}
+                            <div className="flex flex-wrap gap-3 mb-8">
+                                {[
+                                    { icon: CheckCircle, text: '100% Traçable' },
+                                    { icon: Leaf, text: 'Produits Locaux' },
+                                    { icon: Award, text: 'Bio Certifié' },
+                                    { icon: QrCode, text: 'QR Code Menu' },
+                                ].map((feature, i) => (
+                                    <div key={i} className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md">
+                                        <feature.icon className="w-4 h-4 text-vitedia-primary" />
+                                        <span className="text-sm font-medium text-gray-700">{feature.text}</span>
+                                    </div>
+                                ))}
                             </div>
-                        ) : (
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem', textAlign: 'left' }}>
-                                {starters.length > 0 && (
-                                    <div>
-                                        <h3 style={{ borderBottom: '2px solid #eee', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Entrées</h3>
-                                        <ul style={{ listStyle: 'none', padding: 0 }}>
-                                            {starters.map(item => (
-                                                <li key={item.id} style={{ marginBottom: '1rem' }}>
-                                                    <strong>{item.name}</strong> <span style={{ float: 'right', color: 'var(--color-vitedia-primary)' }}>{item.price}€</span>
-                                                    <p style={{ fontSize: '0.85rem', color: '#777' }}>{item.description}</p>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                )}
-                                {mains.length > 0 && (
-                                    <div>
-                                        <h3 style={{ borderBottom: '2px solid #eee', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Plats</h3>
-                                        <ul style={{ listStyle: 'none', padding: 0 }}>
-                                            {mains.map(item => (
-                                                <li key={item.id} style={{ marginBottom: '1rem' }}>
-                                                    <strong>{item.name}</strong> <span style={{ float: 'right', color: 'var(--color-vitedia-primary)' }}>{item.price}€</span>
-                                                    <p style={{ fontSize: '0.85rem', color: '#777' }}>{item.description}</p>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                )}
-                                {desserts.length > 0 && (
-                                    <div>
-                                        <h3 style={{ borderBottom: '2px solid #eee', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Desserts</h3>
-                                        <ul style={{ listStyle: 'none', padding: 0 }}>
-                                            {desserts.map(item => (
-                                                <li key={item.id} style={{ marginBottom: '1rem' }}>
-                                                    <strong>{item.name}</strong> <span style={{ float: 'right', color: 'var(--color-vitedia-primary)' }}>{item.price}€</span>
-                                                    <p style={{ fontSize: '0.85rem', color: '#777' }}>{item.description}</p>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                )}
+
+                            {/* CTA Buttons */}
+                            <div className="flex flex-wrap gap-4 mb-8">
+                                <Link href="#reservation">
+                                    <Button variant="vitedia" size="lg" rounded="full" className="shadow-xl">
+                                        Réserver une Table
+                                        <Clock className="w-5 h-5" />
+                                    </Button>
+                                </Link>
+
+                                <Link href="#menu">
+                                    <Button variant="outline" size="lg" rounded="full">
+                                        Voir le Menu
+                                        <ArrowRight className="w-5 h-5" />
+                                    </Button>
+                                </Link>
                             </div>
-                        )}
+
+                            {/* Info Cards */}
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm">
+                                    <MapPin className="w-6 h-6 text-vitedia-primary flex-shrink-0" />
+                                    <div>
+                                        <div className="text-sm text-gray-600">Adresse</div>
+                                        <div className="font-semibold text-sm">Yaoundé, Cameroun</div>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm">
+                                    <Clock className="w-6 h-6 text-vitedia-primary flex-shrink-0" />
+                                    <div>
+                                        <div className="text-sm text-gray-600">Horaires</div>
+                                        <div className="font-semibold text-sm">11h - 23h</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        {/* Image with Rating Badge */}
+                        <motion.div
+                            initial={{ opacity: 0, x: 30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.6 }}
+                            className="relative"
+                        >
+                            <div className="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl">
+                                <Image
+                                    src="/assets/images/vitedia_dish_poulet_dg.webp"
+                                    alt="Restaurant viTEDia"
+                                    fill
+                                    className="object-cover"
+                                />
+                            </div>
+
+                            {/* Floating Rating Badge */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.4 }}
+                                className="absolute -bottom-6 -left-6 bg-white rounded-2xl p-6 shadow-2xl"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div className="text-5xl">⭐</div>
+                                    <div>
+                                        <div className="text-3xl font-bold text-vitedia-primary">4.9/5</div>
+                                        <div className="text-sm text-gray-600">250+ Avis</div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </motion.div>
                     </div>
-
-                    <div className="menu-card" style={{ marginTop: '2rem' }}>
-                        <h2 style={{ marginBottom: '2.5rem', color: 'var(--color-vitedia-primary)' }}>Carte des Vins & Boissons</h2>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', textAlign: 'left' }}>
-                            <div>
-                                <h3 style={{ borderBottom: '2px solid #eee', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Vins de Prestige</h3>
-                                <ul style={{ listStyle: 'none', padding: 0 }}>
-                                    <li style={{ marginBottom: '1rem' }}>
-                                        <strong>Château Bellevue</strong> <span style={{ float: 'right', color: 'var(--color-vitedia-primary)' }}>15 000 F</span>
-                                        <p style={{ fontSize: '0.85rem', color: '#777' }}>Rouge Intense, notes boisées</p>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h3 style={{ borderBottom: '2px solid #eee', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Cocktails Signature</h3>
-                                <ul style={{ listStyle: 'none', padding: 0 }}>
-                                    <li style={{ marginBottom: '1rem' }}>
-                                        <strong>Le TED-Tonic</strong> <span style={{ float: 'right', color: 'var(--color-vitedia-primary)' }}>4 500 F</span>
-                                        <p style={{ fontSize: '0.85rem', color: '#777' }}>Gingembre du jardin et citronnelle</p>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </section>
 
-            {/* Gallery with Lightbox */}
-            <section className="container" style={{ padding: '4rem 0' }}>
-                <h2 style={{ textAlign: 'center', marginBottom: '3rem', color: 'var(--color-vitedia-primary)' }}>Galerie Immersive</h2>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
-                    {[1, 2, 3, 4, 5, 6].map(i => (
-                        <div key={i} className="gallery-item" style={{ cursor: 'pointer', overflow: 'hidden', borderRadius: '8px', height: '200px' }} onClick={() => setSelectedImage(`/assets/images/gallery/rest-${i}.jpg`)}>
-                            <img src={`/assets/images/gallery/rest-${i}.jpg`} alt={`Resto ${i}`} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s' }}
-                                onError={(e) => { e.currentTarget.src = 'https://via.placeholder.com/400x300?text=viTEDia+Gallery'; }} />
-                        </div>
-                    ))}
-                </div>
-            </section>
+            {/* Signature Dishes Section */}
+            <section id="menu" className="py-16 bg-white">
+                <div className="container mx-auto px-6">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="text-center mb-12"
+                    >
+                        <h2 className="text-4xl font-black text-gray-900 mb-4 font-heading">
+                            Nos Plats Signature
+                        </h2>
+                        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                            Découvrez nos créations culinaires avec traçabilité complète de chaque ingrédient
+                        </p>
+                    </motion.div>
 
-            {/* Lightbox Component */}
-            {selectedImage && (
-                <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.9)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setSelectedImage(null)}>
-                    <img src={selectedImage} style={{ maxWidth: '90%', maxHeight: '90%', borderRadius: '8px' }} onClick={(e) => e.stopPropagation()} />
-                    <button style={{ position: 'absolute', top: '20px', right: '20px', background: 'none', border: 'none', color: 'white', fontSize: '2rem', cursor: 'pointer' }} onClick={() => setSelectedImage(null)}>&times;</button>
-                </div>
-            )}
-
-            {/* Reservation Section */}
-            <section className="reservation-section" id="reservation">
-                <div className="container">
-                    <div className="reservation-form-container">
-                        {submitted ? (
-                            <div style={{ textAlign: 'center', padding: '2rem' }}>
-                                <i className="fa-solid fa-circle-check" style={{ fontSize: '4rem', color: 'green', marginBottom: '1rem' }}></i>
-                                <h3>Réservation Reçue !</h3>
-                                <p>Merci {formData.name}, nous avons bien reçu votre demande pour le {formData.date} à {formData.time}. Un membre de notre équipe vous contactera pour confirmer.</p>
-                                <button className="btn btn-primary" onClick={() => setSubmitted(false)} style={{ marginTop: '2rem' }}>Faire une autre réservation</button>
-                            </div>
-                        ) : (
-                            <>
-                                <h3 style={{ textAlign: 'center', color: 'var(--color-vitedia-primary)', marginBottom: '2rem', fontSize: '1.8rem' }}>Réserver une Table</h3>
-                                <form onSubmit={handleReservation}>
-                                    <div className="form-group">
-                                        <label htmlFor="res-name">Nom Complet</label>
-                                        <input type="text" id="res-name" required placeholder="Votre nom" value={formData.name} onChange={handleChange} />
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label htmlFor="res-phone">Téléphone</label>
-                                        <input type="tel" id="res-phone" required placeholder="Ex: 6xxxxx" value={formData.phone} onChange={handleChange} />
-                                    </div>
-
-                                    <div className="form-row">
-                                        <div className="form-group" style={{ flex: 1 }}>
-                                            <label htmlFor="res-date">Date</label>
-                                            <input type="date" id="res-date" required value={formData.date} onChange={handleChange} />
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {dishes.map((dish, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: i * 0.1 }}
+                            >
+                                <Card hover className="h-full group overflow-hidden">
+                                    {/* Dish Image */}
+                                    <div className="relative h-64 overflow-hidden">
+                                        <Image
+                                            src={dish.image}
+                                            alt={dish.name}
+                                            fill
+                                            className="object-cover group-hover:scale-110 transition-transform duration-500"
+                                        />
+                                        {/* Price Badge */}
+                                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full font-bold text-vitedia-primary shadow-lg">
+                                            {formatCurrency(dish.price)}
                                         </div>
-                                        <div className="form-group" style={{ flex: 1 }}>
-                                            <label htmlFor="res-time">Heure</label>
-                                            <select id="res-time" required value={formData.time} onChange={handleChange}>
-                                                <option value="12:00">12:00</option>
-                                                <option value="12:30">12:30</option>
-                                                <option value="13:00">13:00</option>
-                                                <option value="13:30">13:30</option>
-                                                <option value="19:00">19:00</option>
-                                                <option value="19:30">19:30</option>
-                                                <option value="20:00">20:00</option>
-                                                <option value="20:30">20:30</option>
-                                            </select>
+                                        {/* Category Badge */}
+                                        <div className="absolute top-4 left-4">
+                                            <Badge variant="vitedia">{dish.category}</Badge>
                                         </div>
                                     </div>
 
-                                    <div className="form-group">
-                                        <label htmlFor="res-guests">Nombre de personnes</label>
-                                        <select id="res-guests" value={formData.guests} onChange={handleChange}>
-                                            {[1, 2, 3, 4, 5, 6, 7, 8].map(n => (
-                                                <option key={n} value={n.toString()}>{n} Personne{n > 1 ? 's' : ''}</option>
+                                    <CardHeader>
+                                        <CardTitle className="text-xl">{dish.name}</CardTitle>
+                                        <CardDescription>{dish.description}</CardDescription>
+                                    </CardHeader>
+
+                                    <CardContent>
+                                        {/* Traceability */}
+                                        <div className="space-y-2 mb-4">
+                                            <div className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                                <CheckCircle className="w-4 h-4 text-green-600" />
+                                                Traçabilité:
+                                            </div>
+                                            {dish.traceability.map((item, j) => (
+                                                <div key={j} className="flex items-center justify-between text-xs text-gray-600 pl-6">
+                                                    <span>• {item.ingredient}: {item.source}</span>
+                                                    <QrCode className="w-4 h-4 text-primary-600 cursor-pointer hover:text-primary-700" />
+                                                </div>
                                             ))}
-                                            <option value="plus">Plus de 8 personnes</option>
-                                        </select>
-                                    </div>
+                                        </div>
 
-                                    <div className="form-group">
-                                        <label htmlFor="res-payment">Mode de Paiement (Acompte)</label>
-                                        <select id="res-payment" required value={formData.payment} onChange={handleChange}>
-                                            <option value="spot">Paiement sur place</option>
-                                            <option value="momo">Mobile Money (Orange/MTN)</option>
-                                        </select>
-                                    </div>
-
-                                    <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-                                        <button type="submit" className="btn btn-primary" disabled={isSubmitting} style={{ backgroundColor: 'var(--color-vitedia-primary)', border: 'none', padding: '12px 30px', cursor: isSubmitting ? 'not-allowed' : 'pointer' }}>
-                                            {isSubmitting ? 'Traitement...' : 'Confirmer la Réservation'}
-                                        </button>
-                                    </div>
-                                </form>
-                            </>
-                        )}
+                                        <Button variant="vitedia" className="w-full" size="sm">
+                                            Commander
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            </motion.div>
+                        ))}
                     </div>
                 </div>
             </section>
-        </>
+
+            {/* Gallery Section */}
+            <section className="py-16 bg-gray-50">
+                <div className="container mx-auto px-6">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="text-center mb-12"
+                    >
+                        <h2 className="text-4xl font-black text-gray-900 mb-4 font-heading">
+                            Galerie viTEDia
+                        </h2>
+                        <p className="text-xl text-gray-600">
+                            Découvrez l'ambiance et nos créations culinaires
+                        </p>
+                    </motion.div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        {gallery.map((item, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: i * 0.1 }}
+                                className="relative h-64 rounded-2xl overflow-hidden group cursor-pointer"
+                            >
+                                <Image
+                                    src={item.src}
+                                    alt={item.alt}
+                                    fill
+                                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                                    <p className="text-white font-semibold">{item.alt}</p>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Traceability Infographic */}
+            <section className="py-16 bg-gradient-to-r from-amber-100 to-orange-100">
+                <div className="container mx-auto px-6">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="text-center"
+                    >
+                        <h2 className="text-3xl font-bold mb-8 font-heading">
+                            De la Graine à l'Assiette
+                        </h2>
+
+                        {/* Simple Flow Diagram */}
+                        <div className="flex flex-wrap justify-center items-center gap-4 max-w-4xl mx-auto">
+                            {[
+                                { icon: Leaf, label: 'Jardin SelecTED', color: 'text-green-600' },
+                                { icon: ArrowRight, label: '', color: 'text-gray-400' },
+                                { icon: Award, label: 'Contrôle Qualité', color: 'text-blue-600' },
+                                { icon: ArrowRight, label: '', color: 'text-gray-400' },
+                                { icon: Utensils, label: 'Cuisine viTEDia', color: 'text-vitedia-primary' },
+                                { icon: ArrowRight, label: '', color: 'text-gray-400' },
+                                { icon: Star, label: 'Votre Table', color: 'text-amber-600' },
+                            ].map((step, i) => (
+                                <div key={i} className="flex flex-col items-center">
+                                    <div className={`w-16 h-16 rounded-full bg-white shadow-lg flex items-center justify-center ${step.color}`}>
+                                        <step.icon className="w-8 h-8" />
+                                    </div>
+                                    {step.label && <div className="mt-2 text-sm font-medium">{step.label}</div>}
+                                </div>
+                            ))}
+                        </div>
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* Contact & Reservation CTA */}
+            <section id="reservation" className="py-20 bg-vitedia-primary text-white">
+                <div className="container mx-auto px-6 text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                    >
+                        <h2 className="text-4xl font-black mb-6 font-heading">
+                            Prêt à Vivre l'Expérience viTEDia ?
+                        </h2>
+                        <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+                            Réservez votre table dès maintenant et découvrez une gastronomie
+                            où chaque bouchée raconte une histoire.
+                        </p>
+
+                        <div className="flex flex-wrap justify-center gap-4 mb-8">
+                            <div className="flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md rounded-full">
+                                <Phone className="w-5 h-5" />
+                                <span>+237 6XX XX XX XX</span>
+                            </div>
+                            <div className="flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md rounded-full">
+                                <Mail className="w-5 h-5" />
+                                <span>contact@vitedia.cm</span>
+                            </div>
+                        </div>
+
+                        <Button size="xl" rounded="full" className="bg-white text-vitedia-primary hover:bg-gray-100 shadow-2xl">
+                            Réserver Maintenant
+                            <Clock className="w-5 h-5" />
+                        </Button>
+                    </motion.div>
+                </div>
+            </section>
+        </main>
     );
-};
-
-export default ViTEDia;
+}

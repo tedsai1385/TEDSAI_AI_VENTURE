@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { ChatMessage } from '@/types';
 import { db } from '@/lib/firebase/config';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { MessageCircle, X, Send, Brain, Utensils, BookOpen } from 'lucide-react';
 
 // Real Firestore reservation
 const saveReservation = async (data: any, userId: string = 'anonymous') => {
@@ -45,13 +46,11 @@ const ChatWidget = () => {
         }
         return '';
     });
-    const chatBodyRef = useRef<HTMLDivElement>(null);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // Auto-scroll to bottom
     useEffect(() => {
-        if (chatBodyRef.current) {
-            chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
-        }
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [history, isTyping, bookingState]);
 
     const toggleChat = () => setIsOpen(!isOpen);
@@ -168,79 +167,152 @@ const ChatWidget = () => {
     };
 
     return (
-        <div className="ted-widget">
-            <button className="ted-button" onClick={toggleChat} title="Discuter avec TED">
-                <img src="/assets/images/logos/tedsai_logo.jpg" alt="TED" />
-            </button>
-
-            <div className={`ted-chat-window ${isOpen ? 'active' : ''}`}>
-                <div className="ted-chat-header">
-                    <div className="ted-chat-header-info">
-                        <img src="/assets/images/logos/tedsai_logo.jpg" alt="TED Assistant" />
-                        <div>
-                            <h3>TED Assistant</h3>
-                            <p>En ligne • {bookingState.active ? 'Réservation...' : 'IA Connectée'}</p>
+        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+            {/* Chat Window */}
+            {isOpen && (
+                <div className="mb-4 w-[350px] sm:w-[380px] h-[500px] bg-white rounded-2xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-5">
+                    {/* Header */}
+                    <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white flex justify-between items-center shrink-0">
+                        <div className="flex items-center gap-3">
+                            <div className="relative">
+                                <img
+                                    src="/assets/images/logos/tedsai_logo.jpg"
+                                    alt="TED Assistant"
+                                    className="w-10 h-10 rounded-full border-2 border-white/20"
+                                />
+                                <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-blue-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-sm">TED Assistant</h3>
+                                <p className="text-xs text-blue-100 flex items-center gap-1">
+                                    <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                                    {bookingState.active ? 'Réservation en cours' : 'IA Connectée'}
+                                </p>
+                            </div>
                         </div>
+                        <button
+                            onClick={toggleChat}
+                            className="p-1 hover:bg-white/10 rounded-full transition-colors"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
                     </div>
-                    <button className="ted-close-btn" onClick={toggleChat}>
-                        <i className="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
 
-                <div className="ted-chat-body" ref={chatBodyRef}>
-                    {history.length === 0 && (
-                        <div className="ted-message ted">
-                            <div className="ted-message-content">
-                                Bonjour ! Je suis TED. Je peux vous orienter vers nos pôles : IA, Agriculture, Élevage, Restauration ou Épicerie.
-                                <div className="ted-scenarios">
-                                    <button className="ted-scenario-btn" onClick={() => handleScenario('reserve')}>
-                                        <i className="fa-solid fa-utensils"></i> Réserver chez viTEDia
-                                    </button>
-                                    <button className="ted-scenario-btn" onClick={() => handleScenario('ia')}>
-                                        <i className="fa-solid fa-brain"></i> Solutions IA
-                                    </button>
-                                    <button className="ted-scenario-btn" onClick={() => handleScenario('menu')}>
-                                        <i className="fa-solid fa-book-open"></i> Voir le Menu
-                                    </button>
+                    {/* Messages Body */}
+                    <div className="flex-1 overflow-y-auto p-4 bg-gray-50/50 scroll-smooth space-y-4">
+                        {history.length === 0 && (
+                            <div className="flex gap-3">
+                                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                                    <img src="/assets/images/logos/tedsai_logo.jpg" className="w-full h-full rounded-full" alt="AI" />
+                                </div>
+                                <div className="space-y-3 max-w-[85%]">
+                                    <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm text-sm text-gray-700 border border-gray-100">
+                                        Bonjour ! Je suis TED. Je peux vous orienter vers nos pôles.
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <button
+                                            onClick={() => handleScenario('reserve')}
+                                            className="text-left text-xs bg-white hover:bg-blue-50 border border-blue-100 p-2.5 rounded-xl transition-colors flex items-center gap-2 text-blue-700 font-medium"
+                                        >
+                                            <Utensils className="w-3.5 h-3.5" />
+                                            Réserver chez viTEDia
+                                        </button>
+                                        <button
+                                            onClick={() => handleScenario('ia')}
+                                            className="text-left text-xs bg-white hover:bg-purple-50 border border-purple-100 p-2.5 rounded-xl transition-colors flex items-center gap-2 text-purple-700 font-medium"
+                                        >
+                                            <Brain className="w-3.5 h-3.5" />
+                                            Solutions IA
+                                        </button>
+                                        <button
+                                            onClick={() => handleScenario('menu')}
+                                            className="text-left text-xs bg-white hover:bg-green-50 border border-green-100 p-2.5 rounded-xl transition-colors flex items-center gap-2 text-green-700 font-medium"
+                                        >
+                                            <BookOpen className="w-3.5 h-3.5" />
+                                            Voir le Menu
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    )}
+                        )}
 
-                    {history.map((msg, idx) => (
-                        <div key={idx} className={`ted-message ${msg.role === 'assistant' ? 'ted' : 'user'}`}>
-                            {msg.role === 'assistant' && (
-                                <img src="/assets/images/logos/tedsai_logo.jpg" alt="TED" className="ted-message-avatar" style={{ width: 30, height: 30, borderRadius: '50%', marginRight: 8, float: 'left' }} />
-                            )}
-                            <div className="ted-message-content">
-                                {msg.content}
+                        {history.map((msg, idx) => (
+                            <div
+                                key={idx}
+                                className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
+                            >
+                                {msg.role === 'assistant' && (
+                                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0 border border-blue-200 overflow-hidden">
+                                        <img src="/assets/images/logos/tedsai_logo.jpg" alt="AI" className="w-full h-full object-cover" />
+                                    </div>
+                                )}
+                                <div
+                                    className={`p-3 rounded-2xl text-sm shadow-sm max-w-[80%] ${msg.role === 'user'
+                                        ? 'bg-blue-600 text-white rounded-br-none'
+                                        : 'bg-white text-gray-700 border border-gray-100 rounded-tl-none'
+                                        }`}
+                                >
+                                    {msg.content}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
 
-                    {isTyping && (
-                        <div className="ted-message ted">
-                            <div className="ted-typing">
-                                <span></span><span></span><span></span>
+                        {isTyping && (
+                            <div className="flex gap-3">
+                                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0 border border-blue-200 overflow-hidden">
+                                    <img src="/assets/images/logos/tedsai_logo.jpg" alt="AI" className="w-full h-full object-cover" />
+                                </div>
+                                <div className="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 w-16 flex items-center justify-center gap-1">
+                                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></span>
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
+                        <div ref={messagesEndRef} />
+                    </div>
+
+                    {/* Footer Input */}
+                    <form
+                        onSubmit={(e) => handleSendMessage(e)}
+                        className="p-3 bg-white border-t border-gray-100 flex items-center gap-2 shrink-0"
+                    >
+                        <input
+                            type="text"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            placeholder={bookingState.active ? (bookingState.step === 'people' ? 'Ex: 2' : 'Répondez ici...') : "Posez une question..."}
+                            className="flex-1 bg-gray-100 text-sm text-gray-900 placeholder:text-gray-400 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:bg-white transition-all"
+                        />
+                        <button
+                            type="submit"
+                            disabled={!message.trim()}
+                            className="p-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+                        >
+                            <Send className="w-4 h-4" />
+                        </button>
+                    </form>
                 </div>
+            )}
 
-                <form className="ted-chat-footer" onSubmit={handleSendMessage}>
-                    <input
-                        type="text"
-                        className="ted-input"
-                        placeholder={bookingState.active ? (bookingState.step === 'people' ? 'Ex: 2' : 'Répondez ici...') : "Écrivez votre message..."}
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        autoFocus
-                    />
-                    <button type="submit" className="ted-send-btn">
-                        <i className="fa-solid fa-paper-plane"></i>
-                    </button>
-                </form>
-            </div>
+            {/* Toggle Button */}
+            <button
+                onClick={toggleChat}
+                className="group relative w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 shadow-lg shadow-blue-900/20 hover:shadow-blue-900/40 hover:scale-110 transition-all duration-300 flex items-center justify-center overflow-hidden border-2 border-white/20"
+            >
+                {isOpen ? (
+                    <X className="w-7 h-7 text-white" />
+                ) : (
+                    <>
+                        <img
+                            src="/assets/images/logos/tedsai_logo.jpg"
+                            alt="Chat"
+                            className="w-full h-full object-cover opacity-0 group-hover:opacity-100 absolute inset-0 transition-opacity duration-300"
+                        />
+                        <MessageCircle className="w-7 h-7 text-white group-hover:opacity-0 transition-opacity duration-300" />
+                    </>
+                )}
+            </button>
         </div>
     );
 };

@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /api/
 
-Sitemap: https://tedsai-complex.com/sitemap.xml
+Sitemap: https://www.tedsai.com/sitemap.xml

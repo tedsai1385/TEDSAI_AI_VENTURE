@@ -1,4 +1,4 @@
-export type Role = 'super_admin' | 'admin_resto' | 'admin_garden' | 'admin_ia' | 'editor';
+export type Role = 'super_admin' | 'admin' | 'admin_resto' | 'admin_garden' | 'admin_ia' | 'editor';
 
 export interface Permission {
     id: string;

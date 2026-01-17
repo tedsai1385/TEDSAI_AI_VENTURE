@@ -1,4 +1,4 @@
-// File: /Users/franckvictorien/.gemini/antigravity/scratch/TEDSAI_AI_VENTURE/src/app/admin/page.tsx
+// File: /Users/macbookpro/Documents/TEDSAI_AI_VENTURE/src/app/admin/page.tsx
 import * as entry from '../../../../src/app/admin/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

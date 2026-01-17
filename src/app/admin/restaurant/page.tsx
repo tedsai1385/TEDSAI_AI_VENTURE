@@ -1,293 +1,120 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import AdminGuard from '@/components/admin/AdminGuard';
-import PageHeader from '@/components/dashboard/PageHeader';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
-    UtensilsCrossed,
     Plus,
-    CalendarCheck,
-    Clock,
-    TrendingUp,
-    ChevronRight,
-    Users,
-    ArrowUpRight
+    Search,
+    Filter,
+    Edit,
+    Trash2,
+    UtensilsCrossed,
+    Image as ImageIcon
 } from 'lucide-react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
-import { db } from '@/lib/firebase/config';
-import { collection, onSnapshot, query, orderBy, limit } from 'firebase/firestore';
 
-export default function AdminRestaurantPage() {
-    const [mounted, setMounted] = useState(false);
-    const [reservations, setReservations] = useState<any[]>([]);
-    const [stats, setStats] = useState([
-        { label: 'Réservations Aujourd\'hui', value: '0', icon: CalendarCheck, color: 'blue', sub: 'Temps Réel' },
-        { label: 'Temps Moyen Service', value: '45m', icon: Clock, color: 'amber', sub: 'Standard' },
-        { label: 'Clients ce Mois', value: '0', icon: Users, color: 'emerald', sub: 'Croissance active' },
-        { label: 'Satisfaction', value: '4.8/5', icon: TrendingUp, color: 'indigo', sub: 'Avis vérifiés' },
+export default function RestaurantAdmin() {
+    const [dishes] = useState([
+        { id: 1, name: 'Ndolé Revisité', price: '8500 FCFA', category: 'Plat', status: 'available', sales: 145 },
+        { id: 2, name: 'Poulet DG Royal', price: '9500 FCFA', category: 'Plat', status: 'available', sales: 98 },
+        { id: 3, name: 'Jus de Bissap Spicy', price: '2000 FCFA', category: 'Boisson', status: 'available', sales: 320 },
+        { id: 4, name: 'Banane Malaxée', price: '4500 FCFA', category: 'Entrée', status: 'out_of_stock', sales: 45 },
     ]);
 
-    const [processingId, setProcessingId] = useState<string | null>(null);
-
-    const sendNotification = async (reservation: any, type: 'confirmed' | 'cancelled') => {
-        try {
-            await fetch('/api/notify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    to: reservation.email, // Ensure reservation has email field
-                    subject: type === 'confirmed' ? 'Votre réservation chez viTEDia est confirmée !' : 'Mise à jour de votre réservation viTEDia',
-                    type: 'reservation_update',
-                    data: {
-                        name: reservation.name,
-                        date: reservation.date,
-                        time: reservation.time,
-                        guests: reservation.guestCount,
-                        status: type,
-                        message: type === 'confirmed'
-                            ? "Nous sommes ravis de vous confirmer votre table. À très bientôt !"
-                            : "Nous sommes au regret de devoir annuler votre réservation. Veuillez nous contacter pour plus de détails."
-                    }
-                })
-            });
-        } catch (error) {
-            console.error('Failed to send notification:', error);
-        }
-    };
-
-    const updateStatus = async (id: string, status: string, reservation?: any) => {
-        setProcessingId(id);
-        try {
-            const { doc, updateDoc } = await import('firebase/firestore');
-            await updateDoc(doc(db, 'vitedia_reservations', id), { status });
-
-            // Send email notification if reservation data is provided
-            if (reservation && reservation.email) {
-                await sendNotification(reservation, status as 'confirmed' | 'cancelled');
-            }
-        } catch (error) {
-            console.error('Error updating status:', error);
-            alert("Erreur lors de la mise à jour");
-        } finally {
-            setProcessingId(null);
-        }
-    };
-
-    const addMockReservation = async () => {
-        try {
-            const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
-            await addDoc(collection(db, 'vitedia_reservations'), {
-                name: 'Test Reservation',
-                guestCount: 2,
-                time: '20:00',
-                date: new Date().toLocaleDateString(),
-                status: 'pending',
-                createdAt: serverTimestamp()
-            });
-        } catch (error) {
-            console.error('Error adding reservation:', error);
-        }
-    };
-
-    useEffect(() => {
-        setMounted(true);
-        const unsub = onSnapshot(query(collection(db, 'vitedia_reservations'), orderBy('createdAt', 'desc'), limit(10)), (snap) => {
-            const resList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-            setReservations(resList);
-
-            setStats(prev => {
-                const newStats = [...prev];
-                newStats[0].value = snap.size.toString();
-                return newStats;
-            });
-        });
-
-        return () => unsub();
-    }, []);
-
-    if (!mounted) return null;
-
     return (
+        <div className="space-y-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-900">Restaurant viTEDia</h1>
+                    <p className="text-gray-500 text-sm">Gestion du menu, des prix et de la disponibilité.</p>
+                </div>
+                <Button className="bg-amber-600 hover:bg-amber-700 text-white">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Ajouter un Plat
+                </Button>
+            </div>
 
-        <AdminGuard>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                {/* Toolbar */}
+                <div className="p-4 border-b border-gray-200 flex flex-col md:flex-row gap-4">
+                    <div className="relative flex-1">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <input
+                            type="text"
+                            placeholder="Rechercher un plat..."
+                            className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-100 focus:border-amber-500 mx-0"
+                        />
+                    </div>
+                    <div className="flex gap-2">
+                        <Button variant="outline" className="text-gray-600">
+                            <Filter className="w-4 h-4 mr-2" />
+                            Catégorie
+                        </Button>
+                    </div>
+                </div>
 
-            <PageHeader
-                title="Restaurant viTEDia"
-                subtitle="Gérez vos menus, réservations et performance en temps réel."
-                icon={UtensilsCrossed}
-                actions={
-                    <button
-                        onClick={addMockReservation}
-                        className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-semibold shadow-lg shadow-blue-600/20 transition-all hover:scale-[1.02] active:scale-95"
-                    >
-                        <Plus size={18} />
-                        Nouveau Plat / Menu
-                    </button>
-                }
-            />
-
-            {/* QUICK STATS */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                {stats.map((stat, idx) => (
-                    <motion.div
-                        key={stat.label}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.1 }}
-                        className="glass p-6 rounded-3xl relative overflow-hidden group border-white/5"
-                    >
-                        <div className={cn(
-                            "absolute top-0 right-0 w-24 h-24 blur-[60px] opacity-20 transition-opacity group-hover:opacity-40",
-                            stat.color === 'blue' ? "bg-blue-500" :
-                                stat.color === 'amber' ? "bg-amber-500" :
-                                    stat.color === 'emerald' ? "bg-emerald-500" : "bg-indigo-500"
-                        )} />
-
-                        <div className="flex flex-col gap-4 relative z-10">
-                            <stat.icon className={cn(
-                                "p-2 rounded-xl w-10 h-10",
-                                stat.color === 'blue' ? "bg-blue-500/10 text-blue-400" :
-                                    stat.color === 'amber' ? "bg-amber-500/10 text-amber-400" :
-                                        stat.color === 'emerald' ? "bg-emerald-500/10 text-emerald-400" : "bg-indigo-500/10 text-indigo-400"
-                            )} />
-                            <div>
-                                <h3 className="text-3xl font-bold text-white mb-1 tracking-tight">{stat.value}</h3>
-                                <div className="flex items-center justify-between">
-                                    <p className="text-slate-500 text-xs font-medium">{stat.label}</p>
-                                    <span className="text-[10px] text-emerald-400 font-bold">{stat.sub}</span>
+                {/* Grid View for Dishes */}
+                <div className="p-6 grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {dishes.map((dish, i) => (
+                        <motion.div
+                            key={dish.id}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: i * 0.05 }}
+                            className="group relative bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-all overflow-hidden"
+                        >
+                            <div className="aspect-video bg-gray-100 relative">
+                                <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                                    <ImageIcon className="w-8 h-8 opacity-20" />
+                                </div>
+                                <div className="absolute top-2 right-2">
+                                    <Badge className={dish.status === 'available' ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200'}>
+                                        {dish.status === 'available' ? 'Disponible' : 'Épuisé'}
+                                    </Badge>
                                 </div>
                             </div>
-                        </div>
-                    </motion.div>
-                ))}
-            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* UPCOMING RESERVATIONS */}
-                <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="lg:col-span-2 glass rounded-3xl border-white/5 overflow-hidden flex flex-col"
-                >
-                    <div className="p-6 border-b border-white/5 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <CalendarCheck size={20} className="text-blue-400" />
-                            <h3 className="font-bold text-lg">Réservations Prochaines</h3>
-                        </div>
-                        <button className="text-[11px] font-bold text-blue-400 hover:text-blue-300 transition-colors uppercase tracking-widest flex items-center gap-1 group">
-                            Voir Tout <ArrowUpRight size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                        </button>
-                    </div>
+                            <div className="p-4">
+                                <div className="flex justify-between items-start mb-2">
+                                    <div>
+                                        <h3 className="font-bold text-gray-900">{dish.name}</h3>
+                                        <p className="text-xs text-gray-500">{dish.category}</p>
+                                    </div>
+                                    <p className="font-semibold text-amber-600">{dish.price}</p>
+                                </div>
 
-                    <div className="p-0 overflow-x-auto">
-                        <table className="w-full text-left">
-                            <thead>
-                                <tr className="text-[11px] font-bold text-slate-500 uppercase tracking-wider bg-white/5">
-                                    <th className="px-6 py-4">Client</th>
-                                    <th className="px-6 py-4">Heure</th>
-                                    <th className="px-6 py-4">Convives</th>
-                                    <th className="px-6 py-4">Status</th>
-                                    <th className="px-6 py-4 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-white/5">
-                                {reservations.map((res) => (
-                                    <tr key={res.id} className="hover:bg-white/[0.02] transition-colors group">
-                                        <td className="px-6 py-4">
-                                            <div className="font-semibold text-slate-200">{res.name}</div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2 text-slate-400">
-                                                <Clock size={14} />
-                                                {res.time}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 text-slate-300 font-medium">
-                                            {res.guestCount} personnes
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className={cn(
-                                                "text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border",
-                                                res.status === 'confirmed' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
-                                                    res.status === 'pending' ? "bg-amber-500/10 text-amber-400 border-amber-500/20" :
-                                                        "bg-slate-500/10 text-slate-400 border-white/10"
-                                            )}>
-                                                {res.status}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                {res.status === 'pending' && (
-                                                    <button
-                                                        onClick={() => updateStatus(res.id, 'confirmed', res)}
-                                                        disabled={processingId === res.id}
-                                                        className="px-3 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded-lg border border-emerald-500/20 transition-all disabled:opacity-50"
-                                                    >
-                                                        {processingId === res.id ? '...' : 'Confirmer'}
-                                                    </button>
-                                                )}
-                                                {res.status !== 'cancelled' && (
-                                                    <button
-                                                        onClick={() => updateStatus(res.id, 'cancelled', res)}
-                                                        disabled={processingId === res.id}
-                                                        className="px-3 py-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[10px] font-bold rounded-lg border border-red-500/20 transition-all disabled:opacity-50"
-                                                    >
-                                                        {processingId === res.id ? '...' : 'Annuler'}
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </motion.div>
+                                <div className="flex items-center gap-2 text-xs text-gray-500 mb-4">
+                                    <UtensilsCrossed className="w-3 h-3" />
+                                    {dish.sales} ventes ce mois
+                                </div>
 
-                {/* MENU DRAFT / ACTIVE */}
-                <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="glass rounded-3xl border-white/5 p-6 space-y-6"
-                >
-                    <div className="flex items-center justify-between">
-                        <h3 className="font-bold text-lg">Menu Actif</h3>
-                        <span className="bg-blue-500/10 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">
-                            Aujourd'hui
-                        </span>
-                    </div>
-
-                    <div className="space-y-4">
-                        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-blue-500/30 transition-all cursor-pointer group">
-                            <div className="flex justify-between items-start mb-2">
-                                <h4 className="font-bold text-slate-200 group-hover:text-blue-400 transition-colors">Menu du Jour</h4>
-                                <span className="text-[12px] font-bold text-emerald-400">Publié</span>
+                                <div className="flex gap-2 border-t pt-3">
+                                    <Button variant="outline" size="sm" className="flex-1 text-xs">
+                                        <Edit className="w-3 h-3 mr-1" />
+                                        Modifier
+                                    </Button>
+                                    <Button variant="outline" size="sm" className="flex-1 text-xs text-red-500 hover:text-red-600 hover:bg-red-50">
+                                        <Trash2 className="w-3 h-3 mr-1" />
+                                        Supprimer
+                                    </Button>
+                                </div>
                             </div>
-                            <p className="text-xs text-slate-400 line-clamp-2">Entrée: Velouté de potiron | Plat: Suprême de volaille | Dessert: Tarte Tatin</p>
-                        </div>
+                        </motion.div>
+                    ))}
 
-                        <div className="p-4 rounded-2xl bg-white/5 border border-dashed border-white/20 hover:border-blue-500/30 transition-all cursor-pointer group">
-                            <div className="flex flex-col items-center justify-center py-4 gap-2 text-slate-500 group-hover:text-blue-400">
-                                <Plus size={24} />
-                                <span className="text-sm font-medium">Préparer le menu de demain</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="pt-4 mt-4 border-t border-white/5">
-                        <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Stock Ingrédients Jardim</h4>
-                        <div className="flex flex-wrap gap-2">
-                            {['Tomates Bio', 'Basilic Frais', 'Poivrons', 'Menthe'].map(tag => (
-                                <span key={tag} className="text-[10px] font-medium px-2 py-1 bg-emerald-500/5 text-emerald-400 rounded-md border border-emerald-500/10">
-                                    {tag}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-                </motion.div>
+                    {/* Add New Card Placeholder */}
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-xl p-6 text-gray-400 hover:border-amber-400 hover:text-amber-500 transition-colors h-full min-h-[280px]"
+                    >
+                        <Plus className="w-8 h-8 mb-2" />
+                        <span className="font-medium">Créer un nouveau plat</span>
+                    </motion.button>
+                </div>
             </div>
-        </AdminGuard>
+        </div>
     );
 }
-

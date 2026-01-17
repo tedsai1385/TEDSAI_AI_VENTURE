@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import AdminGuard from '@/components/admin/AdminGuard';
+import AdminGuard from '@/components/auth/AdminGuard';
 import PageHeader from '@/components/dashboard/PageHeader';
 import { Newspaper, CheckCircle, XCircle, Eye } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -79,8 +79,8 @@ export default function AdminBlogPage() {
                 <button
                     onClick={() => setFilter('pending')}
                     className={`px-6 py-3 rounded-xl font-semibold transition-all ${filter === 'pending'
-                            ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/20'
-                            : 'bg-white/5 text-slate-400 hover:bg-white/10'
+                        ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/20'
+                        : 'bg-white/5 text-slate-400 hover:bg-white/10'
                         }`}
                 >
                     En attente ({posts.filter(p => p.status === 'pending').length})
@@ -88,8 +88,8 @@ export default function AdminBlogPage() {
                 <button
                     onClick={() => setFilter('published')}
                     className={`px-6 py-3 rounded-xl font-semibold transition-all ${filter === 'published'
-                            ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20'
-                            : 'bg-white/5 text-slate-400 hover:bg-white/10'
+                        ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20'
+                        : 'bg-white/5 text-slate-400 hover:bg-white/10'
                         }`}
                 >
                     Publiés
@@ -97,8 +97,8 @@ export default function AdminBlogPage() {
                 <button
                     onClick={() => setFilter('all')}
                     className={`px-6 py-3 rounded-xl font-semibold transition-all ${filter === 'all'
-                            ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
-                            : 'bg-white/5 text-slate-400 hover:bg-white/10'
+                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
+                        : 'bg-white/5 text-slate-400 hover:bg-white/10'
                         }`}
                 >
                     Tous

@@ -43,39 +43,29 @@ export default function LoginPage() {
                 setStatusMessage(''); // Clear info
                 setTimeout(() => router.push('/admin'), 1500);
             } else {
-                // User doesn't exist -> Auto Provision
-                setStatusMessage("Premier accès détecté. Création du profil administrateur...");
-
-                const name = firebaseUser.displayName || firebaseUser.email.split('@')[0];
-                await setDoc(userRef, {
-                    uid: firebaseUser.uid,
-                    email: firebaseUser.email,
-                    displayName: name,
-                    role: 'admin', // Default role with full access
-                    createdAt: serverTimestamp(),
-                    updatedAt: serverTimestamp(),
-                    authProvider: 'email'
-                });
-
-                setWelcomeMessage(`Profil configuré. Bienvenue, ${name} !`);
+                // User doesn't exist -> DENY ACCESS
+                console.warn("Unauthorized access attempt:", firebaseUser.email);
+                setError("Accès refusé : Ce compte n'est pas autorisé. Veuillez contacter l'administrateur.");
+                await auth.signOut();
+                setLoading(false);
                 setStatusMessage('');
-                setTimeout(() => router.push('/admin'), 1500);
             }
         } catch (err: any) {
             console.error("Verification Error:", err);
 
             // STRICT REQUEST: "Je veux que chaque administrateur ai acces a tout sans restriction"
             // If we get a permission error (Firestore Rules), we ignore it and let the user in because they are Authenticated.
+            // If we get a permission error, it usually means the user is not an admin (cannot read users collection)
+            // So we treat it as an Access Denied.
             if (err.code === 'permission-denied' || err.message.includes('permission')) {
-                setStatusMessage("Règles de sécurité strictes détectées. Accès autorisé via Auth.");
-                setWelcomeMessage(`Bienvenue, ${firebaseUser.email} !`); // Fallback to email
-                setTimeout(() => router.push('/admin'), 1000);
-            } else {
-                setError(`Erreur lors de la vérification : ${err.code || err.message}`);
-                setStatusMessage('');
-                setLoading(false);
-                await auth.signOut();
+                console.warn("Permission denied for user:", firebaseUser.email);
             }
+
+            // Default Error Handling for all cases (including permission denied)
+            setError("Accès refusé : Impossible de vérifier le profil (Permissions insuffisantes ou Erreur technique).");
+            setStatusMessage('');
+            setLoading(false);
+            await auth.signOut();
         }
     };
 
