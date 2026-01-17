@@ -10,6 +10,10 @@ export const ROLES: Record<Role, { name: string; permissions: string[] }> = {
         name: 'Super Admin',
         permissions: ['*'], // All permissions
     },
+    admin: {
+        name: 'Administrateur',
+        permissions: ['*'], // Full access for legacy/default admins
+    },
     admin_resto: {
         name: 'Gérant Restaurant',
         permissions: ['menu:read', 'menu:write', 'reservations:read', 'orders:read'],
