@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useChatbot } from '@/context/ChatbotContext';
 
 
 
@@ -26,6 +27,7 @@ import {
 import { formatCurrency } from '@/lib/utils';
 
 export default function SolutionsIAPage() {
+  const { openChat } = useChatbot();
   const services = [
     {
       icon: Zap,
@@ -161,12 +163,12 @@ export default function SolutionsIAPage() {
                   </Button>
                 </Link>
 
-                <Link href="#contact">
+                <button onClick={openChat}>
                   <Button variant="outline" size="lg" rounded="full" className="border-white/30 text-white hover:bg-white/10">
                     Demander une Démo
                     <Sparkles className="w-5 h-5" />
                   </Button>
-                </Link>
+                </button>
               </div>
 
               {/* Stats */}
@@ -411,12 +413,12 @@ export default function SolutionsIAPage() {
             </p>
 
             <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/contact">
+              <button onClick={openChat}>
                 <Button size="xl" rounded="full" className="bg-white text-primary-900 hover:bg-blue-50 shadow-2xl">
                   Demander une Démo Gratuite
                   <Sparkles className="w-5 h-5" />
                 </Button>
-              </Link>
+              </button>
             </div>
           </motion.div>
         </div>

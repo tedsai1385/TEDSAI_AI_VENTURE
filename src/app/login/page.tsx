@@ -43,12 +43,23 @@ export default function LoginPage() {
                 setStatusMessage(''); // Clear info
                 setTimeout(() => router.push('/admin'), 1500);
             } else {
-                // User doesn't exist -> DENY ACCESS
-                console.warn("Unauthorized access attempt:", firebaseUser.email);
-                setError("Accès refusé : Ce compte n'est pas autorisé. Veuillez contacter l'administrateur.");
-                await auth.signOut();
-                setLoading(false);
+                // User doesn't exist -> AUTO-PROVISION (Restored Request)
+                setStatusMessage("Premier accès détecté : Création du profil Admin...");
+
+                const newProfile = {
+                    uid: firebaseUser.uid,
+                    email: firebaseUser.email,
+                    displayName: firebaseUser.displayName || 'Admin User',
+                    photoURL: firebaseUser.photoURL || null,
+                    role: 'super_admin', // Default to super_admin as requested ("acces a tout")
+                    createdAt: serverTimestamp(),
+                };
+
+                await setDoc(userRef, newProfile);
+
+                setWelcomeMessage("Compte Admin activé ! Bienvenue.");
                 setStatusMessage('');
+                setTimeout(() => router.push('/admin'), 1500);
             }
         } catch (err: any) {
             console.error("Verification Error:", err);

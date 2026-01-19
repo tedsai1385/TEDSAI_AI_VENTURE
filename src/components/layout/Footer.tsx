@@ -1,8 +1,25 @@
-import React from 'react';
+'use client';
+
 import Link from 'next/link';
+import Image from 'next/image';
+import { useChatbot } from '@/context/ChatbotContext';
+import {
+    Facebook,
+    Twitter,
+    Instagram,
+    Linkedin,
+    Youtube,
+    Mail,
+    Phone,
+    MapPin,
+    MapPinned,
+    Heart
+} from 'lucide-react';
 
 
 const Footer = () => {
+    const { openChat } = useChatbot();
+
     return (
         <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
             <div className="container mx-auto px-4 py-12">
@@ -14,7 +31,10 @@ const Footer = () => {
                         <Link href="/contact" className="inline-flex items-center justify-center px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors shadow-lg">
                             Demander un devis
                         </Link>
-                        <button className="inline-flex items-center justify-center px-6 py-3 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition-colors">
+                        <button
+                            onClick={openChat}
+                            className="inline-flex items-center justify-center px-6 py-3 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition-colors"
+                        >
                             Discuter avec l'IA
                         </button>
                     </div>
@@ -23,8 +43,13 @@ const Footer = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
                     {/* Identity & Branding */}
                     <div className="lg:col-span-1">
-                        <div className="mb-4">
-                            <img src="/assets/images/logos/tedsai_logo.jpg" alt="TEDSAI Logo" className="h-16 w-auto rounded-md mb-4" />
+                        <div className="mb-4 relative w-32 h-16">
+                            <Image
+                                src="/assets/images/logos/tedsai_logo.jpg"
+                                alt="TEDSAI Logo"
+                                fill
+                                className="object-contain rounded-md"
+                            />
                         </div>
                         <div className="mb-4">
                             <strong className="text-xl">TEDSAI Complex</strong><br />
@@ -34,20 +59,20 @@ const Footer = () => {
                             </p>
                         </div>
                         <div className="flex gap-3">
-                            <a href="https://www.linkedin.com/in/tedsai-complex-a26b95397" target="_blank" rel="noreferrer" className="w-10 h-10 bg-white/10 hover:bg-blue-600 rounded-full flex items-center justify-center transition-colors" title="LinkedIn">
-                                <i className="fa-brands fa-linkedin-in"></i>
+                            <a href="https://www.linkedin.com/in/tedsai-complex-a26b95397" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/10 hover:bg-blue-600 rounded-full flex items-center justify-center transition-colors" title="LinkedIn">
+                                <Linkedin size={18} />
                             </a>
-                            <a href="https://www.instagram.com/tedsai1385/" target="_blank" rel="noreferrer" className="w-10 h-10 bg-white/10 hover:bg-pink-600 rounded-full flex items-center justify-center transition-colors" title="Instagram">
-                                <i className="fa-brands fa-instagram"></i>
+                            <a href="https://www.instagram.com/tedsai1385/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/10 hover:bg-pink-600 rounded-full flex items-center justify-center transition-colors" title="Instagram">
+                                <Instagram size={18} />
                             </a>
-                            <a href="https://x.com/Tedsai1385" target="_blank" rel="noreferrer" className="w-10 h-10 bg-white/10 hover:bg-blue-400 rounded-full flex items-center justify-center transition-colors" title="X (Twitter)">
-                                <i className="fa-brands fa-twitter"></i>
+                            <a href="https://x.com/Tedsai1385" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/10 hover:bg-blue-400 rounded-full flex items-center justify-center transition-colors" title="X (Twitter)">
+                                <Twitter size={18} />
                             </a>
-                            <a href="https://www.facebook.com/profile.php?id=61584073655708" target="_blank" rel="noreferrer" className="w-10 h-10 bg-white/10 hover:bg-blue-700 rounded-full flex items-center justify-center transition-colors" title="Facebook">
-                                <i className="fa-brands fa-facebook"></i>
+                            <a href="https://www.facebook.com/profile.php?id=61584073655708" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/10 hover:bg-blue-700 rounded-full flex items-center justify-center transition-colors" title="Facebook">
+                                <Facebook size={18} />
                             </a>
-                            <a href="https://www.youtube.com/@TEDSAIComplex" target="_blank" rel="noreferrer" className="w-10 h-10 bg-white/10 hover:bg-red-600 rounded-full flex items-center justify-center transition-colors" title="YouTube">
-                                <i className="fa-brands fa-youtube"></i>
+                            <a href="https://www.youtube.com/@TEDSAIComplex" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/10 hover:bg-red-600 rounded-full flex items-center justify-center transition-colors" title="YouTube">
+                                <Youtube size={18} />
                             </a>
                         </div>
                     </div>
@@ -83,20 +108,20 @@ const Footer = () => {
                         <h4 className="text-lg font-bold mb-4 text-white">Contact & Info</h4>
                         <ul className="space-y-3 text-sm">
                             <li className="flex items-center gap-3">
-                                <i className="fa-solid fa-envelope w-5 text-blue-400"></i>
+                                <Mail className="w-5 h-5 text-blue-400" />
                                 <span className="text-gray-400">contact@tedsai.cm</span>
                             </li>
                             <li className="flex items-center gap-3">
-                                <i className="fa-solid fa-phone w-5 text-blue-400"></i>
+                                <Phone className="w-5 h-5 text-blue-400" />
                                 <span className="text-gray-400">+237 6XX XXX XXX</span>
                             </li>
                             <li className="flex items-center gap-3">
-                                <i className="fa-solid fa-location-dot w-5 text-blue-400"></i>
+                                <MapPin className="w-5 h-5 text-blue-400" />
                                 <span className="text-gray-400">Yaoundé, Cameroun</span>
                             </li>
                             <li className="mt-4">
-                                <a href="https://maps.app.goo.gl/PAqnePyormGahFcW9" target="_blank" rel="noreferrer" className="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-2">
-                                    <i className="fa-solid fa-map-location-dot"></i> Localiser sur Maps
+                                <a href="https://maps.app.goo.gl/PAqnePyormGahFcW9" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-2">
+                                    <MapPinned size={16} /> Localiser sur Maps
                                 </a>
                             </li>
                         </ul>
@@ -106,14 +131,14 @@ const Footer = () => {
                 {/* Bottom Bar */}
                 <div className="border-t border-gray-700 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
                     <div className="text-gray-400">
-                        &copy; 2026 <strong className="text-white">TEDSAI Complex</strong>. Tous droits réservés.
+                        &copy; {new Date().getFullYear()} <strong className="text-white">TEDSAI Complex</strong>. Tous droits réservés.
                     </div>
                     <div className="flex gap-4 text-gray-400">
                         <Link href="/mentions-legales" className="hover:text-white transition-colors">Mentions Légales</Link>
                         <Link href="/confidentialite" className="hover:text-white transition-colors">Confidentialité</Link>
                     </div>
-                    <div className="text-gray-400">
-                        Built with <i className="fa-solid fa-heart text-red-500"></i> & Intelligence Artificielle
+                    <div className="text-gray-400 flex items-center gap-1">
+                        Built with <Heart size={14} className="text-red-500 fill-red-500" /> & Intelligence Artificielle
                     </div>
                 </div>
             </div>

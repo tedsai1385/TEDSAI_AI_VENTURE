@@ -192,7 +192,7 @@
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	!function() {
-/******/ 		__webpack_require__.h = function() { return "45e39e556e316ed2"; }
+/******/ 		__webpack_require__.h = function() { return "4a7c6a174d4c9899"; }
 /******/ 	}();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
@@ -831,8 +831,8 @@
 /******/ 		var installedChunks = __webpack_require__.hmrS_jsonp = __webpack_require__.hmrS_jsonp || {
 /******/ 			"webpack": 0,
 /******/ 			"css-src_app_globals_css": 0,
-/******/ 			"css-src_app_login_login_module_css": 0,
-/******/ 			"css-src_app_shop_shop_module_css-src_components_features_CartSidebar_module_css": 0
+/******/ 			"css-src_app_shop_shop_module_css-src_components_features_CartSidebar_module_css": 0,
+/******/ 			"css-src_app_login_login_module_css": 0
 /******/ 		};
 /******/ 		
 /******/ 		__webpack_require__.f.j = function(chunkId, promises) {
@@ -844,7 +844,7 @@
 /******/ 					if(installedChunkData) {
 /******/ 						promises.push(installedChunkData[2]);
 /******/ 					} else {
-/******/ 						if(/^(app(\/(admin\/(layout|page)|(|login\/|shop\/)page|layout)|\-pages\-internals)|main\-app)$/.test(chunkId)) {
+/******/ 						if(!/^(css\-src_app_((login_login|shop_shop_module_css\-src_components_features_CartSidebar)_module|globals)_css|webpack)$/.test(chunkId)) {
 /******/ 							// setup Promise in chunk cache
 /******/ 							var promise = new Promise(function(resolve, reject) { installedChunkData = installedChunks[chunkId] = [resolve, reject]; });
 /******/ 							promises.push(installedChunkData[2] = promise);
@@ -1403,6 +1403,11 @@
 /******/ 		var chunkLoadingGlobal = self["webpackChunk_N_E"] = self["webpackChunk_N_E"] || [];
 /******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
 /******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/nonce */
+/******/ 	!function() {
+/******/ 		__webpack_require__.nc = undefined;
 /******/ 	}();
 /******/ 	
 /************************************************************************/

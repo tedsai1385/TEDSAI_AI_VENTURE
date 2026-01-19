@@ -4,6 +4,7 @@ import { Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 
 const Header = () => {
     const pathname = usePathname();
@@ -29,11 +30,14 @@ const Header = () => {
         <header className="sticky top-0 z-50 w-full border-b bg-gradient-to-r from-blue-50 via-white to-purple-50 backdrop-blur-md shadow-sm">
             <div className="container mx-auto px-4 h-10 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-2">
-                    <img
-                        src="/assets/images/logos/tedsai_logo.jpg"
-                        alt="TEDSAI Logo"
-                        className="h-6 w-auto object-contain rounded-md"
-                    />
+                    <div className="relative h-8 w-8">
+                        <Image
+                            src="/assets/images/logos/tedsai_logo.jpg"
+                            alt="TEDSAI Logo"
+                            fill
+                            className="object-contain rounded-md"
+                        />
+                    </div>
                     <span className="font-bold text-lg text-primary hidden sm:inline-block">TEDSAI</span>
                 </Link>
 
@@ -43,8 +47,8 @@ const Header = () => {
                         <Link key={link.href} href={link.href}>
                             <button
                                 className={`px-3 py-1 h-7 text-xs font-medium rounded-md transition-all duration-200 flex items-center ${pathname === link.href
-                                        ? 'bg-blue-600 text-white shadow-md'
-                                        : 'bg-transparent text-gray-700 hover:bg-gray-100 hover:text-blue-600'
+                                    ? 'bg-blue-600 text-white shadow-md'
+                                    : 'bg-transparent text-gray-700 hover:bg-gray-100 hover:text-blue-600'
                                     }`}
                             >
                                 {link.label}

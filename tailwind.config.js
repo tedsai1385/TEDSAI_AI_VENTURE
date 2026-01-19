@@ -5,18 +5,18 @@ module.exports = {
         "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     ],
-    darkMode: 'class', // Enable dark mode with class strategy
+    darkMode: 'class',
     theme: {
         extend: {
             colors: {
-                // TEDSAI Core Colors
                 primary: {
                     50: '#e6eaf4',
                     100: '#ccd5e9',
                     200: '#99abd3',
                     300: '#6681bd',
                     400: '#3357a7',
-                    500: '#0A2463', // Main primary
+                    500: '#0A2463',
+                    DEFAULT: '#0A2463',
                     600: '#081d50',
                     700: '#06163c',
                     800: '#040e28',
@@ -28,25 +28,22 @@ module.exports = {
                     200: '#bbdff8',
                     300: '#99cff5',
                     400: '#77bff1',
-                    500: '#5AA9E6', // Main secondary
+                    500: '#5AA9E6',
                     600: '#4887b8',
                     700: '#36658a',
                     800: '#24435c',
                     900: '#12222e',
                 },
-                // viTEDia Colors
                 vitedia: {
                     primary: '#8B1E3F',
                     accent: '#D4AF37',
                     bg: '#F4EDE3',
                 },
-                // SelecTED Gardens Colors
                 garden: {
                     primary: '#2D5A27',
                     accent: '#B68D40',
                     bg: '#C9D5B5',
                 },
-                // Spices Colors
                 spice: {
                     primary: '#D35400',
                     accent: '#F39C12',
@@ -58,7 +55,6 @@ module.exports = {
                 accent: ['Playfair Display', 'serif'],
             },
             fontSize: {
-                // Fluid typography using clamp
                 'fluid-xs': 'clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem)',
                 'fluid-sm': 'clamp(0.875rem, 0.8rem + 0.375vw, 1rem)',
                 'fluid-base': 'clamp(1rem, 0.95rem + 0.25vw, 1.125rem)',
@@ -71,7 +67,6 @@ module.exports = {
                 'fluid-6xl': 'clamp(3.75rem, 3rem + 3.75vw, 5.5rem)',
             },
             spacing: {
-                // Extended spacing scale
                 '18': '4.5rem',
                 '88': '22rem',
                 '128': '32rem',
@@ -113,7 +108,4 @@ module.exports = {
         },
     },
     plugins: [],
-    corePlugins: {
-        preflight: true, // Enable Tailwind's base styles
-    },
 };
