@@ -25,6 +25,7 @@ import {
 export default function VitediaPage() {
     const dishes: DishProps[] = [
         {
+            id: 'ndole-revisite',
             name: 'Ndolé Revisité',
             description: 'L\'emblème national sublimé : Feuilles de Ndolé fraîches, pâte d\'arachides bio torréfiée maison, et crevettes de Kribi.',
             image: '/assets/images/vitedia_dish_ndole.webp',
@@ -39,6 +40,7 @@ export default function VitediaPage() {
             ],
         },
         {
+            id: 'poulet-dg-royal',
             name: 'Poulet DG Royal',
             description: 'Poulet du directeur général : Mijoté de poulet fermier, plantains mûrs frits, carottes et haricots verts croquants.',
             image: '/assets/images/vitedia_dish_poulet_dg.webp',
@@ -52,6 +54,7 @@ export default function VitediaPage() {
             ],
         },
         {
+            id: 'koki-haricots',
             name: 'Koki de Haricots',
             description: 'Gâteau de haricots blancs (Koki) cuit à la vapeur dans des feuilles de bananier, huile de palme rouge pure.',
             image: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?w=800&q=80',
@@ -64,6 +67,7 @@ export default function VitediaPage() {
             ],
         },
         {
+            id: 'eru-waterfufu',
             name: 'Eru & Waterfufu',
             description: 'Légumes sauvages (Okok) finement découpés, cuisinés avec de la peau de bœuf et des écrevisses fumées.',
             image: '/assets/images/vitedia_dish_eru.webp',
@@ -76,6 +80,7 @@ export default function VitediaPage() {
             ],
         },
         {
+            id: 'sanga-boeuf',
             name: 'Sanga de Boeuf',
             description: 'Un délice de maïs frais, feuilles de zom et pulpe de noix de palme, agrémenté de morceaux de bœuf tendres.',
             image: '/assets/images/vitedia_dish_grilled_fish.webp',
@@ -87,6 +92,7 @@ export default function VitediaPage() {
             ],
         },
         {
+            id: 'poisson-braise',
             name: 'Poisson Braisé "Dos Touné"',
             description: 'Bar ou Carpe fraîchement pêché, mariné aux épices secrètes du chef et braisé à la perfection.',
             image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80',

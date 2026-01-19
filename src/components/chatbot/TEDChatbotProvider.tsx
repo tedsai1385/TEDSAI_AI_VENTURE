@@ -10,7 +10,7 @@ export default function TEDChatbotProvider() {
   // Masquer le chatbot sur certaines pages sensibles (login, admin, etc.)
   const hideOnPaths = ['/login', '/admin'];
 
-  if (hideOnPaths.some(path => pathname.startsWith(path))) {
+  if (pathname && hideOnPaths.some(path => pathname.startsWith(path))) {
     return null;
   }
 

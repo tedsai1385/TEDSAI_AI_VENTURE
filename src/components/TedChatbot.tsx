@@ -24,7 +24,7 @@ const TedChatbot: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
 
@@ -38,7 +38,7 @@ const TedChatbot: React.FC = () => {
         localStorage.setItem('ted_chat_session_id', storedSessionId);
       }
       setSessionId(storedSessionId);
-      
+
       // Load previous messages if any
       const storedMessages = localStorage.getItem(`ted_chat_messages_${storedSessionId}`);
       if (storedMessages) {
@@ -74,7 +74,7 @@ const TedChatbot: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!inputValue.trim() || isLoading) return;
 
     // Add user message
@@ -102,7 +102,7 @@ const TedChatbot: React.FC = () => {
             role: msg.role,
             content: msg.content
           })),
-          userId: user?.id || 'anonymous',
+          userId: (user as any)?.id || 'anonymous',
           sessionId: sessionId
         }),
       });
@@ -112,7 +112,7 @@ const TedChatbot: React.FC = () => {
       }
 
       const data = await response.json();
-      
+
       // Add assistant response
       const assistantMessage: Message = {
         id: `msg_${Date.now()}_ai`,
@@ -122,15 +122,15 @@ const TedChatbot: React.FC = () => {
       };
 
       setMessages(prev => [...prev, assistantMessage]);
-      
+
       // Store messages in localStorage
       localStorage.setItem(
-        `ted_chat_messages_${sessionId}`, 
+        `ted_chat_messages_${sessionId}`,
         JSON.stringify([...messages, userMessage, assistantMessage])
       );
     } catch (error) {
       console.error('Error sending message:', error);
-      
+
       // Add error message
       const errorMessage: Message = {
         id: `msg_${Date.now()}_error`,
@@ -138,7 +138,7 @@ const TedChatbot: React.FC = () => {
         role: 'assistant',
         timestamp: new Date(),
       };
-      
+
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
@@ -182,9 +182,9 @@ const TedChatbot: React.FC = () => {
           <div className="bg-blue-600 text-white p-4 flex justify-between items-center">
             <div className="flex items-center space-x-3">
               <div className="bg-white p-1 rounded-full">
-                <img 
-                  src="/assets/images/logos/tedsai_logo.jpg" 
-                  alt="TEDSAI Logo" 
+                <img
+                  src="/assets/images/logos/tedsai_logo.jpg"
+                  alt="TEDSAI Logo"
                   className="w-8 h-8 rounded-full object-cover"
                 />
               </div>
@@ -193,7 +193,7 @@ const TedChatbot: React.FC = () => {
                 <p className="text-xs opacity-80">En ligne • Prêt à vous aider</p>
               </div>
             </div>
-            <button 
+            <button
               onClick={toggleChat}
               className="text-white hover:text-gray-200 focus:outline-none"
               aria-label="Fermer le chat"
@@ -209,9 +209,9 @@ const TedChatbot: React.FC = () => {
             {messages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center p-4">
                 <div className="mb-4">
-                  <img 
-                    src="/assets/images/logos/tedsai_logo.jpg" 
-                    alt="TEDSAI Logo" 
+                  <img
+                    src="/assets/images/logos/tedsai_logo.jpg"
+                    alt="TEDSAI Logo"
                     className="w-16 h-16 mx-auto rounded-full object-cover"
                   />
                 </div>
@@ -219,7 +219,7 @@ const TedChatbot: React.FC = () => {
                 <p className="text-gray-600 mb-6">
                   Votre assistant intelligent pour découvrir l'écosystème TEDSAI
                 </p>
-                
+
                 <div className="grid grid-cols-2 gap-2 w-full max-w-xs">
                   {quickActions.map((action) => (
                     <button
@@ -240,17 +240,15 @@ const TedChatbot: React.FC = () => {
                     className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
                     <div
-                      className={`max-w-[80%] rounded-2xl px-4 py-2 ${
-                        message.role === 'user'
+                      className={`max-w-[80%] rounded-2xl px-4 py-2 ${message.role === 'user'
                           ? 'bg-blue-500 text-white rounded-tr-none'
                           : 'bg-gray-200 text-gray-800 rounded-tl-none'
-                      }`}
+                        }`}
                     >
                       <div className="whitespace-pre-wrap">{message.content}</div>
                       <div
-                        className={`text-xs mt-1 ${
-                          message.role === 'user' ? 'text-blue-200' : 'text-gray-500'
-                        }`}
+                        className={`text-xs mt-1 ${message.role === 'user' ? 'text-blue-200' : 'text-gray-500'
+                          }`}
                       >
                         {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </div>

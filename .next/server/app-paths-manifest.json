@@ -1,8 +1,7 @@
 {
   "/page": "app/page.js",
   "/shop/page": "app/shop/page.js",
-  "/vitedia/page": "app/vitedia/page.js",
-  "/garden/page": "app/garden/page.js",
   "/solutions-ia/page": "app/solutions-ia/page.js",
-  "/observatoire/page": "app/observatoire/page.js"
+  "/vitedia/page": "app/vitedia/page.js",
+  "/ecosystem/page": "app/ecosystem/page.js"
 }

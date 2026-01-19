@@ -75,7 +75,7 @@ export default function DishCard({ dish }: { dish: DishProps }) {
 
                     {/* Badges */}
                     <div className="absolute top-4 left-4 flex flex-col gap-2">
-                        <Badge variant="secondary" className="bg-white/90 backdrop-blur-sm text-gray-800 shadow-sm">
+                        <Badge variant="outline" className="bg-white/90 backdrop-blur-sm text-gray-800 shadow-sm">
                             {dish.category}
                         </Badge>
                         {dish.isNew && (

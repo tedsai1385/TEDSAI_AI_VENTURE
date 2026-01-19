@@ -77,6 +77,16 @@
       "static/chunks/main-app.js",
       "static/css/css-src_app_login_login_module_css.css",
       "static/chunks/app/login/page.js"
+    ],
+    "/ecosystem/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/ecosystem/page.js"
+    ],
+    "/ecosystem/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/ecosystem/layout.js"
     ]
   }
 }
