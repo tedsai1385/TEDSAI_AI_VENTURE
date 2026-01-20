@@ -512,7 +512,7 @@ export default function TEDChatbot() {
                           onChange={handleInputChange}
                           onKeyDown={handleKeyDown}
                           placeholder="Posez votre question..."
-                          className="flex-1"
+                          className="flex-1 !text-black font-medium"
                         />
                         <Button
                           onClick={handleSendMessage}
