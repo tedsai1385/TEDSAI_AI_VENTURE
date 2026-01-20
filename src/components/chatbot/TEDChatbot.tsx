@@ -393,7 +393,7 @@ export default function TEDChatbot() {
                           <div
                             className={`max-w-[80%] rounded-2xl px-4 py-2 ${message.sender === 'user'
                               ? 'bg-blue-600 text-white rounded-br-none'
-                              : 'bg-white text-gray-800 rounded-bl-none border border-gray-200'
+                              : 'bg-white text-black rounded-bl-none border border-gray-200'
                               }`}
                           >
                             <div className="flex items-start gap-2">
@@ -419,7 +419,7 @@ export default function TEDChatbot() {
                           animate={{ opacity: 1, y: 0 }}
                           className="flex justify-start"
                         >
-                          <div className="bg-white text-gray-800 rounded-2xl px-4 py-2 rounded-bl-none border border-gray-200">
+                          <div className="bg-white text-black rounded-2xl px-4 py-2 rounded-bl-none border border-gray-200">
                             <div className="flex items-center gap-2">
                               <div className="w-5 h-5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
                                 <Bot className="w-3 h-3 text-white" />

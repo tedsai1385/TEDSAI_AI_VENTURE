@@ -30,7 +30,7 @@ export default function HomePageClient() {
                         src="/assets/images/hero_bg.webp"
                         alt="TEDSAI Complex Ecosystem"
                         fill
-                        className="object-cover"
+                        className="object-cover brightness-[0.5] contrast-[1.1]"
                         priority
                         quality={90}
                     />
@@ -54,7 +54,7 @@ export default function HomePageClient() {
                             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-6"
                         >
                             <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                            <span className="text-white/90 text-sm font-medium">
+                            <span className="text-black text-sm font-medium">
                                 Écosystème Intelligent Opérationnel
                             </span>
                         </motion.div>
@@ -92,10 +92,10 @@ export default function HomePageClient() {
                             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                                 <button
                                     onClick={openChat}
-                                    className="px-8 py-3 bg-white/10 backdrop-blur-md border-2 border-white/30 text-white rounded-full hover:bg-white/20 transition-all font-semibold shadow-xl flex items-center gap-2"
+                                    className="px-8 py-3 bg-white/20 backdrop-blur-md border-2 border-white/50 text-black rounded-full hover:bg-white/30 transition-all font-semibold shadow-xl flex items-center gap-2"
                                 >
                                     Discuter avec l'IA
-                                    <Sparkles className="w-5 h-5 text-blue-300" />
+                                    <Sparkles className="w-5 h-5 text-blue-600" />
                                 </button>
                             </motion.div>
                         </div>
