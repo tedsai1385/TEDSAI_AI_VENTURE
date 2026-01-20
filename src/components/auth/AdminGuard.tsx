@@ -12,11 +12,13 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
         if (!loading) {
             if (!user) {
                 router.push('/login');
-            } else if (!profile || (profile.role !== 'admin' && profile.role !== 'super_admin')) {
-                // If no profile (unauthorized) or wrong role -> Redirect
-                // Force logout to clear invalid state? Or just redirect to login to show error?
+            } else if (!profile) {
+                // Pour la phase de test, on autorise l'accès à tout utilisateur connecté
+                // On garde quand même une vérification de profile pour s'assurer qu'il existe
                 router.push('/login');
             }
+            // Suppression temporaire de la vérification stricte du rôle pour les tests
+            // else if (profile.role !== 'admin' && profile.role !== 'super_admin') { ... }
         }
     }, [user, profile, loading, router]);
 

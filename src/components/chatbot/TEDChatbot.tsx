@@ -341,7 +341,7 @@ export default function TEDChatbot() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className="fixed bottom-6 right-6 z-50 w-full max-w-md h-[70vh] flex flex-col"
+            className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 w-[90vw] max-w-[340px] md:max-w-md h-[60vh] md:h-[70vh] flex flex-col"
           >
             <Card className="flex flex-col h-full shadow-xl border-0 rounded-xl overflow-hidden">
               {/* En-tête du chatbot */}
@@ -352,8 +352,8 @@ export default function TEDChatbot() {
                       <Bot className="w-4 h-4" />
                     </div>
                     <div>
-                      <CardTitle className="text-base font-bold">{TED_CHATBOT_NAME}</CardTitle>
-                      <p className="text-xs opacity-80">Toujours là pour vous aider</p>
+                      <CardTitle className="text-sm md:text-base font-bold">{TED_CHATBOT_NAME}</CardTitle>
+                      <p className="text-[10px] md:text-xs opacity-80">Toujours là pour vous aider</p>
                     </div>
                   </div>
                   <div className="flex gap-1">
@@ -361,7 +361,7 @@ export default function TEDChatbot() {
                       variant="ghost"
                       size="sm"
                       onClick={minimizeChat}
-                      className="text-white hover:bg-white/10 p-2"
+                      className="text-white hover:bg-white/10 p-1 md:p-2 h-7 w-7 md:h-9 md:w-9"
                     >
                       {state.isMinimized ? '+' : '−'}
                     </Button>
@@ -369,9 +369,9 @@ export default function TEDChatbot() {
                       variant="ghost"
                       size="sm"
                       onClick={closeChat}
-                      className="text-white hover:bg-white/10 p-2"
+                      className="text-white hover:bg-white/10 p-1 md:p-2 h-7 w-7 md:h-9 md:w-9"
                     >
-                      <X className="w-4 h-4" />
+                      <X className="w-3 h-3 md:w-4 md:h-4" />
                     </Button>
                   </div>
                 </div>
@@ -382,7 +382,7 @@ export default function TEDChatbot() {
                 <>
                   <CardContent className="flex-1 p-0 overflow-hidden flex flex-col">
                     {/* Zone de messages */}
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+                    <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-3 md:space-y-4 bg-gray-50">
                       {state.messages.map((message) => (
                         <motion.div
                           key={message.id}
@@ -398,14 +398,14 @@ export default function TEDChatbot() {
                           >
                             <div className="flex items-start gap-2">
                               {message.sender === 'bot' && (
-                                <div className="w-5 h-5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                                  <Bot className="w-3 h-3 text-white" />
+                                <div className="w-4 h-4 md:w-5 md:h-5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                  <Bot className="w-2.5 h-2.5 md:w-3 md:h-3 text-white" />
                                 </div>
                               )}
-                              <p className="text-sm">{message.content}</p>
+                              <p className="text-xs md:text-sm">{message.content}</p>
                               {message.sender === 'user' && (
-                                <div className="w-5 h-5 bg-blue-800 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                                  <User className="w-3 h-3 text-white" />
+                                <div className="w-4 h-4 md:w-5 md:h-5 bg-blue-800 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                  <User className="w-2.5 h-2.5 md:w-3 md:h-3 text-white" />
                                 </div>
                               )}
                             </div>
@@ -533,7 +533,7 @@ export default function TEDChatbot() {
             </Card>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence >
     </>
   );
 }
