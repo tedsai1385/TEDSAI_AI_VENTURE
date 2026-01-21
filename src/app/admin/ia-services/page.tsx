@@ -12,7 +12,7 @@ export default function IAServicesPage() {
                     <h1 className="text-2xl font-bold text-gray-900">Services IA</h1>
                     <p className="text-gray-500">Configuration des agents et modèles</p>
                 </div>
-                <Button className="bg-purple-600 hover:bg-purple-700">
+                <Button className="bg-blue-600 hover:bg-blue-700">
                     <Sparkles className="w-4 h-4 mr-2" />
                     Nouvel Agent
                 </Button>
@@ -22,7 +22,7 @@ export default function IAServicesPage() {
                 <Card className="hover:shadow-lg transition-shadow cursor-pointer">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium">Assistant Chatbot</CardTitle>
-                        <BrainCircuit className="h-4 w-4 text-purple-500" />
+                        <BrainCircuit className="h-4 w-4 text-blue-500" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">Actif</div>

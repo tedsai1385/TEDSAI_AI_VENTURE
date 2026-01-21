@@ -75,7 +75,7 @@ export default function AdminSidebar() {
                 <motion.div
                     initial={{ rotate: -10, opacity: 0 }}
                     animate={{ rotate: 0, opacity: 1 }}
-                    className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mr-3 shadow-lg shadow-blue-500/20"
+                    className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mr-3 shadow-lg shadow-blue-500/20"
                 >
                     <BarChart3 size={18} className="text-white" />
                 </motion.div>

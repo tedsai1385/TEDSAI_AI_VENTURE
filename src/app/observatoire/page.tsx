@@ -32,7 +32,7 @@ export default function ObservatoirePage() {
             icon: Globe,
             title: 'Tech & Innovation',
             count: 18,
-            color: 'from-purple-500 to-pink-500',
+            color: 'from-blue-600 to-blue-800',
         },
         {
             icon: Users,
@@ -79,7 +79,7 @@ export default function ObservatoirePage() {
     return (
         <main className="min-h-screen">
             {/* Hero Section */}
-            <section className="py-24 bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 text-white">
+            <section className="py-24 bg-gradient-to-br from-blue-900 via-blue-900 to-blue-950 text-white">
                 <div className="container mx-auto px-6">
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
@@ -92,7 +92,7 @@ export default function ObservatoirePage() {
                         </div>
 
                         <h1 className="text-5xl md:text-6xl font-black mb-6 font-heading">
-                            L'Observatoire <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-purple-300">TEDSAI</span>
+                            L'Observatoire <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-blue-300">TEDSAI</span>
                         </h1>
 
                         <p className="text-xl text-blue-100 mb-8 leading-relaxed">
@@ -210,7 +210,7 @@ export default function ObservatoirePage() {
                             >
                                 <Card hover className="h-full group overflow-hidden">
                                     <div className="relative h-48 overflow-hidden">
-                                        <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100" />
+                                        <div className="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200" />
                                         <div className="absolute top-4 left-4">
                                             <Badge>{post.category}</Badge>
                                         </div>
@@ -256,7 +256,7 @@ export default function ObservatoirePage() {
             </section>
 
             {/* CTA Section */}
-            <section id="discussions" className="py-20 bg-gradient-to-r from-primary-900 to-purple-900 text-white">
+            <section id="discussions" className="py-20 bg-gradient-to-r from-primary-900 to-blue-950 text-white">
                 <div className="container mx-auto px-6 text-center">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}

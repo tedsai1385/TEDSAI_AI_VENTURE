@@ -46,7 +46,7 @@ export default function AdminDashboard() {
             change: '+4.5%',
             trend: 'up',
             icon: Calendar,
-            color: 'bg-purple-100 text-purple-600'
+            color: 'bg-indigo-100 text-indigo-600'
         }
     ];
 
@@ -116,9 +116,9 @@ export default function AdminDashboard() {
                                 { user: 'Paul E.', action: 'nouveau message contact', time: 'Il y a 2h', type: 'message' },
                             ].map((item, i) => (
                                 <div key={i} className="flex items-start gap-4">
-                                    <div className={`w-2 h-2 mt-2 rounded-full ${item.type === 'reservation' ? 'bg-purple-500' :
-                                            item.type === 'order' ? 'bg-green-500' :
-                                                item.type === 'system' ? 'bg-blue-500' : 'bg-gray-500'
+                                    <div className={`w-2 h-2 mt-2 rounded-full ${item.type === 'reservation' ? 'bg-indigo-500' :
+                                        item.type === 'order' ? 'bg-green-500' :
+                                            item.type === 'system' ? 'bg-blue-500' : 'bg-gray-500'
                                         }`} />
                                     <div>
                                         <p className="text-sm font-medium text-gray-900">

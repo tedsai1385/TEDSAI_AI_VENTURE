@@ -25,7 +25,7 @@ export default function AdminIAPage() {
     const [mounted, setMounted] = useState(false);
     const [leads, setLeads] = useState<any[]>([]);
     const [stats, setStats] = useState([
-        { label: 'Leads Générés (IA)', value: '0', icon: Zap, color: 'purple' },
+        { label: 'Leads Générés (IA)', value: '0', icon: Zap, color: 'indigo' },
         { label: 'Conversations IA', value: '1.2k', icon: MessageSquare, color: 'blue' },
         { label: 'Taux de Conversion Business', value: '18%', icon: LineChart, color: 'emerald' },
         { label: 'Satisfaction Client (Bot)', value: '4.9', icon: Star, color: 'amber' },
@@ -84,7 +84,7 @@ export default function AdminIAPage() {
                 subtitle="Optimisez votre business avec l'IA et gérez vos opportunités B2B."
                 icon={BrainCircuit}
                 actions={
-                    <button className="flex items-center gap-2 px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-semibold shadow-lg shadow-purple-600/20 transition-all hover:scale-[1.02] active:scale-95">
+                    <button className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-semibold shadow-lg shadow-indigo-600/20 transition-all hover:scale-[1.02] active:scale-95">
                         <Plus size={18} />
                         Noyeau Lead / Prompt
                     </button>
@@ -98,11 +98,11 @@ export default function AdminIAPage() {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: idx * 0.1 }}
-                        className="glass p-6 rounded-3xl border-white/5 flex items-center gap-5 group hover:border-purple-500/30 transition-all"
+                        className="glass p-6 rounded-3xl border-white/5 flex items-center gap-5 group hover:border-indigo-500/30 transition-all"
                     >
                         <div className={cn(
                             "p-3 rounded-2xl",
-                            stat.color === 'purple' ? "bg-purple-500/10 text-purple-400" :
+                            stat.color === 'indigo' ? "bg-indigo-500/10 text-indigo-400" :
                                 stat.color === 'blue' ? "bg-blue-500/10 text-blue-400" :
                                     stat.color === 'emerald' ? "bg-emerald-500/10 text-emerald-400" :
                                         "bg-amber-500/10 text-amber-400"
@@ -127,7 +127,7 @@ export default function AdminIAPage() {
                         <div key={col} className="flex flex-col gap-4">
                             <div className="flex items-center justify-between px-2">
                                 <span className="text-[11px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-2">
-                                    <div className={cn("w-1.5 h-1.5 rounded-full", colIdx === 0 ? "bg-blue-400" : colIdx === 1 ? "bg-amber-400" : colIdx === 2 ? "bg-purple-400" : "bg-emerald-400")} />
+                                    <div className={cn("w-1.5 h-1.5 rounded-full", colIdx === 0 ? "bg-blue-400" : colIdx === 1 ? "bg-amber-400" : colIdx === 2 ? "bg-indigo-400" : "bg-emerald-400")} />
                                     {col}
                                 </span>
                                 <span className="text-[10px] font-bold text-slate-600 bg-white/5 px-2 py-0.5 rounded-md">
@@ -140,7 +140,7 @@ export default function AdminIAPage() {
                                     <motion.div
                                         key={lead.id}
                                         whileHover={{ y: -3, scale: 1.02 }}
-                                        className="glass-dark p-4 rounded-2xl border-white/10 hover:border-purple-500/30 transition-all shadow-xl"
+                                        className="glass-dark p-4 rounded-2xl border-white/10 hover:border-indigo-500/30 transition-all shadow-xl"
                                     >
                                         <div className="flex justify-between items-start mb-3">
                                             <div className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">{lead.company}</div>
@@ -151,7 +151,7 @@ export default function AdminIAPage() {
                                         </div>
                                         <div className="font-bold text-slate-200 text-sm mb-1">{lead.contact}</div>
                                         <div className="flex justify-between items-center mt-4 pt-3 border-t border-white/5">
-                                            <span className="text-xs font-bold text-purple-400">{lead.value}</span>
+                                            <span className="text-xs font-bold text-indigo-400">{lead.value}</span>
                                         </div>
                                     </motion.div>
                                 ))}

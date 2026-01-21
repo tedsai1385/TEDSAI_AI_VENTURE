@@ -24,7 +24,7 @@ export default function CaseStudiesPage() {
     return (
         <main className="min-h-screen">
             {/* Hero Section */}
-            <section className="relative py-24 bg-gradient-to-br from-blue-900 to-purple-900 text-white overflow-hidden">
+            <section className="relative py-24 bg-gradient-to-br from-blue-900 to-indigo-950 text-white overflow-hidden">
                 <div className="absolute inset-0 opacity-20 bg-[url('/assets/images/hero_bg.webp')] bg-cover bg-center" />
                 <div className="container relative z-10 mx-auto px-6 text-center">
                     <motion.div
@@ -69,7 +69,7 @@ export default function CaseStudiesPage() {
                                                     {cs.sector}
                                                 </p>
                                             </div>
-                                            <Badge variant="outline" className="text-purple-700 border-purple-300 bg-purple-50 px-4 py-2">
+                                            <Badge variant="outline" className="text-blue-700 border-blue-300 bg-blue-50 px-4 py-2">
                                                 {cs.date}
                                             </Badge>
                                         </div>
@@ -125,7 +125,7 @@ export default function CaseStudiesPage() {
             </section>
 
             {/* CTA Section */}
-            <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
+            <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-700">
                 <div className="container mx-auto px-6 text-center">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}

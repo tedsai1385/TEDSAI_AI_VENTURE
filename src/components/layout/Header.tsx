@@ -27,7 +27,7 @@ const Header = () => {
     ];
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b bg-gradient-to-r from-blue-50 via-white to-purple-50 backdrop-blur-md shadow-sm">
+        <header className="sticky top-0 z-50 w-full border-b bg-gradient-to-r from-blue-50 via-white to-blue-100 backdrop-blur-md shadow-sm">
             <div className="container mx-auto px-4 h-10 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-2">
                     <div className="relative h-8 w-8">

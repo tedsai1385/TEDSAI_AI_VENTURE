@@ -40,6 +40,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (!auth) {
+            setLoading(false);
+            return;
+        }
+
         let unsubscribeProfile: (() => void) | null = null;
 
         const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
