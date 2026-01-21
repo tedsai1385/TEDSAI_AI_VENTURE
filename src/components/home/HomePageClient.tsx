@@ -319,7 +319,7 @@ export default function HomePageClient() {
                             <Button
                                 size="xl"
                                 rounded="full"
-                                className="bg-white text-primary-900 hover:bg-blue-50 shadow-2xl"
+                                className="bg-primary-600 text-white hover:bg-primary-700 shadow-2xl"
                             >
                                 Explorer les Analyses & Discussions
                                 <ArrowRight className="w-5 h-5" />

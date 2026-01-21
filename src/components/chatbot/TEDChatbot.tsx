@@ -517,7 +517,7 @@ export default function TEDChatbot() {
                         <Button
                           onClick={handleSendMessage}
                           disabled={!state.currentInput.trim() || state.isTyping}
-                          className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800"
+                          className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900"
                         >
                           {state.isTyping ? (
                             <Loader2 className="w-4 h-4 animate-spin" />

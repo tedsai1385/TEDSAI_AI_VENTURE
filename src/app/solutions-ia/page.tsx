@@ -157,7 +157,7 @@ export default function SolutionsIAPage() {
 
               <div className="flex flex-wrap gap-4 mb-8">
                 <Link href="#services">
-                  <Button size="lg" rounded="full" className="bg-white text-primary-900 hover:bg-blue-50 shadow-xl">
+                  <Button size="lg" rounded="full" className="bg-primary-600 text-white hover:bg-primary-700 shadow-xl">
                     Découvrir nos Solutions
                     <ArrowRight className="w-5 h-5" />
                   </Button>
@@ -414,7 +414,7 @@ export default function SolutionsIAPage() {
 
             <div className="flex flex-wrap justify-center gap-4">
               <button onClick={openChat}>
-                <Button size="xl" rounded="full" className="bg-white text-primary-900 hover:bg-blue-50 shadow-2xl">
+                <Button size="xl" rounded="full" className="bg-primary-600 text-white hover:bg-primary-700 shadow-2xl">
                   Demander une Démo Gratuite
                   <Sparkles className="w-5 h-5" />
                 </Button>

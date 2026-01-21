@@ -102,7 +102,7 @@ export default function ObservatoirePage() {
 
                         <div className="flex flex-wrap justify-center gap-4">
                             <Link href="#articles">
-                                <Button size="lg" rounded="full" className="bg-white text-primary-900 hover:bg-blue-50 shadow-xl">
+                                <Button size="lg" rounded="full" className="bg-primary-600 text-white hover:bg-primary-700 shadow-xl">
                                     Explorer les Articles
                                     <ArrowRight className="w-5 h-5" />
                                 </Button>
@@ -272,7 +272,7 @@ export default function ObservatoirePage() {
                         </p>
 
                         <div className="flex flex-wrap justify-center gap-4">
-                            <Button size="xl" rounded="full" className="bg-white text-primary-900 hover:bg-blue-50 shadow-2xl">
+                            <Button size="xl" rounded="full" className="bg-primary-600 text-white hover:bg-primary-700 shadow-2xl">
                                 Créer un Compte
                                 <Users className="w-5 h-5" />
                             </Button>

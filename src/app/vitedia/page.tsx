@@ -290,7 +290,7 @@ export default function VitediaPage() {
                             <span>+237 6XX 00 00 00</span>
                         </div>
                         <div className="hidden md:block w-px h-8 bg-white/20"></div>
-                        <Button size="xl" className="rounded-full bg-white text-amber-900 hover:bg-amber-50 px-10 h-16 text-lg font-bold shadow-2xl">
+                        <Button size="xl" className="rounded-full bg-amber-600 !bg-none text-white hover:bg-amber-700 px-10 h-16 text-lg font-bold shadow-2xl">
                             Réserver en Ligne
                         </Button>
                     </div>

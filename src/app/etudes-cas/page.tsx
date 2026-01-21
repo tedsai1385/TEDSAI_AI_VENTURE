@@ -142,7 +142,7 @@ export default function CaseStudiesPage() {
                         <Link href="/contact">
                             <Button
                                 size="lg"
-                                className="bg-white text-blue-600 hover:bg-gray-100 font-bold shadow-xl"
+                                className="bg-blue-600 text-white hover:bg-blue-700 font-bold shadow-xl"
                             >
                                 Demander un Audit
                                 <ArrowRight className="w-5 h-5 ml-2" />

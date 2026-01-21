@@ -28,7 +28,7 @@ const Footer = () => {
                     <h3 className="text-3xl font-bold mb-4">Prêt à automatiser votre avenir ?</h3>
                     <p className="text-blue-50 mb-6 max-w-2xl mx-auto">Discutez avec notre agent IA ou demandez un devis personnalisé pour vos projets.</p>
                     <div className="flex flex-wrap justify-center gap-4">
-                        <Link href="/contact" className="inline-flex items-center justify-center px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors shadow-lg">
+                        <Link href="/contact" className="inline-flex items-center justify-center px-6 py-3 bg-blue-800 text-white font-semibold rounded-lg hover:bg-blue-900 border border-white/20 transition-colors shadow-lg">
                             Demander un devis
                         </Link>
                         <button
