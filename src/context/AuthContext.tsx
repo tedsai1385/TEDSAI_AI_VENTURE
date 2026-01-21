@@ -10,7 +10,7 @@ import {
     signOut as firebaseSignOut
 } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase/config';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp, onSnapshot } from 'firebase/firestore';
 import { Role } from '@/lib/dashboard/roles';
 
 interface UserProfile {
@@ -33,46 +33,57 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// AuthContext provides a central place to manage user authentication and profile synchronization.
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        let unsubscribeProfile: (() => void) | null = null;
+
+        const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
             try {
-                setUser(user);
+                setUser(firebaseUser);
 
-                if (user) {
-                    // Sync with Firestore profile
-                    const profileRef = doc(db, 'users', user.uid);
-                    const profileSnap = await getDoc(profileRef);
-
-                    if (profileSnap.exists()) {
-                        setProfile(profileSnap.data() as UserProfile);
-                    } else {
-                        // User exists in Auth but NOT in Firestore -> No Access
-                        console.warn(`User ${user.email} authenticated but has no profile.`);
-                        setProfile(null); // Explicitly null profile
-                    }
+                if (firebaseUser) {
+                    // Real-time sync with Firestore profile
+                    const profileRef = doc(db, 'users', firebaseUser.uid);
+                    unsubscribeProfile = onSnapshot(profileRef, (doc) => {
+                        if (doc.exists()) {
+                            setProfile(doc.data() as UserProfile);
+                        } else {
+                            setProfile(null);
+                        }
+                        setLoading(false);
+                    }, (error) => {
+                        console.error('Profile snapshot error:', error);
+                        setProfile(null);
+                        setLoading(false);
+                    });
                 } else {
+                    if (unsubscribeProfile) unsubscribeProfile();
                     setProfile(null);
+                    setLoading(false);
                 }
             } catch (error) {
                 console.error('Auth state change error:', error);
-            } finally {
+                setProfile(null);
                 setLoading(false);
             }
         });
 
-        return () => unsubscribe();
+        return () => {
+            unsubscribeAuth();
+            if (unsubscribeProfile) unsubscribeProfile();
+        }
     }, []);
 
     const signInWithGoogle = async () => {
         const provider = new GoogleAuthProvider();
         try {
             await signInWithPopup(auth, provider);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error signing in with Google', error);
             throw error;
         }
@@ -81,7 +92,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const signInWithEmail = async (email: string, pass: string) => {
         try {
             await signInWithEmailAndPassword(auth, email, pass);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error signing in with Email', error);
             throw error;
         }
@@ -90,6 +101,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const logout = async () => {
         try {
             await firebaseSignOut(auth);
+            setUser(null);
+            setProfile(null);
         } catch (error) {
             console.error('Error signing out', error);
             throw error;

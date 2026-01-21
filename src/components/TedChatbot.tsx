@@ -90,20 +90,18 @@ const TedChatbot: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // Send message to API
-      const response = await fetch('/api/chat', {
+      // Send message to Gemini API
+      const response = await fetch('/api/chatbot/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           message: inputValue,
-          history: messages.map(msg => ({
+          conversationHistory: messages.slice(-5).map(msg => ({
             role: msg.role,
             content: msg.content
           })),
-          userId: (user as any)?.id || 'anonymous',
-          sessionId: sessionId
         }),
       });
 
@@ -241,8 +239,8 @@ const TedChatbot: React.FC = () => {
                   >
                     <div
                       className={`max-w-[80%] rounded-2xl px-4 py-2 ${message.role === 'user'
-                          ? 'bg-blue-500 text-white rounded-tr-none'
-                          : 'bg-gray-200 text-gray-800 rounded-tl-none'
+                        ? 'bg-blue-500 text-white rounded-tr-none'
+                        : 'bg-gray-200 text-gray-800 rounded-tl-none'
                         }`}
                     >
                       <div className="whitespace-pre-wrap">{message.content}</div>
@@ -257,11 +255,14 @@ const TedChatbot: React.FC = () => {
                 ))}
                 {isLoading && (
                   <div className="flex justify-start">
-                    <div className="bg-gray-200 text-gray-800 rounded-2xl rounded-tl-none px-4 py-2">
-                      <div className="flex space-x-2">
-                        <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-100"></div>
-                        <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-200"></div>
+                    <div className="bg-gray-200 text-gray-800 rounded-2xl rounded-tl-none px-4 py-3">
+                      <div className="flex items-center space-x-2">
+                        <div className="flex space-x-1">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+                          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce delay-100"></div>
+                          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce delay-200"></div>
+                        </div>
+                        <span className="text-sm text-gray-600">L'assistant réfléchit...</span>
                       </div>
                     </div>
                   </div>

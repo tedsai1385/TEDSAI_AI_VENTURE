@@ -5,22 +5,14 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 
 export default function AdminGuard({ children }: { children: React.ReactNode }) {
-    const { user, profile, loading } = useAuth();
+    const { user, loading } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
-        if (!loading) {
-            if (!user) {
-                router.push('/login');
-            } else if (!profile) {
-                // Pour la phase de test, on autorise l'accès à tout utilisateur connecté
-                // On garde quand même une vérification de profile pour s'assurer qu'il existe
-                router.push('/login');
-            }
-            // Suppression temporaire de la vérification stricte du rôle pour les tests
-            // else if (profile.role !== 'admin' && profile.role !== 'super_admin') { ... }
+        if (!loading && !user) {
+            router.push('/login');
         }
-    }, [user, profile, loading, router]);
+    }, [user, loading, router]);
 
     if (loading) {
         return (

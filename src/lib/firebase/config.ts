@@ -17,7 +17,15 @@ const firebaseConfig = {
 const isConfigValid = Object.values(firebaseConfig).every(value => value && value !== 'undefined');
 
 if (!isConfigValid && typeof window !== 'undefined') {
-    console.warn('Firebase configuration is incomplete. Please check your environment variables.');
+    const missingKeys = Object.entries(firebaseConfig)
+        .filter(([_, value]) => !value || value === 'undefined')
+        .map(([key]) => key);
+    console.warn('Firebase configuration is incomplete. Missing:', missingKeys.join(', '));
+} else if (!isConfigValid) {
+    const missingKeys = Object.entries(firebaseConfig)
+        .filter(([_, value]) => !value || value === 'undefined')
+        .map(([key]) => key);
+    console.log('Server-side Firebase config incomplete. Missing:', missingKeys.join(', '));
 }
 
 // Initialize Firebase only if config is valid

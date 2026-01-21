@@ -1,9 +1,4 @@
 {
-  "/page": "app/page.js",
-  "/shop/page": "app/shop/page.js",
-  "/login/page": "app/login/page.js",
-  "/solutions-ia/page": "app/solutions-ia/page.js",
-  "/vitedia/page": "app/vitedia/page.js",
-  "/ecosystem/page": "app/ecosystem/page.js",
-  "/admin/page": "app/admin/page.js"
+  "/api/chatbot/chat/route": "app/api/chatbot/chat/route.js",
+  "/page": "app/page.js"
 }
