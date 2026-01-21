@@ -35,7 +35,7 @@ export default function IAServicesAdmin() {
                         <BarChart3 className="w-4 h-4 mr-2" />
                         Rapport Détaillé
                     </Button>
-                    <Button className="bg-purple-600 hover:bg-purple-700 text-white">
+                    <Button className="bg-blue-600 hover:bg-blue-700 text-white">
                         <Zap className="w-4 h-4 mr-2" />
                         Conf. Modèles
                     </Button>
@@ -44,15 +44,15 @@ export default function IAServicesAdmin() {
 
             {/* KPI Grid */}
             <div className="grid md:grid-cols-3 gap-6">
-                <Card className="bg-purple-50 border-purple-100">
+                <Card className="bg-indigo-50 border-indigo-100">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-purple-700 flex items-center gap-2">
+                        <CardTitle className="text-sm font-medium text-indigo-700 flex items-center gap-2">
                             <Bot className="w-4 h-4" /> Activité Bot
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold text-gray-900">1,245</div>
-                        <p className="text-xs text-purple-600">Requêtes ce mois (+12%)</p>
+                        <p className="text-xs text-indigo-600">Requêtes ce mois (+12%)</p>
                     </CardContent>
                 </Card>
 

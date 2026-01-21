@@ -219,7 +219,7 @@ const ChatWidget = () => {
                                         </button>
                                         <button
                                             onClick={() => handleScenario('ia')}
-                                            className="text-left text-xs bg-white hover:bg-purple-50 border border-purple-100 p-2.5 rounded-xl transition-colors flex items-center gap-2 text-purple-700 font-medium"
+                                            className="text-left text-xs bg-white hover:bg-blue-50 border border-blue-100 p-2.5 rounded-xl transition-colors flex items-center gap-2 text-blue-700 font-medium"
                                         >
                                             <Brain className="w-3.5 h-3.5" />
                                             Solutions IA
@@ -298,7 +298,7 @@ const ChatWidget = () => {
             {/* Toggle Button */}
             <button
                 onClick={toggleChat}
-                className="group relative w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 shadow-lg shadow-blue-900/20 hover:shadow-blue-900/40 hover:scale-110 transition-all duration-300 flex items-center justify-center overflow-hidden border-2 border-white/20"
+                className="group relative w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 shadow-lg shadow-blue-900/20 hover:shadow-blue-900/40 hover:scale-110 transition-all duration-300 flex items-center justify-center overflow-hidden border-2 border-white/20"
             >
                 {isOpen ? (
                     <X className="w-7 h-7 text-white" />

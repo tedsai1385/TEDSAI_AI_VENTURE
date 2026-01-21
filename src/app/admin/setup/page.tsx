@@ -91,7 +91,7 @@ export default function AdminSetupPage() {
                         Configurez les comptes administrateurs par défaut pour les modules
                         <span className="text-blue-400 font-bold ml-1">viTEDia</span>,
                         <span className="text-emerald-400 font-bold ml-1">selecTED</span> &
-                        <span className="text-purple-400 font-bold ml-1">Solution IA</span>.
+                        <span className="text-indigo-400 font-bold ml-1">Solution IA</span>.
                     </p>
                 </div>
 

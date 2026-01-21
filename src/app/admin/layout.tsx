@@ -49,7 +49,7 @@ export default function AdminLayout({
                 <aside className="fixed left-0 top-0 bottom-0 w-64 bg-slate-900 text-white z-50 flex flex-col">
                     <div className="p-6 border-b border-slate-800">
                         <Link href="/" className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold text-white text-xl">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center font-bold text-white text-xl">
                                 T
                             </div>
                             <span className="text-xl font-bold font-heading">TEDSAI<span className="text-blue-400">Admin</span></span>

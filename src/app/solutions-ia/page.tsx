@@ -43,7 +43,7 @@ export default function SolutionsIAPage() {
       description: 'Assistants conversationnels disponibles 24/7 pour vos clients',
       features: ['Multilingue', 'Contexte métier', 'Analytics'],
       stats: { value: '24/7', label: 'Disponibilité' },
-      color: 'from-purple-500 to-pink-500',
+      color: 'from-blue-500 to-blue-700',
     },
     {
       icon: BarChart3,
@@ -126,12 +126,12 @@ export default function SolutionsIAPage() {
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-24 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 text-white overflow-hidden">
+      <section className="relative py-24 bg-gradient-to-br from-blue-900 via-blue-900 to-blue-950 text-white overflow-hidden">
         {/* Animated Background */}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse-slow"></div>
-          <div className="absolute top-40 right-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse-slow animation-delay-2000"></div>
-          <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse-slow animation-delay-4000"></div>
+          <div className="absolute top-40 right-20 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse-slow animation-delay-2000"></div>
+          <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl animate-pulse-slow animation-delay-4000"></div>
         </div>
 
         <div className="container relative z-10 mx-auto px-6">
@@ -147,7 +147,7 @@ export default function SolutionsIAPage() {
               </Badge>
 
               <h1 className="text-5xl md:text-6xl font-black mb-6 font-heading">
-                Le Cerveau du <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-purple-300">Complexe</span>
+                Le Cerveau du <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-blue-300">Complexe</span>
               </h1>
 
               <p className="text-xl text-blue-100 mb-8 leading-relaxed">
@@ -201,9 +201,9 @@ export default function SolutionsIAPage() {
                 <motion.div
                   animate={{ rotate: -360 }}
                   transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                  className="absolute w-48 h-48 border-4 border-purple-400/30 rounded-full"
+                  className="absolute w-48 h-48 border-4 border-blue-400/30 rounded-full"
                 />
-                <div className="relative w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-500 rounded-3xl flex items-center justify-center shadow-2xl">
+                <div className="relative w-32 h-32 bg-gradient-to-br from-blue-500 to-blue-700 rounded-3xl flex items-center justify-center shadow-2xl">
                   <Brain className="w-16 h-16 text-white" />
                 </div>
               </div>
@@ -257,7 +257,7 @@ export default function SolutionsIAPage() {
                       ))}
                     </ul>
 
-                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg">
                       <span className="text-sm text-gray-600">{service.stats.label}</span>
                       <span className="text-2xl font-bold text-primary-600">{service.stats.value}</span>
                     </div>
@@ -347,7 +347,7 @@ export default function SolutionsIAPage() {
                 <Card className={`h-full relative ${plan.popular ? 'border-2 border-primary-500 shadow-xl' : ''}`}>
                   {plan.popular && (
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                      <Badge className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1">
+                      <Badge className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-4 py-1">
                         POPULAIRE
                       </Badge>
                     </div>
@@ -398,7 +398,7 @@ export default function SolutionsIAPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-primary-900 to-purple-900 text-white">
+      <section className="py-20 bg-gradient-to-r from-primary-900 to-blue-900 text-white">
         <div className="container mx-auto px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

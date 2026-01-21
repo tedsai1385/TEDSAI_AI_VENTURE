@@ -937,12 +937,12 @@ footer {
 }
 
 .theme-observatoire {
-    --footer-bg: #0f051a;
-    /* Dark Violet */
-    --footer-text: #eaddf5;
-    --footer-accent: #9b59b6;
-    /* Purple */
-    --footer-accent-hover: #af7ac5;
+    --footer-bg: #0a0a2e;
+    /* Deep Blue */
+    --footer-text: #e1e1ff;
+    --footer-accent: #4f46e5;
+    /* Indigo */
+    --footer-accent-hover: #6366f1;
 }
 
 .theme-elevage {
@@ -1002,7 +1002,7 @@ footer {
 }
 
 .theme-observatoire .footer-cta-banner {
-    background: linear-gradient(135deg, #1a0525 0%, #320a45 100%);
+    background: linear-gradient(135deg, #0a0a2e 0%, #1e1e5e 100%);
 }
 
 .theme-elevage .footer-cta-banner {

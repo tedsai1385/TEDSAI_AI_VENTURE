@@ -35,7 +35,7 @@ export default function HomePageClient() {
                         quality={90}
                     />
                     {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary-950/90 via-primary-900/80 to-purple-900/90" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary-950/90 via-primary-900/80 to-blue-950/90" />
                 </div>
 
                 {/* Content */}
@@ -115,7 +115,7 @@ export default function HomePageClient() {
             </section>
 
             {/* Stats Section */}
-            <section className="py-16 bg-gradient-to-r from-blue-50 to-purple-50">
+            <section className="py-16 bg-gradient-to-r from-blue-50 to-blue-100">
                 <div className="container mx-auto px-6">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                         {[
@@ -178,8 +178,8 @@ export default function HomePageClient() {
                         >
                             <Link href="/solutions-ia">
                                 <Card hover className="h-full group cursor-pointer">
-                                    <CardHeader>
-                                        <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                    <CardHeader className="text-center">
+                                        <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform">
                                             <Brain className="w-8 h-8 text-primary-600" />
                                         </div>
                                         <CardTitle>Entreprises & IA</CardTitle>
@@ -187,7 +187,7 @@ export default function HomePageClient() {
                                             Solutions d'intelligence artificielle sur mesure pour automatiser, optimiser et propulser votre entreprise.
                                         </CardDescription>
                                     </CardHeader>
-                                    <CardContent>
+                                    <CardContent className="flex justify-center">
                                         <div className="flex items-center text-primary-600 font-semibold group-hover:gap-2 transition-all">
                                             Découvrir
                                             <ArrowRight className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />
@@ -206,8 +206,8 @@ export default function HomePageClient() {
                         >
                             <Link href="/vitedia">
                                 <Card hover className="h-full group cursor-pointer">
-                                    <CardHeader>
-                                        <div className="w-16 h-16 bg-gradient-to-br from-amber-100 to-orange-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                    <CardHeader className="text-center">
+                                        <div className="w-16 h-16 bg-gradient-to-br from-amber-100 to-orange-100 rounded-2xl flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform">
                                             <Utensils className="w-8 h-8 text-vitedia-primary" />
                                         </div>
                                         <CardTitle>Restaurant viTEDia</CardTitle>
@@ -215,7 +215,7 @@ export default function HomePageClient() {
                                             Gastronomie traçable où chaque ingrédient raconte son histoire, du jardin à votre assiette.
                                         </CardDescription>
                                     </CardHeader>
-                                    <CardContent>
+                                    <CardContent className="text-center flex flex-col items-center">
                                         <Badge variant="vitedia" className="mb-3">
                                             100% Traçable
                                         </Badge>
@@ -237,8 +237,8 @@ export default function HomePageClient() {
                         >
                             <Link href="/garden">
                                 <Card hover className="h-full group cursor-pointer">
-                                    <CardHeader>
-                                        <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                    <CardHeader className="text-center">
+                                        <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform">
                                             <Leaf className="w-8 h-8 text-garden-primary" />
                                         </div>
                                         <CardTitle>Jardin & Épicerie SelecTED</CardTitle>
@@ -246,7 +246,7 @@ export default function HomePageClient() {
                                             Production locale, élevage et épicerie fine avec traçabilité totale de la graine à l'assiette.
                                         </CardDescription>
                                     </CardHeader>
-                                    <CardContent>
+                                    <CardContent className="text-center flex flex-col items-center">
                                         <Badge variant="garden" className="mb-3">
                                             Bio Certifié
                                         </Badge>
@@ -294,7 +294,7 @@ export default function HomePageClient() {
             </section>
 
             {/* Observatory Section */}
-            <section className="py-20 bg-gradient-to-r from-primary-900 to-purple-900 text-white">
+            <section className="py-20 bg-gradient-to-r from-primary-900 to-slate-950 text-white">
                 <div className="container mx-auto px-6">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}

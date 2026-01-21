@@ -24,7 +24,7 @@ const Footer = () => {
         <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
             <div className="container mx-auto px-4 py-12">
                 {/* CTA Banner */}
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 mb-12 text-center">
+                <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-8 mb-12 text-center">
                     <h3 className="text-3xl font-bold mb-4">Prêt à automatiser votre avenir ?</h3>
                     <p className="text-blue-50 mb-6 max-w-2xl mx-auto">Discutez avec notre agent IA ou demandez un devis personnalisé pour vos projets.</p>
                     <div className="flex flex-wrap justify-center gap-4">

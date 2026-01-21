@@ -1,4 +1,5 @@
 {
+  "/etudes-cas/page": "app/etudes-cas/page.js",
   "/page": "app/page.js",
   "/ecosystem/page": "app/ecosystem/page.js"
 }

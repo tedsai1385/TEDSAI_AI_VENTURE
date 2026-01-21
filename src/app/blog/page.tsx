@@ -96,7 +96,7 @@ export default function BlogPage() {
     return (
         <main className="min-h-screen">
             {/* Hero Section */}
-            <section className="relative py-24 bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 text-white overflow-hidden">
+            <section className="relative py-24 bg-gradient-to-br from-indigo-950 via-indigo-900 to-blue-900 text-white overflow-hidden">
                 <div className="absolute inset-0 opacity-20">
                     <div className="absolute top-0 left-0 w-full h-full bg-[url('/assets/images/hero_bg.webp')] bg-cover bg-center mix-blend-overlay" />
                 </div>
@@ -113,7 +113,7 @@ export default function BlogPage() {
                             Le Lab TEDSAI
                         </Badge>
                         <h1 className="text-5xl md:text-6xl font-black mb-6 font-heading">
-                            Explorer le <span className="text-purple-300">Futur</span>
+                            Explorer le <span className="text-blue-300">Futur</span>
                         </h1>
                         <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto leading-relaxed">
                             Veille technologique, avancées agricoles et réflexions sur l'économie numérique.
@@ -143,7 +143,7 @@ export default function BlogPage() {
                             <button
                                 key={i}
                                 className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${cat.active
-                                    ? 'bg-purple-600 text-white shadow-md'
+                                    ? 'bg-blue-600 text-white shadow-md'
                                     : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
                                     }`}
                             >
@@ -168,15 +168,15 @@ export default function BlogPage() {
                                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                                 />
                                 <div className="absolute top-4 left-4">
-                                    <Badge className="bg-purple-600 text-white hover:bg-purple-700">À la Une</Badge>
+                                    <Badge className="bg-blue-600 text-white hover:bg-blue-700">À la Une</Badge>
                                 </div>
                             </div>
                             <div className="p-8 md:p-12 flex flex-col justify-center">
-                                <div className="flex items-center gap-2 text-purple-600 font-semibold text-sm mb-4">
+                                <div className="flex items-center gap-2 text-blue-600 font-semibold text-sm mb-4">
                                     <Cpu className="w-4 h-4" />
                                     {posts[0].category}
                                 </div>
-                                <h2 className="text-3xl font-bold text-gray-900 mb-4 font-heading group-hover:text-purple-700 transition-colors">
+                                <h2 className="text-3xl font-bold text-gray-900 mb-4 font-heading group-hover:text-blue-700 transition-colors">
                                     {posts[0].title}
                                 </h2>
                                 <p className="text-gray-600 text-lg mb-6 leading-relaxed">
@@ -198,7 +198,7 @@ export default function BlogPage() {
                                             <div className="text-xs text-gray-500">{posts[0].date} • {posts[0].readTime}</div>
                                         </div>
                                     </div>
-                                    <Button variant="ghost" className="text-purple-600 hover:text-purple-700 hover:bg-purple-50">
+                                    <Button variant="ghost" className="text-blue-600 hover:text-blue-700 hover:bg-blue-50">
                                         Lire l'article
                                     </Button>
                                 </div>
@@ -273,7 +273,7 @@ export default function BlogPage() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                     >
-                        <Mail className="w-12 h-12 mx-auto mb-6 text-purple-400" />
+                        <Mail className="w-12 h-12 mx-auto mb-6 text-blue-400" />
                         <h2 className="text-3xl font-bold mb-4">Restez Connecté</h2>
                         <p className="text-gray-400 mb-8">
                             Recevez nos dernières analyses et actualités directement dans votre boîte mail.
@@ -286,7 +286,7 @@ export default function BlogPage() {
                                 placeholder="votre@email.com"
                                 className="flex-1 px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white outline-none focus:bg-white/20 transition-all"
                             />
-                            <Button size="lg" rounded="full" className="bg-purple-600 hover:bg-purple-500 whitespace-nowrap px-8">
+                            <Button size="lg" rounded="full" className="bg-blue-600 hover:bg-blue-500 whitespace-nowrap px-8">
                                 S'abonner
                             </Button>
                         </form>
