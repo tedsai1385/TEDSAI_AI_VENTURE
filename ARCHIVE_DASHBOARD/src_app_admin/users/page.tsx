@@ -108,8 +108,8 @@ export default function UsersModule() {
                                     </td>
                                     <td className="px-6 py-4">
                                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.status === 'active'
-                                                ? 'bg-green-100 text-green-800'
-                                                : 'bg-red-100 text-red-800'
+                                            ? 'bg-green-100 text-green-800'
+                                            : 'bg-red-100 text-red-800'
                                             }`}>
                                             {user.status === 'active' ? 'Actif' : 'Inactif'}
                                         </span>
@@ -119,10 +119,10 @@ export default function UsersModule() {
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <div className="flex justify-end gap-2">
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-blue-600">
+                                            <Button variant="ghost" size="sm" className="h-8 w-8 text-gray-400 hover:text-blue-600">
                                                 <Edit className="w-4 h-4" />
                                             </Button>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-red-600">
+                                            <Button variant="ghost" size="sm" className="h-8 w-8 text-gray-400 hover:text-red-600">
                                                 <Trash2 className="w-4 h-4" />
                                             </Button>
                                         </div>

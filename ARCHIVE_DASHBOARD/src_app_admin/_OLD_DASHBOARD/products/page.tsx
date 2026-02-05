@@ -29,7 +29,7 @@ export default function ProductsPage() {
                                 placeholder="Rechercher..."
                             />
                         </div>
-                        <Button variant="outline" size="icon">
+                        <Button variant="outline" size="sm">
                             <Filter className="w-4 h-4" />
                         </Button>
                     </div>
