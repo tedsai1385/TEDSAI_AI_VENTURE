@@ -8,20 +8,46 @@ import menuData from '@/../../public/assets/data/menu.json';
 import elevageData from '@/../../public/assets/data/elevage.json';
 
 // Initialize Firebase Admin (Server-side only)
+// Initialize Firebase Admin (Server-side only)
 if (!admin.apps.length) {
     try {
-        // Use environment variable for service account path
-        const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH || './migration-key.json';
-        const serviceAccount = require(serviceAccountPath);
-        admin.initializeApp({
-            credential: admin.credential.cert(serviceAccount)
-        });
+        const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+        const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+        const projectId = process.env.FIREBASE_PROJECT_ID;
+
+        if (privateKey && clientEmail && projectId) {
+            admin.initializeApp({
+                credential: admin.credential.cert({
+                    projectId,
+                    clientEmail,
+                    privateKey: privateKey.replace(/\\n/g, '\n'),
+                }),
+            });
+            console.log('Firebase Admin initialized with Env Vars');
+        } else {
+            // Fallback for local development only
+            const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH || './migration-key.json';
+            // Use try-catch for local file loading to avoid build-time crashes if file is missing
+            try {
+                const fs = require('fs');
+                if (fs.existsSync(serviceAccountPath)) {
+                    const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
+                    admin.initializeApp({
+                        credential: admin.credential.cert(serviceAccount)
+                    });
+                    console.log('Firebase Admin initialized with file:', serviceAccountPath);
+                } else {
+                    throw new Error(`Service account file not found: ${serviceAccountPath}`);
+                }
+            } catch (fileError) {
+                console.warn('Fallback: Initialize without specialized credentials');
+                admin.initializeApp({
+                    credential: admin.credential.applicationDefault()
+                });
+            }
+        }
     } catch (e) {
         console.error('Failed to init Firebase Admin:', e);
-        // Initialize without credentials in development
-        admin.initializeApp({
-            credential: admin.credential.applicationDefault()
-        });
     }
 }
 
