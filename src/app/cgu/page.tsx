@@ -12,7 +12,7 @@ export default function CGU() {
 
             <section style={{ marginBottom: '2rem' }}>
                 <h2 style={{ color: 'var(--color-secondary)', fontSize: '1.5rem', marginBottom: '1rem' }}>2. SERVICES PROPOSÉS</h2>
-                <p>Le site présente les activités de TEDSAI Complex (IA, Restaurant, Jardin), permet les réservations en ligne, les demandes de devis, et propose un assistant conversationnel TED.</p>
+                <p>Le site présente les activités de TEDSAI Complex (IA, Restaurant, garden), permet les réservations en ligne, les demandes de devis, et propose un assistant conversationnel TED.</p>
             </section>
 
             <section style={{ marginBottom: '2rem' }}>

@@ -10,13 +10,18 @@ import elevageData from '@/../../public/assets/data/elevage.json';
 // Initialize Firebase Admin (Server-side only)
 if (!admin.apps.length) {
     try {
-        const serviceAccount = require(path.join(process.cwd(), 'migration-key.json'));
+        // Use environment variable for service account path
+        const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH || './migration-key.json';
+        const serviceAccount = require(serviceAccountPath);
         admin.initializeApp({
             credential: admin.credential.cert(serviceAccount)
         });
     } catch (e) {
         console.error('Failed to init Firebase Admin:', e);
-        admin.initializeApp();
+        // Initialize without credentials in development
+        admin.initializeApp({
+            credential: admin.credential.applicationDefault()
+        });
     }
 }
 

@@ -11,7 +11,7 @@ export const genAI = new GoogleGenerativeAI(apiKey);
 
 // Model configuration for TEDSAI chatbot
 export const modelConfig = {
-    model: 'gemini-pro', // Stable and widely supported
+    model: 'gemini-flash-latest', // Modèle flash stable identifié lors du test de connectivité
     generationConfig: {
         temperature: 0.7, // Balance between creativity and precision
         topP: 0.95,

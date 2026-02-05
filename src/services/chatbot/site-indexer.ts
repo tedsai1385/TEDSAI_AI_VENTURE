@@ -42,10 +42,10 @@ export const SITE_MAP = [
     },
     {
         page_id: 'garden',
-        url: '/garden',
-        title: 'SelecTED Gardens - Jardin Biologique',
+        url: '/Garden-selected',
+        title: 'SelecTED Gardens - garden Biologique',
         category: 'agriculture',
-        keywords: ['jardin', 'agriculture', 'bio', 'produits', 'traçabilité', 'légumes'],
+        keywords: ['garden', 'agriculture', 'bio', 'produits', 'traçabilité', 'légumes'],
     },
     {
         page_id: 'epicerie',
@@ -85,7 +85,7 @@ export function extractPageContent(page: typeof SITE_MAP[0]): string {
     // Manually curated content for each page
     const contentMap: Record<string, string> = {
         home: `TEDSAI Complex est un écosystème innovant qui combine agriculture durable, gastronomie de qualité et solutions technologiques IA. 
-        Nous proposons un restaurant gastronomique (Vitédia), un jardin biologique avec traçabilité complète (SelecTED Gardens), 
+        Nous proposons un restaurant gastronomique (Vitédia), un garden biologique avec traçabilité complète (SelecTED Gardens), 
         une épicerie fine de produits locaux, un élevage responsable, et des services de consulting en intelligence artificielle 
         pour entreprises. Notre mission est de connecter la data à l'assiette pour un avenir plus durable.`,
 
@@ -96,21 +96,21 @@ export function extractPageContent(page: typeof SITE_MAP[0]): string {
         Précision de 99.8% sur nos modèles IA. Disponibilité 24/7. Économie de 70% du temps de traitement.`,
 
         vitedia: `Vitédia est notre restaurant gastronomique niché au cœur de TEDSAI Complex. 
-        Cuisine raffinée utilisant des produits ultra-frais de notre jardin biologique et de producteurs locaux. 
+        Cuisine raffinée utilisant des produits ultra-frais de notre garden biologique et de producteurs locaux. 
         Menu du jour renouvelé quotidiennement. Formules : Entrée + Plat + Dessert. 
         Réservations : Par téléphone ou formulaire en ligne. Ouvert du mardi au dimanche, midi et soir. 
         Capacité : 50 couverts. Chef : Cuisine créative et respectueuse des saisons. 
-        Spécialités : Légumes du jardin, viandes d'élevage responsable, desserts maison.`,
+        Spécialités : Légumes du garden, viandes d'élevage responsable, desserts maison.`,
 
-        garden: `SelecTED Gardens est notre jardin biologique avec traçabilité complète de la graine à l'assiette. 
+        garden: `SelecTED Gardens est notre garden biologique avec traçabilité complète de la graine à l'assiette. 
         Production : Légumes de saison, fruits, herbes aromatiques. Culture 100% biologique sans pesticides. 
         Traçabilité : QR codes sur chaque produit pour suivre l'historique complet (plantation, soins, récolte). 
         Approvisionnement : Restaurant Vitédia et épicerie TEDSAI. 
-        Visites : Possibilité de visites guidées du jardin sur réservation. 
+        Visites : Possibilité de visites guidées du garden sur réservation. 
         Technologies : Capteurs IoT pour optimisation irrigation et monitoring en temps réel.`,
 
         epicerie: `L'épicerie fine TEDSAI propose une sélection rigoureuse de produits locaux et artisanaux. 
-        Catégories : Légumes du jardin, viandes d'élevage, produits transformés (confitures, conserves), 
+        Catégories : Légumes du garden, viandes d'élevage, produits transformés (confitures, conserves), 
         huiles et condiments, miels locaux, fromages artisanaux. 
         Origine : Priorité aux producteurs dans un rayon de 50km. 
         Horaires : Mardi au samedi, 9h-19h. Commandes en ligne disponibles. 

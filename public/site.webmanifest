@@ -1,0 +1,21 @@
+{
+    "name": "TEDSAI Complex",
+    "short_name": "TEDSAI",
+    "description": "L'Algorithme Organique - Restaurant, Garden et Solutions IA",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0A0A0A",
+    "theme_color": "#0E7C7B",
+    "icons": [
+        {
+            "src": "/assets/images/logos/tedsai_logo.jpg",
+            "sizes": "192x192",
+            "type": "image/jpeg"
+        },
+        {
+            "src": "/assets/images/logos/tedsai_logo.jpg",
+            "sizes": "512x512",
+            "type": "image/jpeg"
+        }
+    ]
+}

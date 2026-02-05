@@ -1,137 +1,151 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { Sprout, ShoppingBag, UtensilsCrossed, ArrowRight, TrendingUp, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-    Users,
-    DollarSign,
-    TrendingUp,
-    Activity,
-    ArrowUpRight,
-    ArrowDownRight,
-    ShoppingBag,
-    Calendar
-} from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { useInventoryStore } from '@/lib/store/inventory-store';
+import { useOrderStore } from '@/lib/store/order-store';
 
 export default function AdminDashboard() {
-    const stats = [
-        {
-            title: 'Revenu Total',
-            value: '2.4M FCFA',
-            change: '+12.5%',
-            trend: 'up',
-            icon: DollarSign,
-            color: 'bg-green-100 text-green-600'
-        },
-        {
-            title: 'Visiteurs Uniques',
-            value: '14.2k',
-            change: '+8.1%',
-            trend: 'up',
-            icon: Users,
-            color: 'bg-blue-100 text-blue-600'
-        },
-        {
-            title: 'Commandes',
-            value: '342',
-            change: '-2.3%',
-            trend: 'down',
-            icon: ShoppingBag,
-            color: 'bg-orange-100 text-orange-600'
-        },
-        {
-            title: 'Réservations',
-            value: '18',
-            change: '+4.5%',
-            trend: 'up',
-            icon: Calendar,
-            color: 'bg-indigo-100 text-indigo-600'
-        }
-    ];
+    const { items: inventoryItems } = useInventoryStore();
+    const { orders } = useOrderStore();
+
+    const lowStockItems = inventoryItems.filter(item => item.quantity < 5);
+    const activeOrders = orders.filter(o => o.status !== 'delivered');
+    const totalHarvest = inventoryItems.reduce((acc, curr) => acc + curr.quantity, 0);
 
     return (
         <div className="space-y-8">
-            {/* Stats Grid */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                {stats.map((stat, i) => (
-                    <motion.div
-                        key={i}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.1 }}
-                    >
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium text-gray-500">
-                                    {stat.title}
-                                </CardTitle>
-                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${stat.color}`}>
-                                    <stat.icon className="w-4 h-4" />
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
-                                <p className={`text-xs flex items-center mt-1 ${stat.trend === 'up' ? 'text-green-600' : 'text-red-600'
-                                    }`}>
-                                    {stat.trend === 'up' ? (
-                                        <ArrowUpRight className="w-3 h-3 mr-1" />
-                                    ) : (
-                                        <ArrowDownRight className="w-3 h-3 mr-1" />
-                                    )}
-                                    {stat.change}
-                                    <span className="text-gray-400 ml-1">vs mois dernier</span>
-                                </p>
-                            </CardContent>
-                        </Card>
-                    </motion.div>
-                ))}
+            <div className="flex justify-between items-center">
+                <div>
+                    <h1 className="text-3xl font-heading font-bold text-white mb-2">TEDSAI Cortex</h1>
+                    <p className="text-zinc-400">Vue d'ensemble opérationnelle.</p>
+                </div>
+                <div className="text-sm text-cortex-primary bg-cortex-primary/10 px-3 py-1 rounded-full border border-cortex-primary/20">
+                    Système Opérationnel • v2.0
+                </div>
             </div>
 
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-7">
-                {/* Main Chart Area */}
-                <Card className="col-span-4 border-none shadow-md">
-                    <CardHeader>
-                        <CardTitle>Aperçu des performances</CardTitle>
+            {/* KPI Grid */}
+            <div className="grid md:grid-cols-3 gap-6">
+                {/* GARDEN - Emerald/Jungle Green */}
+                <Card className="relative overflow-hidden bg-gradient-to-br from-[#006400]/30 via-neutral-900 to-neutral-900 border-[#006400]/50 hover:border-[#006400] transition-all group">
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <Sprout className="w-24 h-24 text-[#006400]" />
+                    </div>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+                        <CardTitle className="text-sm font-bold text-[#006400] uppercase tracking-wider">Garden</CardTitle>
+                        <div className="p-2 bg-[#006400]/20 rounded-lg">
+                            <Sprout className="h-5 w-5 text-[#006400]" />
+                        </div>
                     </CardHeader>
-                    <CardContent>
-                        <div className="h-[350px] flex items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
-                            <p className="text-gray-400 text-sm">Graphique d'activité (Placeholder)</p>
-                            {/* Note: Integrate Recharts here later */}
+                    <CardContent className="relative z-10">
+                        <div className="text-3xl font-bold text-white mb-1">{inventoryItems.length} Lots</div>
+                        <p className="text-xs text-neutral-400">{totalHarvest} kg total en stock</p>
+                        <Link href="/admin/garden">
+                            <Button variant="ghost" size="sm" className="px-0 text-[#006400] hover:text-white flex items-center gap-2 group-hover:translate-x-1 transition-transform">
+                                Voir le jardin <ArrowRight className="w-3 h-3" />
+                            </Button>
+                        </Link>
+                    </CardContent>
+                </Card>
+
+                {/* CUISINE (viTEDia) - Gold/Bordeaux */}
+                <Card className="relative overflow-hidden bg-gradient-to-br from-[#D4A017]/30 via-neutral-900 to-neutral-900 border-[#D4A017]/50 hover:border-[#D4A017] transition-all group">
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <UtensilsCrossed className="w-24 h-24 text-[#D4A017]" />
+                    </div>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+                        <CardTitle className="text-sm font-bold text-[#D4A017] uppercase tracking-wider">viTEDia</CardTitle>
+                        <div className="p-2 bg-[#D4A017]/20 rounded-lg">
+                            <UtensilsCrossed className="h-5 w-5 text-[#D4A017]" />
+                        </div>
+                    </CardHeader>
+                    <CardContent className="relative z-10">
+                        <div className="text-3xl font-bold text-white mb-1">{activeOrders.length} Actives</div>
+                        <p className="text-xs text-neutral-400">{orders.filter(o => o.status === 'preparing').length} en préparation</p>
+                        <div className="flex gap-4 mt-4">
+                            <Link href="/admin/orders/board">
+                                <Button variant="ghost" size="sm" className="px-0 text-[#D4A017] hover:text-white flex items-center gap-2 group-hover:translate-x-1 transition-transform">
+                                    Commandes <ArrowRight className="w-3 h-3" />
+                                </Button>
+                            </Link>
+                            <Link href="/admin/restaurant">
+                                <Button variant="ghost" size="sm" className="px-0 text-[#D4A017]/80 hover:text-white flex items-center gap-2">
+                                    Galerie <ArrowRight className="w-3 h-3" />
+                                </Button>
+                            </Link>
                         </div>
                     </CardContent>
                 </Card>
 
-                {/* Recent Activity */}
-                <Card className="col-span-3 border-none shadow-md">
-                    <CardHeader>
-                        <CardTitle>Activité Récente</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-6">
-                            {[
-                                { user: 'Jean M.', action: 'a réservé une table pour 4', time: 'Il y a 2 min', type: 'reservation' },
-                                { user: 'Sarah K.', action: 'a commandé Panier Bio #1', time: 'Il y a 15 min', type: 'order' },
-                                { user: 'Admin', action: 'a mis à jour le Menu', time: 'Il y a 1h', type: 'system' },
-                                { user: 'Paul E.', action: 'nouveau message contact', time: 'Il y a 2h', type: 'message' },
-                            ].map((item, i) => (
-                                <div key={i} className="flex items-start gap-4">
-                                    <div className={`w-2 h-2 mt-2 rounded-full ${item.type === 'reservation' ? 'bg-indigo-500' :
-                                        item.type === 'order' ? 'bg-green-500' :
-                                            item.type === 'system' ? 'bg-blue-500' : 'bg-gray-500'
-                                        }`} />
-                                    <div>
-                                        <p className="text-sm font-medium text-gray-900">
-                                            <span className="font-bold">{item.user}</span> {item.action}
-                                        </p>
-                                        <p className="text-xs text-gray-500">{item.time}</p>
-                                    </div>
-                                </div>
-                            ))}
+                {/* SHOP/TEDSAI - Night Blue */}
+                <Card className="relative overflow-hidden bg-gradient-to-br from-[#0A2540]/50 via-neutral-900 to-neutral-900 border-[#0A2540]/60 hover:border-[#3498DB] transition-all group">
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <ShoppingBag className="w-24 h-24 text-[#3498DB]" />
+                    </div>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+                        <CardTitle className="text-sm font-bold text-[#3498DB] uppercase tracking-wider">Boutique</CardTitle>
+                        <div className="p-2 bg-[#3498DB]/20 rounded-lg">
+                            <ShoppingBag className="h-5 w-5 text-[#3498DB]" />
                         </div>
-                        <Button variant="outline" className="w-full mt-6">Voir tout l'historique</Button>
+                    </CardHeader>
+                    <CardContent className="relative z-10">
+                        <div className="text-3xl font-bold text-white mb-1">1 Promo</div>
+                        <p className="text-xs text-neutral-400">Générée par IA (Tomates)</p>
+                        <Link href="/admin/shop">
+                            <Button variant="ghost" size="sm" className="px-0 text-[#3498DB] hover:text-white flex items-center gap-2 group-hover:translate-x-1 transition-transform">
+                                Voir la boutique <ArrowRight className="w-3 h-3" />
+                            </Button>
+                        </Link>
                     </CardContent>
                 </Card>
+            </div>
+
+            {/* Quick Actions / Recent Activity */}
+            <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6">
+                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <TrendingUp className="w-5 h-5 text-cortex-secondary" />
+                        Performance du Jour
+                    </h3>
+                    <div className="space-y-4">
+                        <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg">
+                            <span className="text-neutral-300 text-sm">Chiffre d'affaires</span>
+                            <span className="text-white font-mono font-bold">45,200 CFA</span>
+                        </div>
+                        <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg">
+                            <span className="text-neutral-300 text-sm">Taux de perte</span>
+                            <span className="text-cortex-success font-mono font-bold">0.5%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6">
+                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <AlertCircle className="w-5 h-5 text-red-500" />
+                        Alertes Système
+                    </h3>
+                    <div className="space-y-3">
+                        {lowStockItems.length > 0 ? (
+                            lowStockItems.map(item => (
+                                <div key={item.id} className="flex gap-3 items-start text-sm p-3 border border-red-500/20 bg-red-500/5 rounded-lg">
+                                    <span className="w-2 h-2 rounded-full bg-red-500 mt-1.5" />
+                                    <div>
+                                        <strong className="text-red-400 block">Stock Faible : {item.name}</strong>
+                                        <span className="text-neutral-400">Il reste seulement {item.quantity}kg de {item.variety}.</span>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="flex gap-3 items-center text-sm p-3 border border-emerald-500/20 bg-emerald-500/5 rounded-lg">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                                <span className="text-neutral-400">Tous les stocks sont optimaux.</span>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );

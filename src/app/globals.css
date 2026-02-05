@@ -2,8 +2,133 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Global resets or additions if needed */
 body {
   margin: 0;
   padding: 0;
+  background-color: #0A0A0A;
+  color: #E0E0E0;
+}
+
+/* TipTap Editor Styles (Custom Prose Replacement) */
+.prose,
+.tiptap {
+  color: #e0e0e0;
+  line-height: 1.6;
+  outline: none !important;
+}
+
+.prose h1,
+.tiptap h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.prose h2,
+.tiptap h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+  color: white;
+}
+
+.prose h3,
+.tiptap h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.prose p,
+.tiptap p {
+  margin-bottom: 1rem;
+}
+
+/* Lists Styles - CRITICAL FIX */
+.tiptap ul,
+.prose ul:not([data-type="taskList"]) {
+  list-style-type: disc !important;
+  display: block !important;
+  padding-left: 2rem !important;
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.tiptap ol,
+.prose ol {
+  list-style-type: decimal !important;
+  display: block !important;
+  padding-left: 2rem !important;
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.tiptap li,
+.prose li {
+  display: list-item !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.tiptap li p,
+.prose li p {
+  margin: 0 !important;
+  display: inline !important;
+}
+
+/* Task List Styles */
+.tiptap ul[data-type="taskList"],
+.prose ul[data-type="taskList"] {
+  list-style: none !important;
+  padding: 0 !important;
+}
+
+.tiptap ul[data-type="taskList"] li,
+.prose ul[data-type="taskList"] li {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.tiptap ul[data-type="taskList"] input[type="checkbox"],
+.prose ul[data-type="taskList"] input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.25rem;
+  cursor: pointer;
+  accent-color: #a855f7;
+}
+
+/* Links */
+.prose a,
+.tiptap a {
+  color: #a855f7;
+  text-decoration: underline;
+}
+
+/* Tables in Editor */
+.prose table,
+.tiptap table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.prose th,
+.prose td,
+.tiptap th,
+.tiptap td {
+  border: 1px solid #374151;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.prose th,
+.tiptap th {
+  background-color: #1f2937;
 }

@@ -21,6 +21,11 @@ if (!isConfigValid && typeof window !== 'undefined') {
         .filter(([_, value]) => !value || value === 'undefined')
         .map(([key]) => key);
     console.warn('Firebase configuration is incomplete. Missing:', missingKeys.join(', '));
+}
+
+// Special check for Storage Bucket specific errors
+if (!firebaseConfig.storageBucket && typeof window !== 'undefined') {
+    console.error('CRITICAL: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET is missing! File uploads will fail.');
 } else if (!isConfigValid) {
     const missingKeys = Object.entries(firebaseConfig)
         .filter(([_, value]) => !value || value === 'undefined')

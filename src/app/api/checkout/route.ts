@@ -56,29 +56,35 @@ export async function POST(req: Request) {
         // but since we need session.id, we do it after.
         if (adminDb) {
             await adminDb.runTransaction(async (transaction) => {
-                // 1. Check & Reserve Stock
+                // 1. Check & Reserve Stock ONLY for Garden products
                 for (const item of items) {
-                    const productRef = adminDb!.collection('garden_products').doc(item.productId);
-                    const productDoc = await transaction.get(productRef);
+                    // Only garden products have inventory tracking in this specific collection
+                    if (item.category === 'garden') {
+                        const productRef = adminDb!.collection('garden_products').doc(item.productId);
+                        const productDoc = await transaction.get(productRef);
 
-                    if (!productDoc.exists) throw new Error(`Produit ${item.name} absent.`);
+                        if (!productDoc.exists) continue; // Skip if product managed elsewhere or deleted
 
-                    const currentStock = productDoc.data()?.stock || 0;
-                    if (currentStock < item.quantity) {
-                        throw new Error(`Stock insuffisant pour ${item.name}.`);
+                        const currentStock = productDoc.data()?.stock || 0;
+                        if (currentStock < item.quantity) {
+                            throw new Error(`Stock insuffisant pour ${item.name}.`);
+                        }
+
+                        transaction.update(productRef, {
+                            stock: currentStock - item.quantity,
+                            inStock: (currentStock - item.quantity) > 0
+                        });
                     }
-
-                    transaction.update(productRef, {
-                        stock: currentStock - item.quantity,
-                        inStock: (currentStock - item.quantity) > 0
-                    });
                 }
 
                 // 2. Create Order
                 const orderRef = adminDb!.collection('orders').doc();
                 transaction.set(orderRef, {
                     userId: userId || 'guest',
-                    items,
+                    items: items.map((i: any) => ({
+                        ...i,
+                        price: Math.round(i.price) // Ensure integer
+                    })),
                     subtotal,
                     tax,
                     shipping,

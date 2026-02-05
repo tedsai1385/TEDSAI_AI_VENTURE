@@ -32,7 +32,7 @@ export default function BlogPage() {
 
     const posts = [
         {
-            title: 'Comment l\'IA optimise l\'irrigation de nos jardins',
+            title: 'Comment l\'IA optimise l\'irrigation de nos gardens',
             excerpt: 'Découvrez comment nos algorithmes prédictifs réduisent la consommation d\'eau de 40% tout en augmentant les rendements.',
             category: 'Intelligence Artificielle',
             author: 'Dr. TED',

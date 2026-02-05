@@ -283,36 +283,123 @@ class TEDAssistant {
             return;
         }
 
-        // 2. Fallback / Free chat (pseudo-intelligence)
+        // 2. Fallback / Free chat - Try basic rules first
         const lower = text.toLowerCase();
 
-        // Salutations
-        if (['bonjour', 'hello', 'salut', 'hi'].some(w => lower.includes(w))) {
-            this.addMessage('ted', "Bonjour ! Je suis TED, votre assistant. Comment puis-je vous aider ?");
+        // Salutations simples
+        if (['bonjour', 'hello', 'salut', 'hi'].some(w => lower.includes(w)) && text.length < 20) {
+            this.addMessage('ted', "Bonjour ! Je suis TED, votre assistant intelligent. Comment puis-je vous aider ?");
             this.greetUser();
+            return;
+        }
 
-        } else if (['prix', 'coût', 'tarif', 'menu', 'carte'].some(w => lower.includes(w))) {
+        // Prix et menu - Questions fréquentes
+        if (['prix', 'coût', 'tarif', 'menu', 'carte'].some(w => lower.includes(w))) {
             this.addMessage('ted', "Nos plats varient entre 8 000 et 15 000 FCFA. Voici nos options :");
             this.showScenarios([
                 { icon: 'fa-utensils', text: 'Voir le Menu', action: 'link:pages/vitedia.html' },
                 { icon: 'fa-calendar-check', text: 'Réserver une table', action: 'restaurant_flow' }
             ]);
+            return;
+        }
 
-        } else if (['ia', 'business', 'conseil', 'audit'].some(w => lower.includes(w))) {
-            this.addMessage('ted', "Nos solutions IA pour entreprises commencent par un audit.");
+        // Questions IA/Business
+        if (['ia', 'business', 'conseil', 'audit', 'entreprise'].some(w => lower.includes(w)) && text.length < 30) {
+            this.addMessage('ted', "Nos solutions IA pour entreprises commencent par un audit gratuit.");
             this.showScenarios([
                 { icon: 'fa-brain', text: 'Solutions IA', action: 'link:pages/solutions-ia.html' },
                 { icon: 'fa-envelope', text: 'Demander un devis', action: 'contact_flow' }
             ]);
+            return;
+        }
 
-        } else {
-            this.addMessage('ted', "Je ne suis pas sûr de comprendre. Souhaitez-vous parler à un expert humain ?");
+        // 3. Pour toutes les autres questions : utiliser Gemini AI
+        this.callGeminiAPI(text);
+    }
+
+    // Nouvelle méthode : Appel à l'API Gemini
+    async callGeminiAPI(userMessage) {
+        // Afficher un indicateur de chargement
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'ted-message ted ted-loading';
+        loadingDiv.innerHTML = `
+            <img src="assets/images/logos/tedsai_logo.jpg" alt="TED" class="ted-message-avatar">
+            <div class="ted-message-content">
+                <span class="typing-indicator">
+                    <span></span><span></span><span></span>
+                </span>
+                TED réfléchit...
+            </div>
+        `;
+        const messagesContainer = document.getElementById('ted-messages');
+        messagesContainer.appendChild(loadingDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        try {
+            // Préparer l'historique de conversation (derniers 5 messages)
+            const recentHistory = this.conversationHistory
+                .slice(-10)
+                .map(msg => ({
+                    role: msg.sender === 'user' ? 'user' : 'assistant',
+                    content: msg.content
+                }));
+
+            // Appel à l'API
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: userMessage,
+                    history: recentHistory,
+                    sessionId: this.sessionId,
+                    userId: localStorage.getItem('ted_user_id') || 'anonymous'
+                })
+            });
+
+            // Retirer l'indicateur de chargement
+            loadingDiv.remove();
+
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.error) {
+                console.error('API returned error:', data.error);
+                this.addMessage('ted', "Désolé, je rencontre un problème technique momentané. Puis-je vous orienter vers nos pages principales ?");
+                this.greetUser();
+                return;
+            }
+
+            // Afficher la réponse de Gemini
+            this.addMessage('ted', data.response);
+
+            // Log metadata si disponible
+            if (data.metadata) {
+                console.log('📊 Chatbot Metadata:', data.metadata);
+            }
+
+        } catch (error) {
+            console.error('Erreur lors de l\'appel à l\'API Chatbot:', error);
+
+            // Retirer l'indicateur de chargement si encore présent
+            if (loadingDiv.parentNode) {
+                loadingDiv.remove();
+            }
+
+            // Message d'erreur convivial
+            this.addMessage('ted', "Désolé, je n'arrive pas à me connecter à mes services cognitifs en ce moment. Puis-je vous aider autrement ?");
             this.showScenarios([
-                { icon: 'fa-envelope', text: 'Laisser un message', action: 'contact_flow' },
-                { icon: 'fa-rotate-right', text: 'Retour au début', action: 'restart' }
+                { icon: 'fa-utensils', text: 'Réserver au restaurant', action: 'restaurant_flow' },
+                { icon: 'fa-envelope', text: 'Nous contacter', action: 'contact_flow' },
+                { icon: 'fa-rotate-right', text: 'Retour au menu', action: 'home' }
             ]);
         }
     }
+
 
     finalizeBooking() {
         const { people, date, time, name } = this.bookingData;

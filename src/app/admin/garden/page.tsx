@@ -1,117 +1,96 @@
 'use client';
 
-import { useState } from 'react';
+import { ParcelGrid } from '@/components/admin/garden/ParcelGrid';
+import { HarvestModal } from '@/components/admin/garden/HarvestModal';
+import { useInventoryStore } from '@/lib/store/inventory-store';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import {
-    Plus,
-    Search,
-    Filter,
-    Edit,
-    Trash2,
-    Sprout,
-    AlertTriangle,
-    RotateCcw
-} from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Plus, ArrowRight, Sprout } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { seedProducts } from '@/lib/firebase/seed';
 
-export default function GardenAdmin() {
-    const [products] = useState([
-        { id: 1, name: 'Tomates Grappe', stock: '245 kg', status: 'in_stock', harvest: 'Demain', category: 'Légumes' },
-        { id: 2, name: 'Piment Jaune', stock: '12 kg', status: 'low_stock', harvest: 'Aujourd\'hui', category: 'Épices' },
-        { id: 3, name: 'Menthe Fraîche', stock: '50 bouquets', status: 'in_stock', harvest: 'Permanent', category: 'Herbes' },
-        { id: 4, name: 'Aubergines', stock: '0 kg', status: 'out_of_stock', harvest: 'Dans 3 jours', category: 'Légumes' },
-    ]);
+export default function GardenPage() {
+    const items = useInventoryStore((state) => state.items);
+    const totalHarvest = items.reduce((acc, item) => acc + item.quantity, 0);
+    const [isHarvestModalOpen, setIsHarvestModalOpen] = useState(false);
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="space-y-8">
+            <HarvestModal
+                isOpen={isHarvestModalOpen}
+                onClose={() => setIsHarvestModalOpen(false)}
+                parcelId="P-01"
+                parcelName="Serre Alpha"
+            />
+
+            {/* Header / KPI */}
+            <div className="flex flex-col md:flex-row justify-between items-end gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Jardin & Élevage</h1>
-                    <p className="text-gray-500 text-sm">Suivi des récoltes, stock et production.</p>
+                    <h1 className="text-3xl font-heading font-bold text-white mb-2">Garden Live</h1>
+                    <p className="text-zinc-400">Monitoring temps réel des serres & récoltes.</p>
                 </div>
-                <div className="flex gap-2">
-                    <Button variant="outline">
-                        <RotateCcw className="w-4 h-4 mr-2" />
-                        Historique Récoltes
-                    </Button>
-                    <Button className="bg-green-600 hover:bg-green-700 text-white">
-                        <Plus className="w-4 h-4 mr-2" />
-                        Nouvelle Production
+                <div className="flex gap-3">
+                    <div className="bg-dark-surface border border-dark-border px-4 py-2 rounded-lg text-right">
+                        <div className="text-xs text-zinc-500 uppercase tracking-wider">Récolte du jour</div>
+                        <div className="text-xl font-bold text-cortex-success">{totalHarvest} kg</div>
+                    </div>
+                    <Button
+                        onClick={() => setIsHarvestModalOpen(true)}
+                        className="bg-cortex-primary hover:bg-cortex-primary-light h-full"
+                    >
+                        <Plus className="w-5 h-5 mr-2" />
+                        Nouvelle Récolte
                     </Button>
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                {/* Toolbar */}
-                <div className="p-4 border-b border-gray-200 flex flex-col md:flex-row gap-4">
-                    <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <input
-                            type="text"
-                            placeholder="Rechercher un produit..."
-                            className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-100 focus:border-green-500 mx-0"
-                        />
+            {/* Main Interactive Grid */}
+            <div>
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                        <Sprout className="w-5 h-5 text-cortex-primary" />
+                        Parcelles Actives
+                    </h2>
+                    <Button variant="ghost" className="text-cortex-secondary text-sm">
+                        Voir journal complet <ArrowRight className="w-4 h-4 ml-1" />
+                    </Button>
+                </div>
+                <ParcelGrid />
+            </div>
+
+            {/* Quick Actions / Recent Logs */}
+            <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-dark-surface border border-dark-border rounded-xl p-6">
+                    <h3 className="font-semibold text-white mb-4">Dernières Récoltes</h3>
+                    <div className="space-y-3">
+                        {items.slice(0, 3).map((item) => (
+                            <div key={item.id} className="flex justify-between items-center py-2 border-b border-white/5 last:border-0">
+                                <div>
+                                    <div className="font-medium text-white">{item.name} <span className="text-zinc-500 text-xs">({item.variety})</span></div>
+                                    <div className="text-xs text-zinc-500">Parcelle {item.parcelId} • Qualité {item.quality}</div>
+                                </div>
+                                <div className="text-cortex-success font-mono font-bold">+{item.quantity}kg</div>
+                            </div>
+                        ))}
                     </div>
                 </div>
 
-                {/* Inventory Table */}
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left font-normal">
-                        <thead>
-                            <tr className="bg-gray-50 border-b border-gray-200 text-gray-500 text-xs uppercase tracking-wider">
-                                <th className="px-6 py-4 font-semibold">Produit</th>
-                                <th className="px-6 py-4 font-semibold">Catégorie</th>
-                                <th className="px-6 py-4 font-semibold">Stock Actuel</th>
-                                <th className="px-6 py-4 font-semibold">Prochaine Récolte</th>
-                                <th className="px-6 py-4 font-semibold text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                            {products.map((product, i) => (
-                                <motion.tr
-                                    key={product.id}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: i * 0.05 }}
-                                    className="hover:bg-gray-50 transition-colors"
-                                >
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center text-green-600">
-                                                <Sprout className="w-5 h-5" />
-                                            </div>
-                                            <span className="font-medium text-gray-900">{product.name}</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <Badge variant="outline" className="text-gray-600 bg-gray-50">{product.category}</Badge>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2">
-                                            <span className="font-semibold text-gray-900">{product.stock}</span>
-                                            {product.status === 'low_stock' && (
-                                                <AlertTriangle className="w-4 h-4 text-amber-500" />
-                                            )}
-                                            {product.status === 'out_of_stock' && (
-                                                <Badge className="bg-red-100 text-red-700 hover:bg-red-200 border-none">Rupture</Badge>
-                                            )}
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-gray-500">
-                                        {product.harvest}
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex justify-end gap-2">
-                                            <Button variant="ghost" size="sm" className="text-blue-600 hover:bg-blue-50">
-                                                <Edit className="w-4 h-4" />
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </motion.tr>
-                            ))}
-                        </tbody>
-                    </table>
+                <div className="bg-dark-surface border border-dark-border rounded-xl p-6 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                        <Sprout className="w-32 h-32 text-cortex-primary" />
+                    </div>
+                    <h3 className="font-semibold text-white mb-2">Copilot Insights</h3>
+                    <p className="text-zinc-400 text-sm mb-4">Analyse basée sur les 7 derniers jours.</p>
+                    <div className="space-y-2">
+                        <div className="flex items-start gap-3 bg-white/5 p-3 rounded-lg border border-white/5">
+                            <span className="text-lg">💡</span>
+                            <p className="text-sm text-zinc-300">
+                                Le <strong className="text-white">Basilic</strong> est en surproduction (+15%). Pensez à lancer une promo "Pesto" au restaurant.
+                            </p>
+                        </div>
+                    </div>
+                    <Button variant="outline" className="w-full mt-4 border-cortex-primary/30 text-cortex-primary hover:bg-cortex-primary/10">
+                        Générer Prédictions
+                    </Button>
                 </div>
             </div>
         </div>

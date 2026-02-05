@@ -1,0 +1,206 @@
+{
+    "siteInfo": {
+        "name": "TEDSAI Complex",
+        "tagline": "De la Data à l'Assiette",
+        "description": "Un écosystème intelligent unifiant Intelligence Artificielle, Gastronomie Durable et Agriculture Urbaine au Cameroun",
+        "contact": {
+            "email": "contact@tedsai.cm",
+            "phone": "+237 6XX XXX XXX",
+            "location": "Yaoundé, Cameroun"
+        }
+    },
+    "pages": [
+        {
+            "id": "home",
+            "url": "/",
+            "title": "TEDSAI Complex - Accueil",
+            "content": "TEDSAI Complex est un écosystème innovant qui unit trois piliers : Intelligence Artificielle pour les entreprises, Restaurant viTEDia pour la gastronomie durable, et SelecTED Gardens pour l'agriculture urbaine. Notre mission est de propulser l'Afrique vers l'industrie 4.0 tout en garantissant une production alimentaire locale et traçable.",
+            "keywords": [
+                "accueil",
+                "tedsai",
+                "écosystème",
+                "ia",
+                "restaurant",
+                "agriculture",
+                "cameroun"
+            ],
+            "category": "général"
+        },
+        {
+            "id": "solutions-ia",
+            "url": "/pages/solutions-ia.html",
+            "title": "Solutions IA pour Entreprises",
+            "content": "TEDSAI propose des solutions d'intelligence artificielle sur mesure pour les entreprises : automatisation des processus, chatbots intelligents, analyse prédictive, vision par ordinateur, traitement du langage naturel. Nous accompagnons les PME et grandes entreprises dans leur transformation digitale avec des audits gratuits et des solutions adaptées au contexte africain.",
+            "keywords": [
+                "ia",
+                "intelligence artificielle",
+                "automatisation",
+                "chatbot",
+                "business",
+                "entreprise",
+                "audit",
+                "conseil"
+            ],
+            "category": "ia"
+        },
+        {
+            "id": "vitedia",
+            "url": "/pages/vitedia.html",
+            "title": "Restaurant viTEDia - Gastronomie Traçable",
+            "content": "viTEDia est notre restaurant de gastronomie durable où chaque ingrédient raconte son histoire. Menu fusion camerounais-international, produits 100% du jardin SelecTED avec traçabilité QR code. Réservation en ligne disponible. Prix entre 8000 et 15000 FCFA. Horaires : Lundi-Dimanche 11h-22h.",
+            "keywords": [
+                "restaurant",
+                "vitedia",
+                "gastronomie",
+                "traçabilité",
+                "menu",
+                "réservation",
+                "cuisine",
+                "bio"
+            ],
+            "category": "restaurant"
+        },
+        {
+            "id": "garden",
+            "url": "/pages/garden.html",
+            "title": "SelecTED Gardens - Agriculture Urbaine",
+            "content": "SelecTED Gardens est notre jardin urbain intelligent : culture d'épices, légumes et plantes aromatiques 100% bio. Production locale avec hydroponie et IoT. Épicerie fine avec produits frais, élevage de poulets et lapins. Visites guidées disponibles sur réservation.",
+            "keywords": [
+                "jardin",
+                "agriculture",
+                "urbain",
+                "bio",
+                "épicerie",
+                "élevage",
+                "produits frais",
+                "local"
+            ],
+            "category": "jardin"
+        },
+        {
+            "id": "ecosystem",
+            "url": "/pages/ecosystem.html",
+            "title": "L'Écosystème TEDSAI",
+            "content": "Notre écosystème connecte trois piliers : TEDSAI IA (technologie et conseil), viTEDia (restauration durable), et SelecTED Gardens (agriculture urbaine). Cette synergie crée un circuit court de la graine à l'assiette, avec traçabilité totale et impact environnemental positif.",
+            "keywords": [
+                "écosystème",
+                "vision",
+                "piliers",
+                "synergie",
+                "circuit court",
+                "traçabilité"
+            ],
+            "category": "général"
+        },
+        {
+            "id": "observatoire",
+            "url": "/pages/observatoire.html",
+            "title": "L'Observatoire TEDSAI",
+            "content": "L'Observatoire TEDSAI est notre plateforme d'analyses économiques, études de cas et veille technologique sur l'IA, l'agritech et l'innovation en Afrique. Participez aux discussions et découvrez les tendances qui façonnent le continent.",
+            "keywords": [
+                "observatoire",
+                "analyses",
+                "études",
+                "veille",
+                "technologie",
+                "discussions",
+                "innovation"
+            ],
+            "category": "général"
+        },
+        {
+            "id": "contact",
+            "url": "/pages/contact.html",
+            "title": "Contactez TEDSAI",
+            "content": "Contactez-nous pour un devis, une réservation au restaurant, ou toute question. Email: contact@tedsai.cm, Téléphone: +237 6XX XXX XXX, Localisation: Yaoundé, Cameroun.",
+            "keywords": [
+                "contact",
+                "devis",
+                "email",
+                "téléphone",
+                "adresse",
+                "localisation"
+            ],
+            "category": "général"
+        }
+    ],
+    "services": [
+        {
+            "name": "Automatisation IA",
+            "description": "Automatisation des processus métier avec intelligence artificielle",
+            "category": "ia"
+        },
+        {
+            "name": "Chatbots Intelligents",
+            "description": "Assistants virtuels personnalisés pour service client",
+            "category": "ia"
+        },
+        {
+            "name": "Analyse Prédictive",
+            "description": "Prévisions et optimisation basées sur vos données",
+            "category": "ia"
+        },
+        {
+            "name": "Traçabilité Alimentaire",
+            "description": "Système QR code pour tracer l'origine des produits",
+            "category": "ia"
+        },
+        {
+            "name": "Menu Fusion",
+            "description": "Cuisine camerounaise et internationale avec produits locaux",
+            "category": "restaurant"
+        },
+        {
+            "name": "Produits Bio",
+            "description": "Légumes, épices, herbes aromatiques 100% biologiques",
+            "category": "jardin"
+        },
+        {
+            "name": "Élevage Local",
+            "description": "Poulets et lapins élevés selon normes bio",
+            "category": "jardin"
+        }
+    ],
+    "faq": [
+        {
+            "question": "Qu'est-ce que TEDSAI Complex ?",
+            "answer": "TEDSAI Complex est un écosystème innovant au Cameroun qui combine Intelligence Artificielle (services B2B), Gastronomie Durable (restaurant viTEDia), et Agriculture Urbaine (SelecTED Gardens). Notre mission est de créer un circuit court intelligent de la graine à l'assiette.",
+            "category": "général"
+        },
+        {
+            "question": "Comment réserver une table chez viTEDia ?",
+            "answer": "Vous pouvez réserver via notre chatbot TED, directement sur la page viTEDia, ou en nous contactant par email (contact@tedsai.cm) ou téléphone (+237 6XX XXX XXX).",
+            "category": "restaurant"
+        },
+        {
+            "question": "Quels sont vos services d'IA pour entreprises ?",
+            "answer": "Nous proposons : automatisation des processus, chatbots intelligents, analyse prédictive, vision par ordinateur, traitement du langage naturel, et systèmes de traçabilité. Nous commençons toujours par un audit gratuit pour comprendre vos besoins.",
+            "category": "ia"
+        },
+        {
+            "question": "Vos produits sont-ils vraiment bio ?",
+            "answer": "Oui ! 100% de nos produits du jardin SelecTED sont cultivés selon les normes biologiques, sans pesticides ni engrais chimiques. Nous utilisons des techniques modernes comme l'hydroponie et l'IoT pour optimiser la production tout en restant naturel.",
+            "category": "jardin"
+        },
+        {
+            "question": "Où êtes-vous situés ?",
+            "answer": "Nous sommes basés à Yaoundé, Cameroun. Vous pouvez nous localiser sur Google Maps via notre site web.",
+            "category": "général"
+        },
+        {
+            "question": "Quels sont les prix chez viTEDia ?",
+            "answer": "Nos plats varient entre 8 000 et 15 000 FCFA. Nous proposons une cuisine fusion de qualité avec des produits 100% locaux et traçables.",
+            "category": "restaurant"
+        },
+        {
+            "question": "Proposez-vous des visites du jardin ?",
+            "answer": "Oui ! Nous organisons des visites guidées de SelecTED Gardens sur réservation. Contactez-nous pour planifier votre visite.",
+            "category": "jardin"
+        },
+        {
+            "question": "Comment fonctionne la traçabilité des produits ?",
+            "answer": "Chaque produit dispose d'un QR code unique qui permet de tracer son parcours complet : date de plantation, conditions de culture, date de récolte, et transformation jusqu'à votre assiette.",
+            "category": "général"
+        }
+    ]
+}

@@ -2,6 +2,7 @@ import { useCart } from '@/context/CartContext';
 import Image from 'next/image';
 import styles from './CartSidebar.module.css';
 import { loadStripe } from '@stripe/stripe-js';
+import { ShoppingBag, X, ShoppingBasket, XCircle, Minus, Plus } from 'lucide-react';
 
 interface CartSidebarProps {
     isOpen: boolean;
@@ -15,6 +16,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
     const items = cart.items;
     const total = cart.total;
 
+    // ... handleCheckout logic ... 
     const handleCheckout = async () => {
         try {
             const stripe = await stripePromise;
@@ -55,11 +57,11 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                     {/* Header */}
                     <div className={styles.header}>
                         <h2 className={styles.title}>
-                            <i className="fa-solid fa-bag-shopping" style={{ color: '#00B207' }}></i>
+                            <ShoppingBag size={24} style={{ color: '#00B207', marginRight: '0.5rem' }} />
                             Mon Panier ({items.length})
                         </h2>
                         <button onClick={onClose} className={styles.closeBtn}>
-                            <i className="fa-solid fa-times"></i>
+                            <X size={24} />
                         </button>
                     </div>
 
@@ -68,7 +70,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                         {items.length === 0 ? (
                             <div className={styles.emptyState}>
                                 <div className={styles.emptyIcon}>
-                                    <i className="fa-solid fa-basket-shopping"></i>
+                                    <ShoppingBasket size={48} />
                                 </div>
                                 <p className="text-xl font-medium">Votre panier est vide</p>
                                 <button onClick={onClose} className={styles.continueBtn}>
@@ -94,7 +96,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                                                 onClick={() => removeItem(item.productId)}
                                                 className={styles.removeBtn}
                                             >
-                                                <i className="fa-solid fa-times-circle text-lg"></i>
+                                                <XCircle size={20} />
                                             </button>
                                         </div>
                                         <p className={styles.itemVariety}>{item.variety}</p>

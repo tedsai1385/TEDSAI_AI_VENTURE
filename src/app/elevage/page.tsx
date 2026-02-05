@@ -25,7 +25,7 @@ export default function ElevagePage() {
         {
             icon: Sprout,
             title: 'Alimentation Bio',
-            description: 'Nourris exclusivement avec des grains biologiques et des végétaux de notre jardin.',
+            description: 'Nourris exclusivement avec des grains biologiques et des végétaux de notre garden.',
             color: 'text-green-500 bg-green-50'
         },
         {

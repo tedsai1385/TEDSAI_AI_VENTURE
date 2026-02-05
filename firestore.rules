@@ -1,32 +1,32 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
+
     // ========================================
     // HELPER FUNCTIONS
     // ========================================
-    
+
     function isAuthenticated() {
       return request.auth != null;
     }
-    
+
     function isOwner(userId) {
       return isAuthenticated() && request.auth.uid == userId;
     }
-    
+
     // Check if user has 'admin' or 'super_admin' role in their user profile
     function isAdmin() {
-      return isAuthenticated() && 
+      return isAuthenticated() &&
              exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-             (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'super_admin' || 
+             (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'super_admin' ||
               get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
     }
-    
+
     // Specific Role Checks (Future granularity if needed)
     function isGardenAdmin() {
       return isAdmin() || (isAuthenticated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin_garden');
     }
-    
+
     function isRestoAdmin() {
       return isAdmin() || (isAuthenticated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin_resto');
     }
@@ -34,33 +34,43 @@ service cloud.firestore {
     // ========================================
     // USERS COLLECTION
     // ========================================
-    
+
     match /users/{userId} {
       // Direct access for the owner - NO admin check here to avoid circularity
       allow read: if isAuthenticated() && request.auth.uid == userId;
       // Admin access to other profiles
       allow read: if isAdmin();
-      
+
       allow create: if isAuthenticated() && request.auth.uid == userId;
-      allow update: if isAuthenticated() && request.auth.uid == userId && 
+      allow update: if isAuthenticated() && request.auth.uid == userId &&
                        (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']) || isAdmin());
       allow delete: if isAdmin();
     }
-    
+
     // ========================================
     // PUBLIC CONTENT MODULES (ReadOnly Public, Write Admin)
     // ========================================
-    
+
     // Restaurant Menu
     match /vitedia_menu/{menuId} {
       allow read: if true;
       allow write: if isRestoAdmin();
     }
-    
+
     // Garden Products (Inventory & Traceability)
     match /garden_products/{productId} {
       allow read: if true;
       allow write: if isGardenAdmin();
+    }
+
+    match /gallery/{photoId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // Packs (Shop)
+    match /packs/{packId} {
+        allow read: if true;
+        allow write: if isAuthenticated();
     }
 
       // Garden Inventory (Internal management if separate)
@@ -68,13 +78,19 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isGardenAdmin();
     }
-    
+
     // Shop Products
     match /epicerie_products/{productId} {
       allow read: if true;
       allow write: if isAdmin();
     }
-    
+
+    // Portfolio Items
+    match /portfolio_items/{itemId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // Elevage Stats & Services
     match /elevage_stats/{statId} {
       allow read: if true;
@@ -90,27 +106,62 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAdmin();
     }
-    
+
     // ========================================
-    // BLOG (Observatoire)
+    // OBSERVATOIRE (Data-Driven Content Hub)
     // ========================================
-    
-    match /observatoire_posts/{postId} {
-      // Public validation: Published only. Admin sees everything.
+
+    // Articles (avec workflow de validation)
+    // Articles (avec workflow de validation)
+    match /articles/{articleId} {
+      // Public: Published only. Admin sees everything.
       allow read: if (resource.data.status == 'published') || isAdmin();
-      
-      // Submission: Auth users can create "pending" posts
-      allow create: if isAuthenticated() && request.resource.data.status == 'pending';
-      
-      // Update: Admin Only (Publish/Reject)
+
+      // Create: Admin only for now (simplified)
+      allow create: if isAdmin();
+
+      // Update: Admin only
       allow update: if isAdmin();
+      
+      // Delete: Admin only
       allow delete: if isAdmin();
     }
-    
+
+    // Metrics (Agricultural Data Simulation)
+    match /metrics/{metricId} {
+      // Public read for live dashboard
+      allow read: if true;
+      
+      // Write: Admin or system (simulation)
+      allow write: if isAdmin();
+    }
+
+    // Newsletter Subscribers
+    match /newsletter_subscribers/{email} {
+      // Users can only read their own subscription
+      allow read: if isAuthenticated();
+      
+      // Anyone can subscribe (email verification recommended)
+      allow create: if true;
+      
+      // Users can update their own interests
+      allow update: if isAuthenticated();
+      
+      // Admin can delete
+      allow delete: if isAdmin();
+    }
+
+    // Authors (Public Profiles for Articles)
+    match /authors/{authorId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+
     // ========================================
     // USER TRANSACTIONS
     // ========================================
-    
+
     // Reservations
     match /reservations/{reservationId} {
       allow read: if isOwner(resource.data.userId) || isRestoAdmin();
@@ -118,7 +169,7 @@ service cloud.firestore {
       allow update: if isRestoAdmin(); // Confirm/Reject
       allow delete: if isRestoAdmin();
     }
-    
+
     // Orders (Shop)
     match /orders/{orderId} {
       allow read: if isOwner(resource.data.userId) || isAdmin();
@@ -126,14 +177,16 @@ service cloud.firestore {
       allow update: if isAdmin(); // Update status
       allow delete: if false; // Archive only
     }
-    
+
     // ========================================
     // SYSTEM & UTILS
     // ========================================
-    
+
     // Chat Sessions
     match /chatSessions/{sessionId} {
-      allow read, write: if true; // Open for demo purposes (or refine to owner)
+      // Allow read/write to the owner of the chat session, and read to admins
+      allow read: if isOwner(resource.data.userId) || isAdmin();
+      allow write: if isOwner(resource.data.userId);
     }
 
     // Media (Images)
@@ -141,13 +194,13 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAdmin();
     }
-    
+
     // Logs (Admin Only)
     match /logs/{logId} {
       allow read: if isAdmin();
       allow create: if isAdmin(); // System logs
     }
-    
+
     // Site Content (Public read, Admin write)
     match /site_content/{docId} {
       allow read: if true; // Public access for chatbot

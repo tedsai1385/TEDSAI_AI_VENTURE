@@ -1,61 +1,108 @@
-import * as React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import React from 'react';
+import { clsx } from 'clsx';
 
-const buttonVariants = cva(
-    // Base styles
-    'inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
-    {
-        variants: {
-            variant: {
-                primary:
-                    'bg-gradient-to-r from-primary-600 to-secondary-600 text-white hover:from-primary-700 hover:to-secondary-700 shadow-md hover:shadow-lg',
-                secondary:
-                    'bg-white text-primary-600 border-2 border-primary-600 hover:bg-primary-50',
-                outline:
-                    'border-2 border-gray-300 bg-transparent hover:bg-gray-50 text-gray-700',
-                ghost:
-                    'hover:bg-gray-100 text-gray-700',
-                vitedia:
-                    'bg-gradient-to-r from-vitedia-primary to-orange-600 text-white hover:shadow-xl',
-                garden:
-                    'bg-gradient-to-r from-garden-primary to-green-700 text-white hover:shadow-xl',
-            },
-            size: {
-                sm: 'h-9 px-4 text-sm',
-                md: 'h-11 px-6 text-base',
-                lg: 'h-14 px-8 text-lg',
-                xl: 'h-16 px-10 text-xl',
-                icon: 'h-10 w-10',
-            },
-            rounded: {
-                default: 'rounded-lg',
-                full: 'rounded-full',
-                none: 'rounded-none',
-            },
-        },
-        defaultVariants: {
-            variant: 'primary',
-            size: 'md',
-            rounded: 'default',
-        },
-    }
-);
-
-export interface ButtonProps
-    extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-    asChild?: boolean;
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    variant?: 'primary' | 'secondary' | 'ghost' | 'accent' | 'outline';
+    size?: 'sm' | 'md' | 'lg';
+    fullWidth?: boolean;
     loading?: boolean;
+    leftIcon?: React.ReactNode;
+    rightIcon?: React.ReactNode;
+    children: React.ReactNode;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className, variant, size, rounded, loading, children, disabled, ...props }, ref) => {
+/**
+ * Composant Button TEDSAI
+ * Basé sur le design system consolidé
+ * 
+ * Variantes:
+ * - primary: Vert Forêt (Actions principales)
+ * - secondary: Bleu Nuit (Actions secondaires)
+ * - ghost: Transparent (Actions tertiaires)
+ * - accent: Or Chaud (Actions premium)
+ * - outline: Bordure seule
+ */
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+    (
+        {
+            variant = 'primary',
+            size = 'md',
+            fullWidth = false,
+            loading = false,
+            disabled = false,
+            leftIcon,
+            rightIcon,
+            className,
+            children,
+            ...props
+        },
+        ref
+    ) => {
+        const baseStyles = clsx(
+            'inline-flex items-center justify-center',
+            'font-medium rounded-lg',
+            'transition-all duration-250',
+            'focus:outline-none focus:ring-2 focus:ring-offset-2',
+            'disabled:opacity-50 disabled:cursor-not-allowed',
+            {
+                'w-full': fullWidth,
+                'cursor-wait': loading,
+            }
+        );
+
+        const variantStyles = {
+            primary: clsx(
+                'bg-[var(--color-primary)] text-white',
+                'hover:bg-[var(--color-primary-light)]',
+                'focus:ring-[var(--color-primary)]',
+                'shadow-md hover:shadow-lg',
+                'active:scale-95'
+            ),
+            secondary: clsx(
+                'bg-[var(--color-secondary)] text-white',
+                'hover:bg-[var(--color-secondary-light)]',
+                'focus:ring-[var(--color-secondary)]',
+                'shadow-md hover:shadow-lg',
+                'active:scale-95'
+            ),
+            ghost: clsx(
+                'bg-transparent text-[var(--color-text-primary)]',
+                'hover:bg-[var(--color-primary-50)]',
+                'focus:ring-[var(--color-primary)]',
+                'active:scale-95'
+            ),
+            outline: clsx(
+                'bg-transparent text-[var(--color-text-primary)]',
+                'border-2 border-[var(--color-border)]',
+                'hover:bg-[var(--color-primary-50)] hover:border-[var(--color-primary)]',
+                'focus:ring-[var(--color-primary)]',
+                'active:scale-95'
+            ),
+            accent: clsx(
+                'bg-[var(--color-accent)] text-white',
+                'hover:bg-[var(--color-accent-light)]',
+                'focus:ring-[var(--color-accent)]',
+                'shadow-[var(--shadow-accent)] hover:shadow-xl',
+                'active:scale-95'
+            ),
+        };
+
+        const sizeStyles = {
+            sm: 'px-3 py-1.5 text-sm gap-1.5',
+            md: 'px-5 py-2.5 text-base gap-2',
+            lg: 'px-7 py-3.5 text-lg gap-2.5',
+        };
+
         return (
             <button
-                className={cn(buttonVariants({ variant, size, rounded, className }))}
                 ref={ref}
                 disabled={disabled || loading}
+                className={clsx(
+                    baseStyles,
+                    variantStyles[variant],
+                    sizeStyles[size],
+                    className
+                )}
                 {...props}
             >
                 {loading && (
@@ -80,12 +127,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                         />
                     </svg>
                 )}
-                {children}
+                {!loading && leftIcon && <span>{leftIcon}</span>}
+                <span>{children}</span>
+                {!loading && rightIcon && <span>{rightIcon}</span>}
             </button>
         );
     }
 );
 
 Button.displayName = 'Button';
-
-export { Button, buttonVariants };

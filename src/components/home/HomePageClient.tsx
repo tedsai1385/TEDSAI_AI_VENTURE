@@ -74,7 +74,7 @@ export default function HomePageClient() {
                         {/* Description */}
                         <p className="text-xl text-white/95 mb-8 max-w-2xl leading-relaxed drop-shadow-md">
                             Un écosystème intelligent unifiant <strong className="text-white font-semibold">Intelligence Artificielle</strong>,
-                            <strong className="text-white font-semibold"> Agriculture Urbaine</strong>, <strong className="text-white font-semibold">Élevage Durable</strong> et
+                            <strong className="text-white font-semibold"> SelecTED Garden</strong>, <strong className="text-white font-semibold">Élevage Durable</strong> et
                             <strong className="text-white font-semibold"> Gastronomie Traçable</strong> au cœur du Cameroun.
                         </p>
 
@@ -82,7 +82,7 @@ export default function HomePageClient() {
                         <div className="flex flex-wrap gap-4">
                             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                                 <Link href="/ecosystem">
-                                    <Button size="lg" rounded="full" className="shadow-xl hover:shadow-2xl">
+                                    <Button size="lg" className="rounded-full shadow-xl hover:shadow-2xl">
                                         Découvrir l'Écosystème
                                         <ArrowRight className="w-5 h-5" />
                                     </Button>
@@ -212,7 +212,7 @@ export default function HomePageClient() {
                                         </div>
                                         <CardTitle>Restaurant viTEDia</CardTitle>
                                         <CardDescription>
-                                            Gastronomie traçable où chaque ingrédient raconte son histoire, du jardin à votre assiette.
+                                            Gastronomie traçable où chaque ingrédient raconte son histoire, du SelecTED Garden à votre assiette.
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent className="text-center flex flex-col items-center">
@@ -235,13 +235,13 @@ export default function HomePageClient() {
                             viewport={{ once: true }}
                             transition={{ delay: 0.3 }}
                         >
-                            <Link href="/garden">
+                            <Link href="/garden-selected">
                                 <Card hover className="h-full group cursor-pointer">
                                     <CardHeader className="text-center">
                                         <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform">
                                             <Leaf className="w-8 h-8 text-garden-primary" />
                                         </div>
-                                        <CardTitle>Jardin & Épicerie SelecTED</CardTitle>
+                                        <CardTitle>SelecTED Garden & Épicerie</CardTitle>
                                         <CardDescription>
                                             Production locale, élevage et épicerie fine avec traçabilité totale de la graine à l'assiette.
                                         </CardDescription>
@@ -282,7 +282,7 @@ export default function HomePageClient() {
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent className="text-center">
-                                    <Button variant="outline" size="lg" rounded="full" className="group-hover:bg-primary-50">
+                                    <Button variant="outline" size="lg" className="rounded-full group-hover:bg-primary-50">
                                         Explorer l'Écosystème
                                         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                     </Button>
@@ -317,9 +317,8 @@ export default function HomePageClient() {
 
                         <Link href="/observatoire">
                             <Button
-                                size="xl"
-                                rounded="full"
-                                className="bg-white text-primary-900 hover:bg-blue-50 shadow-2xl"
+                                size="lg"
+                                className="bg-white text-primary-900 hover:bg-blue-50 shadow-2xl rounded-full"
                             >
                                 Explorer les Analyses & Discussions
                                 <ArrowRight className="w-5 h-5" />

@@ -11,7 +11,7 @@ const MobileNav = () => {
         { href: '/', label: 'Accueil', icon: 'fa-solid fa-home' },
         { href: '/solutions-ia', label: 'IA', icon: 'fa-solid fa-brain' },
         { href: '/vitedia', label: 'viTEDia', icon: 'fa-solid fa-utensils' },
-        { href: '/garden', label: 'Jardin', icon: 'fa-solid fa-leaf' },
+        { href: '/garden-selected', label: 'SelecTED Garden', icon: 'fa-solid fa-leaf' },
         { href: '/ecosystem', label: 'Éco', icon: 'fa-solid fa-diagram-project' },
         { href: '/observatoire', label: 'Obs', icon: 'fa-solid fa-satellite-dish' },
         { href: '/shop', label: 'Boutique', icon: 'fa-solid fa-basket-shopping' },

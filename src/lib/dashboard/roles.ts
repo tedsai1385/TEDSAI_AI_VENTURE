@@ -19,7 +19,7 @@ export const ROLES: Record<Role, { name: string; permissions: string[] }> = {
         permissions: ['menu:read', 'menu:write', 'reservations:read', 'orders:read'],
     },
     admin_garden: {
-        name: 'Gérant Jardin',
+        name: 'Gérant SelecTED Garden',
         permissions: ['garden:products:read', 'garden:products:write', 'garden:harvest:create', 'garden:traceability:read'],
     },
     admin_ia: {

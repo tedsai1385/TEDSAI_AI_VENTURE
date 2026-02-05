@@ -69,7 +69,7 @@ const CHATBOT_CONFIG = {
   QUICK_ACCESS_PAGES: [
     { label: 'IA', href: '/solutions-ia', icon: '🧠', color: 'bg-blue-500' },
     { label: 'Resto', href: '/vitedia', icon: '🍽️', color: 'bg-amber-500' },
-    { label: 'Jardin', href: '/garden', icon: '🌱', color: 'bg-green-500' },
+    { label: 'Garden', href: '/Garden-selected', icon: '🌱', color: 'bg-green-500' },
     { label: 'Éco', href: '/ecosystem', icon: '🌍', color: 'bg-blue-600' },
     { label: 'Contact', href: '/contact', icon: '📞', color: 'bg-gray-500' },
     { label: 'Boutique', href: '/shop', icon: '🛒', color: 'bg-orange-500' },
@@ -77,7 +77,7 @@ const CHATBOT_CONFIG = {
   INITIAL_QUICK_REPLIES: [
     { label: 'Services IA', action: 'ia', icon: '🧠' },
     { label: 'Restaurant', action: 'restaurant', icon: '🍽️' },
-    { label: 'Jardin & Produits', action: 'garden', icon: '🌱' },
+    { label: 'Garden & Produits', action: 'garden', icon: '🌱' },
     { label: 'Contact', action: 'contact', icon: '📞' },
   ],
   MAX_MESSAGE_LENGTH: 1000,
@@ -116,7 +116,7 @@ const WELCOME_MESSAGE = getWelcomeMessageByTime();
 const INITIAL_QUICK_REPLIES: QuickReply[] = [
   { label: 'Services IA', action: 'ia', icon: <Brain className="w-4 h-4" /> },
   { label: 'Restaurant', action: 'restaurant', icon: <Utensils className="w-4 h-4" /> },
-  { label: 'Jardin & Produits', action: 'garden', icon: <Leaf className="w-4 h-4" /> },
+  { label: 'Garden & Produits', action: 'garden', icon: <Leaf className="w-4 h-4" /> },
   { label: 'Contact', action: 'contact', icon: <MessageSquare className="w-4 h-4" /> },
 ];
 
@@ -197,7 +197,7 @@ export default function TEDChatbot() {
         router.push('/vitedia');
         break;
       case 'garden':
-        router.push('/garden');
+        router.push('/Garden-selected');
         break;
       case 'contact':
         router.push('/contact');
@@ -276,264 +276,176 @@ export default function TEDChatbot() {
 
   return (
     <>
-      {/* Bouton flottant pour ouvrir le chat - Style de l'ancienne interface */}
+      {/* Bouton flottant (Launcher) Premium */}
       <AnimatePresence>
         {!isOpen && (
           <motion.div
-            initial={{ scale: 0, y: 20 }}
-            animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0, y: 20 }}
+            initial={{ scale: 0, y: 20, rotate: -20 }}
+            animate={{
+              scale: 1,
+              y: 0,
+              rotate: 0,
+              transition: { type: "spring", stiffness: 260, damping: 20 }
+            }}
+            exit={{ scale: 0, y: 20, rotate: 20 }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
             className="fixed bottom-6 right-6 z-50"
           >
             <button
               onClick={toggleChat}
-              className="group relative w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 shadow-lg shadow-blue-900/20 hover:shadow-blue-900/40 hover:scale-110 transition-all duration-300 flex items-center justify-center overflow-hidden border-2 border-white/20"
-              aria-label="Ouvrir le chatbot TED"
+              className="group relative w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-700 shadow-2xl shadow-blue-500/40 flex items-center justify-center overflow-hidden border border-white/30 backdrop-blur-sm"
+              aria-label="Discuter avec TED"
             >
-              <img
-                src="/assets/images/logos/tedsai_logo.jpg"
-                alt="Chat"
-                className="w-full h-full object-cover opacity-0 group-hover:opacity-100 absolute inset-0 transition-opacity duration-300"
-              />
-              <Bot className="w-7 h-7 text-white group-hover:opacity-0 transition-opacity duration-300" />
+              {/* Effet de brillance animé au hover */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
+
+              <div className="relative">
+                <Sparkles className="absolute -top-3 -right-3 w-4 h-4 text-yellow-300 animate-pulse" />
+                <Bot className="w-8 h-8 text-white drop-shadow-lg" />
+              </div>
             </button>
 
-            {/* Petit indicateur pulsant */}
-            {!showWelcomeAfterDelay && (
-              <span className="absolute top-0 right-0 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></span>
+            {/* Notification Badge */}
+            <motion.span
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full shadow-sm"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Fenêtre du Chatbot - Glassmorphism & Modern UI */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 100, scale: 0.9, filter: "blur(10px)" }}
+            animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: 100, scale: 0.9 }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 w-[92vw] max-w-[400px] h-[600px] max-h-[85vh] flex flex-col shadow-2xl overflow-hidden rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl"
+          >
+            {/* Header Premium */}
+            <div className="relative p-5 bg-gradient-to-r from-blue-600/90 via-indigo-600/90 to-violet-700/90 text-white overflow-hidden">
+              {/* Background patterns */}
+              <div className="absolute inset-0 opacity-10 pointer-events-none">
+                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.2),transparent_70%)]" />
+              </div>
+
+              <div className="flex items-center justify-between relative z-10">
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/30 shadow-inner">
+                      <Bot className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-base leading-tight tracking-tight">TED Assistant</h3>
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+                      <span className="text-[10px] font-medium uppercase tracking-widest opacity-80">Online • AI Powered</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={minimizeChat}
+                    className="p-2 hover:bg-white/10 rounded-xl transition-colors"
+                  >
+                    <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${state.isMinimized ? 'rotate-180' : ''}`} />
+                  </button>
+                  <button
+                    onClick={closeChat}
+                    className="p-2 hover:bg-white/10 rounded-xl transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Corps du Chat */}
+            {!state.isMinimized && (
+              <>
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth custom-scrollbar bg-gradient-to-b from-transparent to-blue-50/30">
+                  {state.messages.map((message, idx) => (
+                    <motion.div
+                      key={message.id}
+                      initial={{ opacity: 0, x: message.sender === 'user' ? 20 : -20, y: 10 }}
+                      animate={{ opacity: 1, x: 0, y: 0 }}
+                      transition={{ delay: 0.1, duration: 0.4 }}
+                      className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div className={`flex flex-col max-w-[85%] ${message.sender === 'user' ? 'items-end' : 'items-start'}`}>
+                        <div
+                          className={`
+                            px-4 py-2.5 rounded-2xl shadow-sm text-xs leading-relaxed
+                            ${message.sender === 'user'
+                              ? 'bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-tr-sm'
+                              : 'bg-white text-slate-800 rounded-tl-sm border border-slate-100'
+                            }
+                          `}
+                        >
+                          {message.content}
+                        </div>
+                        <span className="text-[9px] text-slate-400 mt-1 px-2 font-medium">
+                          {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                    </motion.div>
+                  ))}
+
+                  {state.isTyping && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="flex justify-start"
+                    >
+                      <div className="bg-white border border-slate-100 px-4 py-3 rounded-3xl rounded-tl-sm flex items-center gap-1.5 shadow-sm">
+                        <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '200ms' }} />
+                        <div className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: '400ms' }} />
+                      </div>
+                    </motion.div>
+                  )}
+                  <div ref={messagesEndRef} />
+                </div>
+
+                {/* Barre de Saisie Premium */}
+                <div className="p-4 bg-white/50 backdrop-blur-md border-t border-slate-100">
+                  <div className="relative group">
+                    <Input
+                      value={state.currentInput}
+                      onChange={handleInputChange}
+                      onKeyDown={handleKeyDown}
+                      placeholder="Tapez votre message..."
+                      className="w-full bg-slate-50 border-slate-200 rounded-xl py-5 pl-4 pr-14 text-xs focus:bg-white focus:ring-2 focus:ring-blue-500/20 transition-all !text-slate-900 placeholder:text-slate-400 border-2 group-focus-within:border-blue-500/30"
+                    />
+                    <button
+                      onClick={handleSendMessage}
+                      disabled={!state.currentInput.trim() || state.isTyping}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center hover:bg-blue-700 disabled:opacity-50 disabled:bg-slate-300 transition-all shadow-lg shadow-blue-500/20 active:scale-90"
+                    >
+                      {state.isTyping ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : (
+                        <Send className="w-5 h-5 rotate-12 group-hover:rotate-0 transition-transform" />
+                      )}
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-center text-slate-400 mt-2 font-medium tracking-wide">
+                    TEDSAI Intelligent Ecosystem • v2.0
+                  </p>
+                </div>
+              </>
             )}
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Message de bienvenue automatique */}
-      <AnimatePresence>
-        {showWelcomeAfterDelay && (
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            className="fixed bottom-24 right-6 z-40 max-w-xs bg-white rounded-xl shadow-lg border border-gray-200 p-4"
-          >
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-full flex items-center justify-center flex-shrink-0">
-                <Bot className="w-4 h-4 text-white" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900">{TED_CHATBOT_NAME}</p>
-                <p className="text-xs text-gray-600 mt-1">{WELCOME_MESSAGE}</p>
-              </div>
-              <button
-                onClick={() => setShowWelcomeAfterDelay(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Chatbot */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 w-[90vw] max-w-[340px] md:max-w-md h-[60vh] md:h-[70vh] flex flex-col"
-          >
-            <Card className="flex flex-col h-full shadow-xl border-0 rounded-xl overflow-hidden">
-              {/* En-tête du chatbot */}
-              <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                      <Bot className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-sm md:text-base font-bold">{TED_CHATBOT_NAME}</CardTitle>
-                      <p className="text-[10px] md:text-xs opacity-80">Toujours là pour vous aider</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-1">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={minimizeChat}
-                      className="text-white hover:bg-white/10 p-1 md:p-2 h-7 w-7 md:h-9 md:w-9"
-                    >
-                      {state.isMinimized ? '+' : '−'}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={closeChat}
-                      className="text-white hover:bg-white/10 p-1 md:p-2 h-7 w-7 md:h-9 md:w-9"
-                    >
-                      <X className="w-3 h-3 md:w-4 md:h-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-
-              {/* Corps du chat */}
-              {!state.isMinimized && (
-                <>
-                  <CardContent className="flex-1 p-0 overflow-hidden flex flex-col">
-                    {/* Zone de messages */}
-                    <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-3 md:space-y-4 bg-gray-50">
-                      {state.messages.map((message) => (
-                        <motion.div
-                          key={message.id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                        >
-                          <div
-                            className={`max-w-[80%] rounded-2xl px-4 py-2 ${message.sender === 'user'
-                              ? 'bg-blue-600 text-white rounded-br-none'
-                              : 'bg-white text-black rounded-bl-none border border-gray-200'
-                              }`}
-                          >
-                            <div className="flex items-start gap-2">
-                              {message.sender === 'bot' && (
-                                <div className="w-4 h-4 md:w-5 md:h-5 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                                  <Bot className="w-2.5 h-2.5 md:w-3 md:h-3 text-white" />
-                                </div>
-                              )}
-                              <p className="text-xs md:text-sm">{message.content}</p>
-                              {message.sender === 'user' && (
-                                <div className="w-4 h-4 md:w-5 md:h-5 bg-blue-800 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                                  <User className="w-2.5 h-2.5 md:w-3 md:h-3 text-white" />
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </motion.div>
-                      ))}
-
-                      {state.isTyping && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="flex justify-start"
-                        >
-                          <div className="bg-white text-black rounded-2xl px-4 py-2 rounded-bl-none border border-gray-200">
-                            <div className="flex items-center gap-2">
-                              <div className="w-5 h-5 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-full flex items-center justify-center">
-                                <Bot className="w-3 h-3 text-white" />
-                              </div>
-                              <div className="flex gap-1">
-                                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-                                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '600ms' }}></div>
-                              </div>
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
-                      <div ref={messagesEndRef} />
-                    </div>
-
-                    {/* Section Raccourcis Réductible */}
-                    <div className="border-t border-gray-200">
-                      <button
-                        onClick={toggleShortcuts}
-                        className="w-full py-2 px-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors text-xs font-semibold text-gray-500 uppercase tracking-wider"
-                      >
-                        <div className="flex items-center gap-2">
-                          <Sparkles className="w-3 h-3 text-blue-500" />
-                          <span>Raccourcis & Suggestions</span>
-                        </div>
-                        {state.showShortcuts ? (
-                          <ChevronDown className="w-4 h-4" />
-                        ) : (
-                          <ChevronUp className="w-4 h-4" />
-                        )}
-                      </button>
-
-                      <AnimatePresence>
-                        {state.showShortcuts && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            className="overflow-hidden bg-gray-50 shadow-inner"
-                          >
-                            <div className="p-3 space-y-3">
-                              {/* Boutons d'accès rapide aux pages */}
-                              <div className="flex flex-wrap gap-2">
-                                {quickAccessButtons.map((btn, index) => (
-                                  <motion.button
-                                    key={btn.href}
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ delay: index * 0.03 }}
-                                    onClick={() => router.push(btn.href)}
-                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs text-white ${btn.color} hover:opacity-90 transition-all shadow-sm hover:shadow-md border border-white/20`}
-                                  >
-                                    {btn.icon}
-                                    <span className="font-medium">{btn.label}</span>
-                                  </motion.button>
-                                ))}
-                              </div>
-
-                              {/* Réponses rapides (IA) */}
-                              {state.messages[state.messages.length - 1]?.quickReplies && (
-                                <div className="flex flex-wrap gap-2 pt-2 border-t border-gray-200/50">
-                                  {state.messages[state.messages.length - 1]?.quickReplies?.map((reply, index) => (
-                                    <motion.button
-                                      key={index}
-                                      initial={{ opacity: 0, scale: 0.9 }}
-                                      animate={{ opacity: 1, scale: 1 }}
-                                      transition={{ delay: index * 0.03 }}
-                                      onClick={() => handleQuickReplyClick(reply.action)}
-                                      className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-blue-50 text-gray-700 hover:text-blue-700 border border-gray-200 rounded-full text-xs font-medium transition-all shadow-sm hover:shadow-md"
-                                    >
-                                      <span className="text-sm">{reply.icon}</span>
-                                      {reply.label}
-                                    </motion.button>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-
-                    {/* Zone de saisie */}
-                    <div className="p-3 bg-white border-t border-gray-200">
-                      <div className="flex gap-2">
-                        <Input
-                          type="text"
-                          value={state.currentInput}
-                          onChange={handleInputChange}
-                          onKeyDown={handleKeyDown}
-                          placeholder="Posez votre question..."
-                          className="flex-1 !text-black font-medium"
-                        />
-                        <Button
-                          onClick={handleSendMessage}
-                          disabled={!state.currentInput.trim() || state.isTyping}
-                          className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800"
-                        >
-                          {state.isTyping ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : (
-                            <Send className="w-4 h-4" />
-                          )}
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </>
-              )}
-            </Card>
-          </motion.div>
-        )}
-      </AnimatePresence >
     </>
   );
+
 }

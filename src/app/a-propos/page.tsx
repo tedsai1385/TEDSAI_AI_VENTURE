@@ -271,7 +271,7 @@ export default function AboutPage() {
 
                         <div className="flex flex-wrap justify-center gap-4">
                             <Link href="/contact">
-                                <Button size="xl" rounded="full" className="bg-white text-primary-900 hover:bg-gray-100">
+                                <Button size="lg" className="bg-white text-primary-900 hover:bg-gray-100 rounded-full">
                                     Contactez-nous
                                     <ArrowRight className="w-5 h-5" />
                                 </Button>

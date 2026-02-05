@@ -50,7 +50,7 @@ export default function ContactPage() {
                             <MessageSquare className="w-4 h-4 mr-2" />
                             Support & Partenariat
                         </Badge>
-                        <h1 className="text-5xl md:text-6xl font-black mb-6 font-heading">
+                        <h1 className="text-white text-5xl md:text-6xl font-black mb-6 font-heading">
                             Contactez <span className="text-primary-400">TEDSAI</span>
                         </h1>
                         <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
@@ -82,9 +82,10 @@ export default function ContactPage() {
                                             <MapPin className="w-6 h-6 text-primary-600" />
                                         </div>
                                         <div>
-                                            <h4 className="font-semibold text-gray-900">Adresse</h4>
-                                            <p className="text-gray-600">TEDSAI Complex</p>
-                                            <p className="text-gray-600">Yaoundé, Cameroun</p>
+                                            <h4 className="font-semibold text-gray-900">Adresse Physique</h4>
+                                            <p className="text-gray-600 font-bold">TEDSAI Complex</p>
+                                            <p className="text-gray-600">Bastos, Face Usine Bastos</p>
+                                            <p className="text-sm italic text-emerald-600">L'Algorithme Organique</p>
                                         </div>
                                     </div>
 
@@ -93,9 +94,14 @@ export default function ContactPage() {
                                             <Mail className="w-6 h-6 text-primary-600" />
                                         </div>
                                         <div>
-                                            <h4 className="font-semibold text-gray-900">Email</h4>
-                                            <p className="text-gray-600">contact@tedsai.cm</p>
-                                            <p className="text-gray-500 text-sm">Réponse sous 24h</p>
+                                            <h4 className="font-semibold text-gray-900">Emails par département</h4>
+                                            <div className="text-sm space-y-1 mt-1">
+                                                <p className="text-gray-600">Général: <span className="font-medium">hello@tedsai.cm</span></p>
+                                                <p className="text-gray-600">viTEDia: <span className="font-medium">vitedia@tedsai.cm</span></p>
+                                                <p className="text-gray-600">garden: <span className="font-medium">garden@tedsai.cm</span></p>
+                                                <p className="text-gray-600">IA: <span className="font-medium">ia@tedsai.cm</span></p>
+                                                <p className="text-gray-600">Design: <span className="font-medium">design@tedsai.cm</span></p>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -104,9 +110,9 @@ export default function ContactPage() {
                                             <Phone className="w-6 h-6 text-primary-600" />
                                         </div>
                                         <div>
-                                            <h4 className="font-semibold text-gray-900">Téléphone</h4>
-                                            <p className="text-gray-600 text-lg font-medium">+237 683 121 654</p>
-                                            <p className="text-gray-500 text-sm">Lun-Sam, 8h-18h</p>
+                                            <h4 className="font-semibold text-gray-900">Téléphone & WhatsApp</h4>
+                                            <p className="text-gray-600 text-lg font-medium">+237 699 99 99 99</p>
+                                            <p className="text-gray-500 text-sm">Disponible 7j/7 pour viTEDia</p>
                                         </div>
                                     </div>
                                 </div>
@@ -216,9 +222,11 @@ export default function ContactPage() {
                                                     required
                                                 >
                                                     <option value="">-- Sélectionnez un sujet --</option>
-                                                    <option value="ia">🧠 Solutions IA pour Entreprise</option>
+                                                    <option value="ia">🧠 Solutions IA (B2B)</option>
                                                     <option value="resto">🍽️ Restaurant viTEDia</option>
-                                                    <option value="garden">🌱 Jardin & Produits Bio</option>
+                                                    <option value="garden">🌱 Garden & Paniers Bio</option>
+                                                    <option value="design">🎨 Infographie & Design</option>
+                                                    <option value="shop">🛒 Boutique & Produits</option>
                                                     <option value="other">💬 Autre demande</option>
                                                 </select>
                                             </div>
@@ -283,7 +291,7 @@ export default function ContactPage() {
                                                 type="submit"
                                                 disabled={isSubmitting}
                                                 className="w-full text-lg h-14"
-                                                size="xl"
+                                                size="lg"
                                             >
                                                 {isSubmitting ? (
                                                     <>
