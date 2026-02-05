@@ -16,6 +16,7 @@ import {
     QuerySnapshot,
     writeBatch,
     serverTimestamp,
+    increment,
 } from 'firebase/firestore';
 import { db } from './config';
 import { Article, ArticleStatus, createArticleDTO } from '@/types/article';
@@ -154,6 +155,21 @@ export async function getPublishedArticles(limitCount: number = 50): Promise<Art
     );
     const snapshot = await getDocs(q);
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Article));
+}
+
+export async function incrementArticleViews(articleId: string, isUnique: boolean = false): Promise<void> {
+    try {
+        const docRef = doc(db, ARTICLES_COLLECTION, articleId);
+        const updateData: any = {
+            'stats.views': increment(1)
+        };
+        if (isUnique) {
+            updateData['stats.uniqueViews'] = increment(1);
+        }
+        await updateDoc(docRef, updateData);
+    } catch (error) {
+        console.error('[ArticleService] Failed to increment views:', error);
+    }
 }
 
 // ═════════════════════════════════════════════════════════════════

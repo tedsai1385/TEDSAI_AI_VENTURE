@@ -31,10 +31,10 @@ export default function MenuPage() {
                         <div className="flex justify-between items-center">
                             <span className="font-bold text-lg">4 500 FCFA</span>
                             <div className="flex gap-2">
-                                <Button variant="ghost" size="icon">
+                                <Button variant="ghost" size="sm">
                                     <Edit className="w-4 h-4" />
                                 </Button>
-                                <Button variant="ghost" size="icon" className="text-red-500">
+                                <Button variant="ghost" size="sm" className="text-red-500">
                                     <Trash className="w-4 h-4" />
                                 </Button>
                             </div>
