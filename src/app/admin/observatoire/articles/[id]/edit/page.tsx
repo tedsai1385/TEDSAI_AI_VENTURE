@@ -16,7 +16,7 @@ type SaveStatus = 'idle' | 'saving' | 'success' | 'error';
 export default function EditArticlePage() {
     const params = useParams();
     const router = useRouter();
-    const articleId = params.id as string;
+    const articleId = params?.id as string;
     const { user, loading: authLoading } = useAuth();
 
     // États globaux
@@ -127,7 +127,7 @@ export default function EditArticlePage() {
         setSaveStatus('saving');
 
         try {
-            const newStatus = publish ? 'published' : (article.status === 'published' ? 'published' : 'draft');
+            const newStatus: ArticleStatus = publish ? 'published' : (article.status === 'published' ? 'published' : 'draft');
             // Si on clique "Enregistrer" sur un publié, il reste publié.
             // Si on clique "Publier", il devient publié.
 
