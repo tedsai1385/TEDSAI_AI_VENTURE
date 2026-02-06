@@ -257,7 +257,7 @@ export default function BlogPage() {
                     </div>
 
                     <div className="text-center mt-16">
-                        <Button variant="outline" size="lg" rounded="full">
+                        <Button variant="outline" size="lg" className="rounded-full gap-2">
                             Charger plus d'articles
                             <ArrowRight className="w-4 h-4" />
                         </Button>
