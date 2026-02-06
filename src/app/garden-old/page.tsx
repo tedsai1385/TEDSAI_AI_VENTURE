@@ -431,7 +431,7 @@ export default function GardenPage() {
                             </div>
                         </div>
 
-                        <Button size="lg" rounded="full" className="bg-white text-garden-primary hover:bg-gray-100 shadow-2xl">
+                        <Button size="lg" className="rounded-full bg-white text-garden-primary hover:bg-gray-100 shadow-2xl">
                             Réserver une Visite
                             <ArrowRight className="w-5 h-5" />
                         </Button>
