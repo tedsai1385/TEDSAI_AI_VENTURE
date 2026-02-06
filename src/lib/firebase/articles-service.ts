@@ -88,12 +88,11 @@ export async function createArticle(
             // Assurer valeurs par défaut
             gallery: articleData.gallery || [],
             tags: articleData.tags || [],
-            stats: {
+            stats: articleData.stats || {
                 views: 0,
                 uniqueViews: 0,
                 downloads: 0,
                 avgReadTime: 0,
-                ...(articleData.stats || {}),
             },
         };
 
