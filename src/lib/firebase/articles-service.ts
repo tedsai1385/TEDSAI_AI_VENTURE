@@ -81,15 +81,32 @@ export async function getPublishedArticles(limitCount = 10): Promise<Article[]> 
 }
 
 // Create Article
-export async function createArticle(data: Partial<Article>): Promise<string> {
+// Create Article
+export async function createArticle(data: Partial<Article>): Promise<{ id: string, slug: string }> {
     try {
+        // Ensure slug
+        let slug = data.slug;
+        if (!slug && data.title) {
+            slug = data.title
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-|-$)/g, '');
+        }
+
+        // Fallback for empty slug if title is missing or empty
+        if (!slug) {
+            slug = `draft-${Date.now()}`;
+        }
+
         const docRef = await addDoc(collection(db, ARTICLES_COLLECTION), {
             ...data,
+            slug,
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
             stats: { views: 0, uniqueViews: 0, downloads: 0, avgReadTime: 0 }
         });
-        return docRef.id;
+
+        return { id: docRef.id, slug };
     } catch (error) {
         throw new ArticleError('Failed to create article', 'CREATE_FAILED');
     }
