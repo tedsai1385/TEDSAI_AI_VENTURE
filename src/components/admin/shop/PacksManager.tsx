@@ -332,7 +332,7 @@ export const PacksManager = () => {
                                         <Image src={previewUrl} alt="Preview" fill className="object-cover" />
                                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4 backdrop-blur-sm">
                                             <Button type="button" size="sm" onClick={() => setShowMediaSelector(true)} variant="outline" className="border-white/20 text-white hover:bg-white/20">Changer</Button>
-                                            <Button type="button" size="sm" onClick={() => { setImageFile(null); setFormData(p => ({ ...p, image: '' })) }} variant="destructive">Retirer</Button>
+                                            <Button type="button" size="sm" onClick={() => { setImageFile(null); setFormData(p => ({ ...p, image: '' })) }} variant="outline" className="border-red-500/50 text-red-400 hover:bg-red-500/20">Retirer</Button>
                                         </div>
                                     </div>
                                 )}
