@@ -40,7 +40,7 @@ export const subscribeToCategories = (callback: (categories: Category[]) => void
 };
 
 export const addCategory = async (label: string, icon: string) => {
-    const slug = slugify(label, { lower: true, strict: true });
+    const slug = slugify(label);
     const categoryRef = doc(db, CATEGORIES_COLLECTION, slug);
 
     // Get max order
@@ -75,7 +75,7 @@ export const seedCategories = async () => {
     const batch = writeBatch(db);
 
     defaults.forEach((cat, index) => {
-        const slug = slugify(cat.label, { lower: true, strict: true });
+        const slug = slugify(cat.label);
         const ref = doc(db, CATEGORIES_COLLECTION, slug);
         batch.set(ref, {
             id: slug,
