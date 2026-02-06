@@ -178,14 +178,14 @@ export default function GardenPage() {
                             {/* CTA Buttons */}
                             <div className="flex flex-wrap gap-4 mb-8">
                                 <Link href="#products">
-                                    <Button variant="primary" size="lg" rounded="full" className="shadow-xl bg-green-600 hover:bg-green-700">
+                                    <Button variant="primary" size="lg" className="shadow-xl bg-green-600 hover:bg-green-700 rounded-full">
                                         Voir les Produits
                                         <ShoppingCart className="w-5 h-5" />
                                     </Button>
                                 </Link>
 
                                 <Link href="#visit">
-                                    <Button variant="outline" size="lg" rounded="full">
+                                    <Button variant="outline" size="lg" className="rounded-full">
                                         Visiter le Garden
                                         <ArrowRight className="w-5 h-5" />
                                     </Button>
@@ -431,7 +431,7 @@ export default function GardenPage() {
                             </div>
                         </div>
 
-                        <Button size="lg" rounded="full" className="bg-white text-garden-primary hover:bg-gray-100 shadow-2xl">
+                        <Button size="lg" className="bg-white text-garden-primary hover:bg-gray-100 shadow-2xl rounded-full">
                             Réserver une Visite
                             <ArrowRight className="w-5 h-5" />
                         </Button>

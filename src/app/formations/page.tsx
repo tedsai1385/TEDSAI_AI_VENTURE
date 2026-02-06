@@ -142,7 +142,7 @@ export default function FormationsPage() {
                     <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
                         Nous concevons des programmes adaptés aux besoins spécifiques de votre entreprise ou de votre communauté.
                     </p>
-                    <Button variant="outline" size="lg" rounded="full">
+                    <Button variant="outline" size="lg" className="rounded-full">
                         Contactez notre équipe pédagogique
                     </Button>
                 </div>

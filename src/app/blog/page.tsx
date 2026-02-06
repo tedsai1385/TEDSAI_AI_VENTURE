@@ -257,7 +257,7 @@ export default function BlogPage() {
                     </div>
 
                     <div className="text-center mt-16">
-                        <Button variant="outline" size="lg" rounded="full">
+                        <Button variant="outline" size="lg" className="rounded-full">
                             Charger plus d'articles
                             <ArrowRight className="w-4 h-4" />
                         </Button>
@@ -286,7 +286,7 @@ export default function BlogPage() {
                                 placeholder="votre@email.com"
                                 className="flex-1 px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white outline-none focus:bg-white/20 transition-all"
                             />
-                            <Button size="lg" rounded="full" className="bg-blue-600 hover:bg-blue-500 whitespace-nowrap px-8">
+                            <Button size="lg" className="bg-blue-600 hover:bg-blue-500 whitespace-nowrap px-8 rounded-full">
                                 S'abonner
                             </Button>
                         </form>
