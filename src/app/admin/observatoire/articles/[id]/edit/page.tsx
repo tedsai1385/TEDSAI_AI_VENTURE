@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { subscribeToArticle, updateArticle, ArticleError } from '@/lib/firebase/articles-service';
-import { Article } from '@/types/article';
+import { Article, ArticleStatus } from '@/types/article';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Save, Send, Eye, Loader2, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
