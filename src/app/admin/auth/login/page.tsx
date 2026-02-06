@@ -28,7 +28,7 @@ export default function LoginPage() {
     // Redirection si déjà connecté
     useEffect(() => {
         if (user) {
-            const redirectTo = searchParams.get('redirect') || '/admin/dashboard';
+            const redirectTo = searchParams?.get('redirect') || '/admin/dashboard';
             router.push(redirectTo);
         }
     }, [user, router, searchParams]);
