@@ -247,7 +247,7 @@ export default function HomePageClient() {
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent className="text-center flex flex-col items-center">
-                                        <Badge variant="garden" className="mb-3">
+                                        <Badge variant="secondary" className="mb-3 bg-garden-primary/10 text-garden-primary border-garden-primary/20">
                                             Bio Certifié
                                         </Badge>
                                         <div className="flex items-center text-garden-primary font-semibold group-hover:gap-2 transition-all">
