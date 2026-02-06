@@ -6,6 +6,10 @@ const ARTICLES_COLLECTION = 'articles';
 // ─── SERVER-SIDE READ (pour SSR/ISR) ───
 export async function getPublishedArticles(limitCount: number = 20): Promise<Article[]> {
     try {
+        if (!adminDb) {
+            console.error('AdminDb not initialized');
+            return [];
+        }
         const snapshot = await adminDb
             .collection(ARTICLES_COLLECTION)
             .where('status', '==', 'published')
@@ -25,6 +29,10 @@ export async function getPublishedArticles(limitCount: number = 20): Promise<Art
 
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
     try {
+        if (!adminDb) {
+            console.error('AdminDb not initialized');
+            return null;
+        }
         const snapshot = await adminDb
             .collection(ARTICLES_COLLECTION)
             .where('slug', '==', slug)
@@ -47,6 +55,10 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
 
 export async function getArticleById(id: string): Promise<Article | null> {
     try {
+        if (!adminDb) {
+            console.error('AdminDb not initialized');
+            return null;
+        }
         const doc = await adminDb.collection(ARTICLES_COLLECTION).doc(id).get();
 
         if (!doc.exists) return null;
@@ -63,6 +75,10 @@ export async function getArticleById(id: string): Promise<Article | null> {
 
 export async function getAllArticleSlugs(): Promise<string[]> {
     try {
+        if (!adminDb) {
+            console.error('AdminDb not initialized');
+            return [];
+        }
         const snapshot = await adminDb
             .collection(ARTICLES_COLLECTION)
             .where('status', '==', 'published')
@@ -87,6 +103,10 @@ export async function getArticlesStats(): Promise<{
     totalViews: number;
 }> {
     try {
+        if (!adminDb) {
+            console.error('AdminDb not initialized');
+            return { total: 0, published: 0, drafts: 0, archived: 0, totalViews: 0 };
+        }
         const snapshot = await adminDb.collection(ARTICLES_COLLECTION).get();
 
         let published = 0;
