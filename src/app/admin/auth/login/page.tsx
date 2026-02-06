@@ -23,15 +23,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function LoginPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { user, whitelist, loading: authLoading } = useAuth();
+    const { user, loading: authLoading } = useAuth();
 
     // Redirection si déjà connecté
     useEffect(() => {
-        if (user && whitelist) {
+        if (user) {
             const redirectTo = searchParams.get('redirect') || '/admin/dashboard';
             router.push(redirectTo);
         }
-    }, [user, whitelist, router, searchParams]);
+    }, [user, router, searchParams]);
 
     // États formulaire
     const [email, setEmail] = useState('');
@@ -83,7 +83,7 @@ export default function LoginPage() {
             const { isNewUser } = await loginWithGoogle();
 
             if (isNewUser) {
-                console.log('[Login] New Google user, but whitelisted check passed');
+                console.log('[Login] New Google user');
             }
             // Redirection gérée par useEffect
 

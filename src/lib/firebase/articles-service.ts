@@ -1,83 +1,132 @@
+import {
+    collection,
+    doc,
+    getDocs,
+    onSnapshot,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+    query,
+    where,
+    orderBy,
+    serverTimestamp,
+    increment,
+    limit,
+    getDoc
+} from 'firebase/firestore';
+import { db } from '@/lib/firebase/config';
 import { Article } from '@/types/article';
-import { Timestamp } from 'firebase/firestore';
 
-// Simulation data
-const MOCK_ARTICLES: Article[] = [
-    {
-        id: '1',
-        title: 'Agriculture Urbaine : L\'Avenir des Villes Africaines',
-        subtitle: 'Comment les métropoles intègrent la production alimentaire',
-        excerpt: 'Une analyse approfondie des nouvelles tendances de l\'agriculture urbaine à Douala et Yaoundé.',
-        content: '<p>Contenu de l\'article...</p>',
-        heroImage: {
-            url: '/assets/images/hero_bg.webp',
-            alt: 'Serre urbaine'
-        },
-        category: 'agriculture-urbaine',
-        tags: ['urban-farming', 'africa', 'sustainability'],
-        status: 'published',
-        authorId: 'admin',
-        authorName: 'Admin TEDSAI',
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
-        publishedAt: Timestamp.now(),
-        stats: {
-            views: 120,
-            uniqueViews: 85,
-            downloads: 10,
-            avgReadTime: 300
-        },
-        slug: 'agriculture-urbaine-avenir-villes',
-        version: 1,
-        editedBy: ['admin']
-    },
-    {
-        id: '2',
-        title: 'IA et Rendement Agricole',
-        subtitle: 'L\'impact du Machine Learning sur les récoltes',
-        excerpt: 'Découvrez comment les algorithmes prédictifs optimisent les rendements de nos serres connectées.',
-        content: '<p>Contenu de l\'article...</p>',
-        heroImage: {
-            url: '/assets/images/hero_bg.webp',
-            alt: 'IA Agriculture'
-        },
-        category: 'intelligence-artificielle',
-        tags: ['ai', 'yield', 'optimization'],
-        status: 'published',
-        authorId: 'admin',
-        authorName: 'Dr. AI',
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
-        publishedAt: Timestamp.now(),
-        stats: {
-            views: 450,
-            uniqueViews: 300,
-            downloads: 50,
-            avgReadTime: 420
-        },
-        slug: 'ia-rendement-agricole',
-        version: 1,
-        editedBy: ['admin']
+const ARTICLES_COLLECTION = 'articles';
+
+// Error class
+export class ArticleError extends Error {
+    constructor(message: string, public code: string) {
+        super(message);
+        this.name = 'ArticleError';
     }
-];
+}
 
+// Subscribe to articles (Admin / Dashboard)
 export function subscribeToArticles(
     callback: (articles: Article[]) => void,
-    options?: { status?: string }
+    options?: { status?: string, limit?: number }
 ): () => void {
-    console.log('Subscribe to articles (MOCK MODE)', options);
+    let q = query(collection(db, ARTICLES_COLLECTION), orderBy('updatedAt', 'desc'));
 
-    // Simulate async data fetch
-    setTimeout(() => {
-        let filtered = [...MOCK_ARTICLES];
-        if (options?.status) {
-            filtered = filtered.filter(a => a.status === options.status);
+    if (options?.status) {
+        q = query(q, where('status', '==', options.status));
+    }
+
+    if (options?.limit) {
+        q = query(q, limit(options.limit));
+    }
+
+    return onSnapshot(q, (snapshot) => {
+        const articles = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        })) as Article[];
+        callback(articles);
+    });
+}
+
+// Get single article subscription
+export function subscribeToArticle(
+    id: string,
+    callback: (article: Article | null) => void
+): () => void {
+    const docRef = doc(db, ARTICLES_COLLECTION, id);
+    return onSnapshot(docRef, (doc) => {
+        if (doc.exists()) {
+            callback({ id: doc.id, ...doc.data() } as Article);
+        } else {
+            callback(null);
         }
-        callback(filtered);
-    }, 500);
+    });
+}
 
-    // Return unsubscribe function
-    return () => {
-        console.log('Unsubscribe from articles (MOCK MODE)');
+// Get published articles (Public)
+export async function getPublishedArticles(limitCount = 10): Promise<Article[]> {
+    const q = query(
+        collection(db, ARTICLES_COLLECTION),
+        where('status', '==', 'published'),
+        orderBy('publishedAt', 'desc'),
+        limit(limitCount)
+    );
+
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Article));
+}
+
+// Create Article
+export async function createArticle(data: Partial<Article>): Promise<string> {
+    try {
+        const docRef = await addDoc(collection(db, ARTICLES_COLLECTION), {
+            ...data,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+            stats: { views: 0, uniqueViews: 0, downloads: 0, avgReadTime: 0 }
+        });
+        return docRef.id;
+    } catch (error) {
+        throw new ArticleError('Failed to create article', 'CREATE_FAILED');
+    }
+}
+
+// Update Article
+export async function updateArticle(id: string, data: Partial<Article>): Promise<void> {
+    try {
+        const docRef = doc(db, ARTICLES_COLLECTION, id);
+        await updateDoc(docRef, {
+            ...data,
+            updatedAt: serverTimestamp()
+        });
+    } catch (error) {
+        throw new ArticleError('Failed to update article', 'UPDATE_FAILED');
+    }
+}
+
+// Delete Article
+export async function deleteArticle(id: string): Promise<void> {
+    try {
+        await deleteDoc(doc(db, ARTICLES_COLLECTION, id));
+    } catch (error) {
+        throw new ArticleError('Failed to delete article', 'DELETE_FAILED');
+    }
+}
+
+// Increment Views
+export async function incrementArticleViews(id: string, isUnique: boolean): Promise<void> {
+    const docRef = doc(db, ARTICLES_COLLECTION, id);
+    const updates: any = {
+        'stats.views': increment(1),
+        'stats.lastViewedAt': serverTimestamp()
     };
+
+    if (isUnique) {
+        updates['stats.uniqueViews'] = increment(1);
+    }
+
+    await updateDoc(docRef, updates);
 }
