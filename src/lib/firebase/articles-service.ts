@@ -12,7 +12,8 @@ import {
     serverTimestamp,
     increment,
     limit,
-    getDoc
+    getDoc,
+    arrayUnion
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { Article } from '@/types/article';
@@ -95,13 +96,20 @@ export async function createArticle(data: Partial<Article>): Promise<string> {
 }
 
 // Update Article
-export async function updateArticle(id: string, data: Partial<Article>): Promise<void> {
+export async function updateArticle(id: string, data: Partial<Article>, userId?: string): Promise<void> {
     try {
         const docRef = doc(db, ARTICLES_COLLECTION, id);
-        await updateDoc(docRef, {
+
+        const updates: any = {
             ...data,
             updatedAt: serverTimestamp()
-        });
+        };
+
+        if (userId) {
+            updates.editedBy = arrayUnion(userId);
+        }
+
+        await updateDoc(docRef, updates);
     } catch (error) {
         throw new ArticleError('Failed to update article', 'UPDATE_FAILED');
     }
