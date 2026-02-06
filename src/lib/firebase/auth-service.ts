@@ -7,6 +7,7 @@ import {
     onAuthStateChanged,
     User as FirebaseUser,
     createUserWithEmailAndPassword,
+    getAdditionalUserInfo,
 } from 'firebase/auth';
 import {
     doc,
@@ -150,7 +151,7 @@ export async function loginWithGoogle(): Promise<{
 
         const credential = await signInWithPopup(auth, googleProvider);
         const user = credential.user;
-        const isNewUser = credential.additionalUserInfo?.isNewUser || false;
+        const isNewUser = getAdditionalUserInfo(credential)?.isNewUser || false;
 
         console.log('[AuthService] Google auth success:', user.email);
 
