@@ -106,11 +106,11 @@ export default function DishCustomizationModal({ dish, isOpen, onClose, onConfir
                     <div className="flex items-center justify-between bg-gray-50 p-4 rounded-xl">
                         <span className="font-semibold text-gray-700">Quantité</span>
                         <div className="flex items-center gap-4">
-                            <Button size="icon" variant="outline" onClick={() => handleQuantityChange(-1)} disabled={quantity <= 1}>
+                            <Button size="sm" variant="outline" onClick={() => handleQuantityChange(-1)} disabled={quantity <= 1}>
                                 <Minus className="w-4 h-4" />
                             </Button>
                             <span className="font-bold text-lg w-8 text-center">{quantity}</span>
-                            <Button size="icon" variant="outline" onClick={() => handleQuantityChange(1)}>
+                            <Button size="sm" variant="outline" onClick={() => handleQuantityChange(1)}>
                                 <Plus className="w-4 h-4" />
                             </Button>
                         </div>

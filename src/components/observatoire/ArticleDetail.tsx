@@ -116,16 +116,16 @@ export function ArticleDetail({ article }: ArticleDetailProps) {
                         Partager
                     </div>
 
-                    <Button variant="outline" size="icon" className="rounded-full hover:text-blue-600 hover:border-blue-600 transition-colors" onClick={() => handleShare('linkedin')}>
+                    <Button variant="outline" size="sm" className="rounded-full hover:text-blue-600 hover:border-blue-600 transition-colors" onClick={() => handleShare('linkedin')}>
                         <Linkedin className="w-4 h-4" />
                     </Button>
-                    <Button variant="outline" size="icon" className="rounded-full hover:text-sky-500 hover:border-sky-500 transition-colors" onClick={() => handleShare('twitter')}>
+                    <Button variant="outline" size="sm" className="rounded-full hover:text-sky-500 hover:border-sky-500 transition-colors" onClick={() => handleShare('twitter')}>
                         <Twitter className="w-4 h-4" />
                     </Button>
-                    <Button variant="outline" size="icon" className="rounded-full hover:text-blue-700 hover:border-blue-700 transition-colors" onClick={() => handleShare('facebook')}>
+                    <Button variant="outline" size="sm" className="rounded-full hover:text-blue-700 hover:border-blue-700 transition-colors" onClick={() => handleShare('facebook')}>
                         <Facebook className="w-4 h-4" />
                     </Button>
-                    <Button variant="outline" size="icon" className="rounded-full hover:text-gray-900 hover:border-gray-900 transition-colors" onClick={() => {
+                    <Button variant="outline" size="sm" className="rounded-full hover:text-gray-900 hover:border-gray-900 transition-colors" onClick={() => {
                         navigator.clipboard.writeText(window.location.href);
                         // Toast would be nice here
                     }}>

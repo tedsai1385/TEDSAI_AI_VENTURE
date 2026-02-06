@@ -455,7 +455,7 @@ export const PacksManager = () => {
                                 <h3 className="text-xl font-bold text-white tracking-tight">Médiathèque du Jardin</h3>
                                 <p className="text-xs text-neutral-400 mt-1">Sélectionnez une ressource existante à utiliser dans votre pack.</p>
                             </div>
-                            <Button variant="ghost" size="icon" onClick={() => setShowMediaSelector(false)} className="text-neutral-400 hover:text-white hover:bg-white/10 rounded-full h-10 w-10">
+                            <Button variant="ghost" size="sm" onClick={() => setShowMediaSelector(false)} className="text-neutral-400 hover:text-white hover:bg-white/10 rounded-full h-10 w-10">
                                 <X size={24} />
                             </Button>
                         </div>
