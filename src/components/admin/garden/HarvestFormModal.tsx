@@ -27,7 +27,7 @@ interface HarvestFormModalProps {
 
 const compressImage = (base64: string, maxWidth = 800, quality = 0.6): Promise<string> => {
     return new Promise((resolve) => {
-        const img = new window.Image();
+        const img = new Image();
         img.src = base64;
         img.onload = () => {
             const canvas = document.createElement('canvas');

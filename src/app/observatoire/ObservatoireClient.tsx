@@ -21,6 +21,10 @@ export function ObservatoireClient({ initialArticles }: ObservatoireClientProps)
     const [isLiveUpdating, setIsLiveUpdating] = useState(false);
     const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
 
+    const displayReadTime = (seconds: number) => {
+        return Math.ceil(seconds / 60).toString();
+    };
+
     // ═══════════════════════════════════════════════════════════════
     // SUBSCRIPTION TEMPS RÉEL - CŒUR DE LA SYNCHRONISATION
     // ═══════════════════════════════════════════════════════════════
@@ -92,7 +96,7 @@ export function ObservatoireClient({ initialArticles }: ObservatoireClientProps)
                     <motion.h1
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-5xl md:text-6xl font-bold text-white mb-6"
+                        className="text-hero font-bold text-white mb-6"
                     >
                         L'Observatoire
                     </motion.h1>
@@ -102,8 +106,7 @@ export function ObservatoireClient({ initialArticles }: ObservatoireClientProps)
                     </p>
 
                     {/* Métriques temps réel */}
-                    {/* <MetricsTicker /> */}
-                    <div className="text-white">Metrics Ticker Disabled</div>
+                    <MetricsTicker />
                 </div>
             </section>
 
@@ -118,7 +121,7 @@ export function ObservatoireClient({ initialArticles }: ObservatoireClientProps)
             />
 
             {/* Grille articles */}
-            <section className="max-w-7xl mx-auto px-6 py-12">
+            <section className="max-w-7xl mx-auto px-container py-12">
                 <div className="flex items-center justify-between mb-8">
                     <p className="text-gray-400">
                         {filteredArticles.length} article{filteredArticles.length > 1 ? 's' : ''}
@@ -132,7 +135,7 @@ export function ObservatoireClient({ initialArticles }: ObservatoireClientProps)
                 <AnimatePresence mode="popLayout">
                     <motion.div
                         layout
-                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gap-grid"
                     >
                         {filteredArticles.map((article, index) => (
                             <motion.div
@@ -143,8 +146,15 @@ export function ObservatoireClient({ initialArticles }: ObservatoireClientProps)
                                 exit={{ opacity: 0, scale: 0.9 }}
                                 transition={{ delay: index * 0.05 }}
                             >
-                                {/* <ArticleCard article={article} priority={index < 3} /> */}
-                                <div className="text-white p-4 border rounded">Article Card Disabled: {article.title}</div>
+                                <ArticleCard
+                                    title={article.title}
+                                    excerpt={article.excerpt}
+                                    category={article.category} // Or map to label if needed
+                                    date={article.publishedAt ? new Date(article.publishedAt.seconds * 1000).toLocaleDateString('fr-FR') : 'Brouillon'}
+                                    readTime={displayReadTime(article.stats?.avgReadTime || 5)}
+                                    image={article.heroImage?.url || '/images/placeholder.jpg'}
+                                    featured={index < 1}
+                                />
                             </motion.div>
                         ))}
                     </motion.div>

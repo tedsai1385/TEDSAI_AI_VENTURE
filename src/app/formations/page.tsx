@@ -75,10 +75,10 @@ export default function FormationsPage() {
                             <GraduationCap className="w-4 h-4 mr-2" />
                             TEDSAI Academy
                         </Badge>
-                        <h1 className="text-5xl md:text-6xl font-black mb-6 font-heading">
+                        <h1 className="text-hero font-black mb-6 font-heading leading-tight break-words">
                             Formez-vous aux <span className="text-indigo-400">Métiers du Futur</span>
                         </h1>
-                        <p className="text-xl text-indigo-100 max-w-2xl mx-auto leading-relaxed">
+                        <p className="text-body text-indigo-100 max-w-2xl mx-auto leading-relaxed">
                             Développez vos compétences en technologie, agriculture et entrepreneuriat
                             avec nos programmes certifiants et pratiques.
                         </p>

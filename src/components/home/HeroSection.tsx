@@ -48,20 +48,20 @@ export const HeroSection = () => {
                             hidden: { opacity: 0, y: -20 },
                             visible: { opacity: 1, y: 0 }
                         }}
-                        className="flex gap-3 mb-8 flex-wrap"
+                        className="flex gap-2 mb-6 flex-wrap justify-center sm:justify-start"
                     >
-                        <Badge variant="accent" className="bg-white/10 text-white border border-white/20 backdrop-blur-md px-4 py-1.5 text-sm font-medium hover:bg-white/20 transition-colors cursor-default shadow-lg shadow-black/20">
-                            ✓ 100% Traçabilité Blockchain
+                        <Badge variant="accent" className="bg-white/10 text-white border border-white/20 backdrop-blur-md px-3 py-1 text-xs md:text-sm font-medium hover:bg-white/20 transition-colors cursor-default shadow-lg shadow-black/20">
+                            ✓ 100% Traçabilité
                         </Badge>
-                        <Badge variant="accent" className="bg-white/10 text-white border border-white/20 backdrop-blur-md px-4 py-1.5 text-sm font-medium hover:bg-white/20 transition-colors cursor-default shadow-lg shadow-black/20">
-                            ✓ 5 Piliers Intégrés
+                        <Badge variant="accent" className="bg-white/10 text-white border border-white/20 backdrop-blur-md px-3 py-1 text-xs md:text-sm font-medium hover:bg-white/20 transition-colors cursor-default shadow-lg shadow-black/20">
+                            ✓ 5 Piliers
                         </Badge>
-                        <Badge variant="accent" className="bg-white/10 text-white border border-white/20 backdrop-blur-md px-4 py-1.5 text-sm font-medium hover:bg-white/20 transition-colors cursor-default shadow-lg shadow-black/20">
-                            ✓ -40% Gaspillage Alimentaire
+                        <Badge variant="accent" className="bg-white/10 text-white border border-white/20 backdrop-blur-md px-3 py-1 text-xs md:text-sm font-medium hover:bg-white/20 transition-colors cursor-default shadow-lg shadow-black/20">
+                            ✓ -40% Gaspillage
                         </Badge>
                     </motion.div>
 
-                    <div className="overflow-hidden mb-2">
+                    <div className="overflow-hidden mb-1">
                         <motion.h1
                             variants={{
                                 hidden: { opacity: 0, y: 100 },
@@ -71,13 +71,13 @@ export const HeroSection = () => {
                                     transition: { duration: 0.8, ease: [0.2, 0.65, 0.3, 0.9] }
                                 }
                             }}
-                            className="text-6xl md:text-8xl font-bold font-heading leading-[0.9] text-white tracking-tight"
+                            className="text-hero font-bold font-heading text-white tracking-tight break-words max-w-full"
                         >
                             L'ALGORITHME
                         </motion.h1>
                     </div>
 
-                    <div className="overflow-hidden mb-8">
+                    <div className="overflow-hidden mb-6">
                         <motion.h1
                             variants={{
                                 hidden: { opacity: 0, y: 100 },
@@ -87,7 +87,7 @@ export const HeroSection = () => {
                                     transition: { duration: 0.8, ease: [0.2, 0.65, 0.3, 0.9] }
                                 }
                             }}
-                            className="text-6xl md:text-8xl font-bold font-heading leading-[0.9] text-[var(--color-primary-light)] tracking-tight"
+                            className="text-hero font-bold font-heading text-[var(--color-primary-light)] tracking-tight break-words max-w-full"
                         >
                             ORGANIQUE
                         </motion.h1>
@@ -98,7 +98,7 @@ export const HeroSection = () => {
                             hidden: { opacity: 0, y: 20 },
                             visible: { opacity: 1, y: 0 }
                         }}
-                        className="text-2xl md:text-3xl font-light text-gray-200 mb-8 max-w-2xl leading-tight"
+                        className="text-section-subtitle font-light text-gray-200 mb-6 max-w-2xl leading-tight"
                     >
                         L'écosystème où la technologie sert la terre, la table et votre business.
                     </motion.h2>
@@ -108,7 +108,7 @@ export const HeroSection = () => {
                             hidden: { opacity: 0, x: -20 },
                             visible: { opacity: 1, x: 0 }
                         }}
-                        className="text-lg text-gray-300 mb-12 leading-relaxed font-light max-w-2xl border-l-4 border-[var(--color-accent)] pl-6 py-1"
+                        className="text-body text-gray-300 mb-8 leading-relaxed font-light max-w-2xl border-l-4 border-[var(--color-accent)] pl-4 py-1"
                     >
                         Bienvenue au TEDSAI Complex à Yaoundé : le premier écosystème africain synchronisant l'excellence biologique et l'intelligence prédictive.
                     </motion.div>
@@ -118,42 +118,39 @@ export const HeroSection = () => {
                             hidden: { opacity: 0, y: 20 },
                             visible: { opacity: 1, y: 0 }
                         }}
-                        className="flex flex-col sm:flex-row gap-5 items-start sm:items-center"
+                        className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center w-full sm:w-auto"
                     >
-                        <Link href="/vitedia">
-                            <motion.div
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                            >
+                        <Link href="/vitedia" className="w-full sm:w-auto">
+                            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
                                 <Button
                                     size="lg"
                                     variant="primary"
-                                    rightIcon={<ArrowRight size={20} />}
-                                    className="text-lg px-8 py-6 rounded-full shadow-[0_0_30px_rgba(var(--color-primary-rgb),0.5)] border-2 border-transparent hover:border-white/20"
+                                    rightIcon={<ArrowRight size={18} />}
+                                    className="text-btn w-full sm:w-auto px-6 py-4 rounded-full shadow-[0_0_30px_rgba(var(--color-primary-rgb),0.5)] border-2 border-transparent hover:border-white/20 justify-center"
                                 >
                                     🍽️ Réserver une Table
                                 </Button>
                             </motion.div>
                         </Link>
 
-                        <div className="flex gap-3">
-                            <Link href="/boutique">
-                                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <div className="flex gap-3 w-full sm:w-auto">
+                            <Link href="/boutique" className="flex-1 sm:flex-none">
+                                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full">
                                     <Button
                                         size="lg"
                                         variant="outline"
-                                        className="bg-white/5 border-white/20 text-white hover:bg-white/10 backdrop-blur-sm px-6 py-6 rounded-full"
+                                        className="text-btn w-full sm:w-auto bg-white/5 border-white/20 text-white hover:bg-white/10 backdrop-blur-sm px-5 py-4 rounded-full justify-center"
                                     >
                                         🛒 Boutique
                                     </Button>
                                 </motion.div>
                             </Link>
-                            <Link href="/solutions-ia">
-                                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                            <Link href="/solutions-ia" className="flex-1 sm:flex-none">
+                                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full">
                                     <Button
                                         size="lg"
                                         variant="outline"
-                                        className="bg-[var(--color-accent)]/80 border-none text-white hover:bg-[var(--color-accent)] px-6 py-6 rounded-full shadow-lg shadow-[var(--color-accent)]/30"
+                                        className="text-btn w-full sm:w-auto bg-[var(--color-accent)]/80 border-none text-white hover:bg-[var(--color-accent)] px-5 py-4 rounded-full shadow-lg shadow-[var(--color-accent)]/30 justify-center"
                                     >
                                         🤖 IA PME
                                     </Button>

@@ -332,7 +332,7 @@ export const PacksManager = () => {
                                         <Image src={previewUrl} alt="Preview" fill className="object-cover" />
                                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4 backdrop-blur-sm">
                                             <Button type="button" size="sm" onClick={() => setShowMediaSelector(true)} variant="outline" className="border-white/20 text-white hover:bg-white/20">Changer</Button>
-                                            <Button type="button" size="sm" onClick={() => { setImageFile(null); setFormData(p => ({ ...p, image: '' })) }} variant="accent">Retirer</Button>
+                                            <Button type="button" size="sm" onClick={() => { setImageFile(null); setFormData(p => ({ ...p, image: '' })) }} variant="destructive">Retirer</Button>
                                         </div>
                                     </div>
                                 )}
@@ -455,7 +455,7 @@ export const PacksManager = () => {
                                 <h3 className="text-xl font-bold text-white tracking-tight">Médiathèque du Jardin</h3>
                                 <p className="text-xs text-neutral-400 mt-1">Sélectionnez une ressource existante à utiliser dans votre pack.</p>
                             </div>
-                            <Button variant="ghost" size="sm" onClick={() => setShowMediaSelector(false)} className="text-neutral-400 hover:text-white hover:bg-white/10 rounded-full h-10 w-10">
+                            <Button variant="ghost" size="icon" onClick={() => setShowMediaSelector(false)} className="text-neutral-400 hover:text-white hover:bg-white/10 rounded-full h-10 w-10">
                                 <X size={24} />
                             </Button>
                         </div>

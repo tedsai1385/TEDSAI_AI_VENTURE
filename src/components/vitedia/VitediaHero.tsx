@@ -28,16 +28,16 @@ export const VitediaHero = () => {
                         Cuisine Connectée
                     </Badge>
 
-                    <h1 className="text-[#f4ede0] text-5xl md:text-7xl font-heading font-bold mb-6 leading-tight">
+                    <h1 className="text-[#f4ede0] text-hero font-heading font-bold mb-6 leading-tight break-words">
                         viTEDia — <br />
                         De la Data à l'<span className="text-[var(--color-accent)]">Assiette</span>
                     </h1>
 
-                    <h2 className="text-2xl md:text-3xl font-light text-gray-100 mb-6">
+                    <h2 className="text-section-subtitle font-light text-gray-100 mb-6">
                         La première table de Yaoundé où le menu se prouve.
                     </h2>
 
-                    <p className="text-xl md:text-2xl text-gray-200 mb-10 leading-relaxed font-light max-w-2xl border-l-4 border-[var(--color-accent)] pl-4">
+                    <p className="text-body text-gray-200 mb-10 leading-relaxed font-light max-w-2xl border-l-4 border-[var(--color-accent)] pl-4">
                         Scannez. Découvrez. Savourez.
                         Chez viTEDia, vous ne mangez pas seulement — vous comprenez d'où vient chaque ingrédient.
                         Récolte du matin à 6h30. QR code gravé sur chaque plat.

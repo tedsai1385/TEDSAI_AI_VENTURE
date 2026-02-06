@@ -158,6 +158,18 @@ export const ProductGrid = () => {
                                         <span className="font-bold text-[var(--color-primary)] text-lg">
                                             {prod.priceVal?.toLocaleString() || prod.price.split(' ')[0]} <span className="text-[10px] font-normal text-gray-400">FCFA</span>
                                         </span>
+                                        {/* Mobile Add Button */}
+                                        <Button
+                                            size="sm"
+                                            variant="ghost"
+                                            className="md:hidden h-8 w-8 p-0 rounded-full bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)]"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleAddToCart(prod);
+                                            }}
+                                        >
+                                            <ShoppingBasket size={14} />
+                                        </Button>
                                     </div>
                                 </div>
                             </Card>

@@ -108,9 +108,49 @@ const config: Config = {
                     '100%': { opacity: '1' },
                 },
             },
-        },
-    },
-    plugins: [require("tailwindcss-animate")],
-};
+            // ═════════════════════════════════════════════════════════════════
+            // TAILLES DE POLICE FLUIDES - Contraintes User (Clamp)
+            // ═════════════════════════════════════════════════════════════════
+            fontSize: {
+                // Titres principaux (Desktop: ~60px -> Mobile: ~28-32px)
+                'hero': ['clamp(1.75rem, 4.5vw, 3.75rem)', { lineHeight: '1.1', fontWeight: '700' }],
+                // Sous-titres (Desktop: ~20px -> Mobile: ~16px)
+                'hero-sub': ['clamp(1rem, 2vw, 1.25rem)', { lineHeight: '1.5' }],
+                // Titres de section
+                'section': ['clamp(1.5rem, 3.5vw, 2.5rem)', { lineHeight: '1.2', fontWeight: '700' }],
+                // Titres de cartes / petits titres
+                'card-title': ['clamp(1.125rem, 2vw, 1.5rem)', { lineHeight: '1.3', fontWeight: '600' }],
+                // Corps de texte (Lisibilité mobile garantie 14-16px)
+                'body': ['clamp(0.875rem, 1.5vw, 1rem)', { lineHeight: '1.6' }],
+                // Petits textes
+                'small': ['clamp(0.75rem, 1.2vw, 0.875rem)', { lineHeight: '1.5' }],
+                // Boutons (Compact sur mobile)
+                'btn': ['clamp(0.875rem, 1.5vw, 1rem)', { lineHeight: '1', fontWeight: '600' }],
+            },
 
-export default config;
+            // ═════════════════════════════════════════════════════════════════
+            // ESPACEMENTS RESPONSIVES
+            // ═════════════════════════════════════════════════════════════════
+            spacing: {
+                'section': 'clamp(2.5rem, 6vw, 5rem)',     // Marges verticales sections
+                'container': 'clamp(1rem, 4vw, 3rem)',     // Padding horizontal conteneurs
+                'gap-grid': 'clamp(1rem, 3vw, 2rem)',      // Gap grilles
+                'gap-card': 'clamp(0.75rem, 2vw, 1.5rem)', // Gap interne cartes
+            },
+
+            // ═════════════════════════════════════════════════════════════════
+            // BREAKPOINTS PERSONNALISÉS
+            // ═════════════════════════════════════════════════════════════════
+            screens: {
+                'xs': '375px',
+                'sm': '640px',
+                'md': '768px',
+                'lg': '1024px',
+                'xl': '1280px',
+                '2xl': '1536px',
+            },
+        },
+        plugins: [require("tailwindcss-animate")],
+    };
+
+    export default config;

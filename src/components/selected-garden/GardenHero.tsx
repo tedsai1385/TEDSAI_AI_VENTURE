@@ -27,12 +27,12 @@ export const GardenHero = () => {
                         Agriculture Urbaine Intelligente
                     </Badge>
 
-                    <h1 className="text-white text-5xl md:text-7xl font-heading font-bold mb-6 leading-tight">
+                    <h1 className="text-white text-hero font-heading font-bold mb-6 leading-tight break-words">
                         SelecTED Garden — <br />
                         Zéro Kilomètre, <span className="text-green-400">Zéro Doute</span>.
                     </h1>
 
-                    <p className="text-xl md:text-2xl text-gray-200 mb-10 leading-relaxed font-light max-w-2xl border-l-4 border-green-500 pl-4">
+                    <p className="text-body text-gray-200 mb-10 leading-relaxed font-light max-w-2xl border-l-4 border-green-500 pl-4">
                         Le SelecTED Garden réinventé. Nos légumes poussent sur l'eau, nourris par nos poissons, pilotés par l'IA.
                         Récoltés ce matin à Yaoundé. Dans votre assiette à midi.
                     </p>

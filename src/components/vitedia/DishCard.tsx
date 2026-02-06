@@ -131,7 +131,7 @@ export default function DishCard({ dish }: { dish: DishProps }) {
                         >
                             Commander
                         </Button>
-                        <Button size="sm" variant="outline" className="rounded-full border-gray-200 hover:bg-gray-50 text-gray-500">
+                        <Button size="icon" variant="outline" className="rounded-full border-gray-200 hover:bg-gray-50 text-gray-500">
                             <Info className="w-5 h-5" />
                         </Button>
                     </div>

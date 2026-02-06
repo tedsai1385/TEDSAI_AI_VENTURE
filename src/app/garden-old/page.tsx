@@ -272,15 +272,15 @@ export default function GardenPage() {
             </section>
 
             {/* Products Section */}
-            <section id="products" className="py-16 bg-gray-50">
-                <div className="container mx-auto px-6">
+            <section id="products" className="py-section bg-gray-50">
+                <div className="container mx-auto px-container">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         className="text-center mb-12"
                     >
-                        <h2 className="text-4xl font-black text-gray-900 mb-4 font-heading">
+                        <h2 className="text-section font-black text-gray-900 mb-4 font-heading">
                             Nos Produits Frais
                         </h2>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -431,7 +431,7 @@ export default function GardenPage() {
                             </div>
                         </div>
 
-                        <Button size="lg" className="bg-white text-garden-primary hover:bg-gray-100 shadow-2xl rounded-full">
+                        <Button size="lg" rounded="full" className="bg-white text-garden-primary hover:bg-gray-100 shadow-2xl">
                             Réserver une Visite
                             <ArrowRight className="w-5 h-5" />
                         </Button>

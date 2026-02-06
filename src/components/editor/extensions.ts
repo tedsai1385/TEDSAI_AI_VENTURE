@@ -23,6 +23,10 @@ export const extensions = [
         heading: {
             levels: [1, 2, 3, 4],
         },
+        // On s'assure que les listes sont actives dans StarterKit
+        bulletList: true,
+        orderedList: true,
+        listItem: true,
     }),
     Placeholder.configure({
         placeholder: 'Commencez à rédiger votre article ici... Tapez "/" pour les commandes.',
