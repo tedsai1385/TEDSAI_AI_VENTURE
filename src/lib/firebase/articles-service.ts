@@ -93,7 +93,7 @@ export async function createArticle(
                 uniqueViews: 0,
                 downloads: 0,
                 avgReadTime: 0,
-                ...articleData.stats,
+                ...(articleData.stats || {}),
             },
         };
 
