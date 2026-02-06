@@ -46,7 +46,6 @@ export const addCategory = async (name: string, icon: string): Promise<Category>
         id: docRef.id,
         label: name,
         icon: icon,
-        slug: slug,
         order: order
     };
 };
