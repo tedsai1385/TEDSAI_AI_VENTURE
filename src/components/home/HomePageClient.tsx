@@ -216,7 +216,7 @@ export default function HomePageClient() {
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent className="text-center flex flex-col items-center">
-                                        <Badge variant="vitedia" className="mb-3">
+                                        <Badge variant="secondary" className="mb-3 bg-vitedia-primary/10 text-vitedia-primary border-vitedia-primary/20">
                                             100% Traçable
                                         </Badge>
                                         <div className="flex items-center text-vitedia-primary font-semibold group-hover:gap-2 transition-all">
