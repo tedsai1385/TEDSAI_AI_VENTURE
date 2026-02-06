@@ -74,7 +74,7 @@ export const HeroSection = () => {
                                     transition: { duration: 0.8, ease: [0.2, 0.65, 0.3, 0.9] }
                                 }
                             }}
-                            className="text-[clamp(2.5rem,12vw,8rem)] leading-[0.9] font-bold font-heading text-white tracking-tighter break-words max-w-full sm:text-[clamp(3rem,10vw,7rem)] lg:text-[clamp(4rem,9vw,8rem)] xl:text-[clamp(5rem,8vw,9rem)]"
+                            className="text-4xl sm:text-5xl lg:text-6xl font-bold font-heading text-white tracking-tight break-words max-w-full leading-tight"
                         >
                             L'ALGORITHME
                         </motion.h1>
@@ -90,34 +90,34 @@ export const HeroSection = () => {
                                     transition: { duration: 0.8, ease: [0.2, 0.65, 0.3, 0.9] }
                                 }
                             }}
-                            className="text-[clamp(2.5rem,12vw,8rem)] leading-[0.9] font-bold font-heading text-[var(--color-primary-light)] tracking-tighter break-words max-w-full sm:text-[clamp(3rem,10vw,7rem)] lg:text-[clamp(4rem,9vw,8rem)] xl:text-[clamp(5rem,8vw,9rem)]"
+                            className="text-4xl sm:text-5xl lg:text-6xl font-bold font-heading text-[var(--color-primary-light)] tracking-tight break-words max-w-full leading-tight"
                         >
                             ORGANIQUE
                         </motion.h1>
                     </div>
 
                     {/* ═════════════════════════════════════════════════════════════════
-                        SOUS-TITRE - AUGMENTÉ PROPORTIONNELLEMENT
+                        SOUS-TITRE - TAILLE STANDARD
                         ═════════════════════════════════════════════════════════════════ */}
                     <motion.h2
                         variants={{
                             hidden: { opacity: 0, y: 20 },
                             visible: { opacity: 1, y: 0 }
                         }}
-                        className="text-[clamp(1.125rem,3vw,2rem)] font-light text-gray-200 mb-8 max-w-3xl leading-snug sm:text-[clamp(1.25rem,2.5vw,1.75rem)] lg:text-[clamp(1.5rem,2vw,2rem)]"
+                        className="text-lg sm:text-xl lg:text-2xl font-light text-gray-200 mb-8 max-w-3xl leading-snug"
                     >
                         L'écosystème où la technologie sert la terre, la table et votre business.
                     </motion.h2>
 
                     {/* ═════════════════════════════════════════════════════════════════
-                        DESCRIPTION - AUGMENTÉE POUR LISIBILITÉ
+                        DESCRIPTION - TAILLE STANDARD
                         ═════════════════════════════════════════════════════════════════ */}
                     <motion.div
                         variants={{
                             hidden: { opacity: 0, x: -20 },
                             visible: { opacity: 1, x: 0 }
                         }}
-                        className="text-[clamp(0.9375rem,2vw,1.125rem)] text-gray-300 mb-10 leading-relaxed font-light max-w-3xl border-l-4 border-[var(--color-accent)] pl-5 py-2 sm:text-base lg:text-lg"
+                        className="text-base sm:text-lg text-gray-300 mb-10 leading-relaxed font-light max-w-3xl border-l-4 border-[var(--color-accent)] pl-5 py-2"
                     >
                         Bienvenue au TEDSAI Complex à Yaoundé : le premier écosystème africain synchronisant l'excellence biologique et l'intelligence prédictive.
                     </motion.div>
