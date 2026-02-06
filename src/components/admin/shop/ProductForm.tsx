@@ -441,7 +441,7 @@ export function ProductForm({ productId }: ProductFormProps) {
                             <div>
                                 <h3 className="text-xl font-bold text-white uppercase tracking-tighter">Médiathèque</h3>
                             </div>
-                            <Button variant="ghost" size="icon" onClick={() => setShowMediaSelector(false)} className="text-neutral-400">
+                            <Button variant="ghost" size="sm" onClick={() => setShowMediaSelector(false)} className="text-neutral-400 h-10 w-10 p-0">
                                 <X size={24} />
                             </Button>
                         </div>
