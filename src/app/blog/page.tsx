@@ -286,7 +286,7 @@ export default function BlogPage() {
                                 placeholder="votre@email.com"
                                 className="flex-1 px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white outline-none focus:bg-white/20 transition-all"
                             />
-                            <Button size="lg" rounded="full" className="bg-blue-600 hover:bg-blue-500 whitespace-nowrap px-8">
+                            <Button size="lg" className="rounded-full bg-blue-600 hover:bg-blue-500 whitespace-nowrap px-8">
                                 S'abonner
                             </Button>
                         </form>
