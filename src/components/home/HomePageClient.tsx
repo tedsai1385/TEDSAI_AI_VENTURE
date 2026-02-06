@@ -216,7 +216,7 @@ export default function HomePageClient() {
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent className="text-center flex flex-col items-center">
-                                        <Badge variant="vitedia" className="mb-3">
+                                        <Badge variant="accent" className="mb-3">
                                             100% Traçable
                                         </Badge>
                                         <div className="flex items-center text-vitedia-primary font-semibold group-hover:gap-2 transition-all">
@@ -247,7 +247,7 @@ export default function HomePageClient() {
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent className="text-center flex flex-col items-center">
-                                        <Badge variant="garden" className="mb-3">
+                                        <Badge variant="success" className="mb-3">
                                             Bio Certifié
                                         </Badge>
                                         <div className="flex items-center text-garden-primary font-semibold group-hover:gap-2 transition-all">
