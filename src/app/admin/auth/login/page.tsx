@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { loginWithEmailPassword, loginWithGoogle, AuthError } from '@/lib/firebase/auth-service';
 import { useAuth } from '@/context/AuthContext';
@@ -20,7 +20,26 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+// Wrapper component with Suspense
 export default function LoginPage() {
+    return (
+        <Suspense fallback={<LoginPageLoading />}>
+            <LoginPageContent />
+        </Suspense>
+    );
+}
+
+// Loading fallback
+function LoginPageLoading() {
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-black">
+            <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+        </div>
+    );
+}
+
+// Main content component
+function LoginPageContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { user, loading: authLoading } = useAuth();
