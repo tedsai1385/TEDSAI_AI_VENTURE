@@ -28,10 +28,17 @@ export const subscribeToCategories = (callback: (data: Category[]) => void) => {
 };
 
 export const addCategory = async (name: string, icon: string): Promise<Category> => {
+    // Get current count to set order
+    const snapshot = await getDocs(collection(db, CATEGORIES_COLLECTION));
+    const order = snapshot.size;
+
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
     const docRef = await addDoc(collection(db, CATEGORIES_COLLECTION), {
         label: name,
         icon: icon,
-        slug: name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+        slug: slug,
+        order: order,
         createdAt: serverTimestamp()
     });
 
@@ -39,8 +46,9 @@ export const addCategory = async (name: string, icon: string): Promise<Category>
         id: docRef.id,
         label: name,
         icon: icon,
-        slug: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-    } as Category;
+        slug: slug,
+        order: order
+    };
 };
 
 export const deleteCategory = async (id: string): Promise<void> => {
