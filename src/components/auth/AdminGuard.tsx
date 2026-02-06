@@ -7,7 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Sparkles } from 'lucide-react';
 
 export default function AdminGuard({ children }: { children: React.ReactNode }) {
-    const { user, profile, loading } = useAuth();
+    const { user, loading } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
     const [isRedirecting, setIsRedirecting] = useState(false);
