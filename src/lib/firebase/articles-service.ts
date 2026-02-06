@@ -13,7 +13,8 @@ import {
     increment,
     limit,
     getDoc,
-    arrayUnion
+    arrayUnion,
+    writeBatch
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { Article } from '@/types/article';
@@ -154,4 +155,23 @@ export async function incrementArticleViews(id: string, isUnique: boolean): Prom
     }
 
     await updateDoc(docRef, updates);
+}
+
+// Batch Update Status
+export async function batchUpdateStatus(ids: string[], status: 'published' | 'draft' | 'archived'): Promise<void> {
+    try {
+        const batch = writeBatch(db);
+
+        ids.forEach(id => {
+            const docRef = doc(db, ARTICLES_COLLECTION, id);
+            batch.update(docRef, {
+                status,
+                updatedAt: serverTimestamp()
+            });
+        });
+
+        await batch.commit();
+    } catch (error) {
+        throw new ArticleError('Failed to batch update status', 'BATCH_UPDATE_FAILED');
+    }
 }
