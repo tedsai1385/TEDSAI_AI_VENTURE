@@ -48,7 +48,7 @@ function LoginPageContent() {
     // Redirection si déjà connecté
     useEffect(() => {
         if (user) {
-            const redirectTo = searchParams?.get('redirect') || '/admin/dashboard';
+            const redirectTo = searchParams?.get('redirect') || '/admin';
             router.push(redirectTo);
         }
     }, [user, router, searchParams]);
@@ -73,7 +73,7 @@ function LoginPageContent() {
                 localStorage.setItem('admin-authenticated', 'true');
                 // Simuler un cookie pour le middleware (si activé)
                 document.cookie = 'auth-token=demo-token; path=/; max-age=86400';
-                router.push('/admin/dashboard');
+                router.push('/admin');
             }
         }, 800);
     };
@@ -338,6 +338,8 @@ function LoginPageContent() {
                                         )}
                                     </AnimatePresence>
                                 </motion.div>
+                            )}
+
                             {/* ═══════════════════════════════════════════════════════════ DEMO / EVALUATION */}
                             {activeTab === 'demo' && (
                                 <motion.div
