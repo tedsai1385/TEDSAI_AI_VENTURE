@@ -16,7 +16,8 @@ import {
     AlertCircle,
     Eye,
     EyeOff,
-    ArrowRight
+    ArrowRight,
+    Sparkles
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -58,7 +59,24 @@ function LoginPageContent() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<'email' | 'google'>('email');
+    const [activeTab, setActiveTab] = useState<'email' | 'google' | 'demo'>('email');
+
+    // ═══════════════════════════════════════════════════════════════════
+    // HANDLER ACCÈS DÉMO / ÉVALUATION
+    // ═══════════════════════════════════════════════════════════════════
+
+    const handleDemoLogin = () => {
+        setIsLoading(true);
+        // Simuler le délai de connexion
+        setTimeout(() => {
+            if (typeof window !== 'undefined') {
+                localStorage.setItem('admin-authenticated', 'true');
+                // Simuler un cookie pour le middleware (si activé)
+                document.cookie = 'auth-token=demo-token; path=/; max-age=86400';
+                router.push('/admin/dashboard');
+            }
+        }, 800);
+    };
 
     // ═══════════════════════════════════════════════════════════════════
     // HANDLER CONNEXION EMAIL/PASSWORD
@@ -153,7 +171,7 @@ function LoginPageContent() {
                             <button
                                 onClick={() => setActiveTab('email')}
                                 className={`
-                  flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all
+                  flex-1 py-2 px-2 rounded-md text-xs sm:text-sm font-medium transition-all
                   ${activeTab === 'email'
                                         ? 'bg-gray-700 text-white shadow-sm'
                                         : 'text-gray-400 hover:text-white'
@@ -165,7 +183,7 @@ function LoginPageContent() {
                             <button
                                 onClick={() => setActiveTab('google')}
                                 className={`
-                  flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all
+                  flex-1 py-2 px-2 rounded-md text-xs sm:text-sm font-medium transition-all
                   ${activeTab === 'google'
                                         ? 'bg-gray-700 text-white shadow-sm'
                                         : 'text-gray-400 hover:text-white'
@@ -173,6 +191,18 @@ function LoginPageContent() {
                 `}
                             >
                                 Google
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('demo')}
+                                className={`
+                  flex-1 py-2 px-2 rounded-md text-xs sm:text-sm font-medium transition-all
+                  ${activeTab === 'demo'
+                                        ? 'bg-purple-600/20 text-purple-400 shadow-sm'
+                                        : 'text-gray-400 hover:text-white'
+                                    }
+                `}
+                            >
+                                Évaluation
                             </button>
                         </div>
                     </div>
@@ -307,6 +337,36 @@ function LoginPageContent() {
                                             </motion.div>
                                         )}
                                     </AnimatePresence>
+                                </motion.div>
+                            {/* ═══════════════════════════════════════════════════════════ DEMO / EVALUATION */}
+                            {activeTab === 'demo' && (
+                                <motion.div
+                                    key="demo"
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    className="space-y-6"
+                                >
+                                    <div className="text-center py-6 bg-purple-500/5 border border-purple-500/20 rounded-xl p-4">
+                                        <Sparkles className="w-8 h-8 text-purple-400 mx-auto mb-3" />
+                                        <h3 className="text-white font-bold mb-2">Accès Évaluation Rapide</h3>
+                                        <p className="text-sm text-gray-400 mb-6 font-light">
+                                            Utilisez ce mode pour explorer les fonctionnalités du dashboard sans authentification Firebase.
+                                        </p>
+
+                                        <Button
+                                            onClick={handleDemoLogin}
+                                            disabled={isLoading}
+                                            className="w-full h-12 bg-purple-600 hover:bg-purple-700 text-white font-bold shadow-lg shadow-purple-900/40 border-none"
+                                        >
+                                            {isLoading ? (
+                                                <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                                            ) : (
+                                                <Sparkles className="w-5 h-5 mr-2" />
+                                            )}
+                                            Entrer dans le Dashboard
+                                        </Button>
+                                    </div>
                                 </motion.div>
                             )}
                         </AnimatePresence>
